@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.BaseActivity;
@@ -57,7 +57,7 @@ public class FriendMsgActivity extends BaseActivity implements OnClickListener {
 		if (TextUtils.isEmpty(UserId))
 			finish();
 		else {
-			User user = GloableParams.Users.get(UserId);
+			UserBean user = GloableParams.Users.get(UserId);
 			tv_name.setText(user.getUserName());
 			tv_accout.setText("微信号：" + UserId);
 		}

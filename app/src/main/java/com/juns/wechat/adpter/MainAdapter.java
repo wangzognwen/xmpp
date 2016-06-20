@@ -12,7 +12,7 @@ import com.juns.wechat.view.fragment.Fragment_Msg;
 import com.juns.wechat.view.fragment.Fragment_Profile;
 
 /**
- * Created by Administrator on 2016/6/10.
+ * Created by 王宗文 on 2016/6/10.
  */
 public class MainAdapter extends FragmentPagerAdapter {
 

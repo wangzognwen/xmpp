@@ -27,4 +27,5 @@ public interface XmppManager {
     boolean sendMessage(MessageEntity messageEntity);
     boolean isFriends(int otherUserId);
     boolean addFriend(int otherUserId, String nickName);
+    void searchUser(String name) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
 }

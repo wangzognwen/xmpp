@@ -17,7 +17,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.BaseActivity;
 
@@ -63,7 +63,7 @@ public class MyCodeActivity extends BaseActivity implements OnClickListener {
 	protected void initData() {
 		String id = Utils.getValue(this, Constants.User_ID);
 		tv_accout.setText("微信号：" + id);
-		User user = GloableParams.Users.get(id);
+		UserBean user = GloableParams.Users.get(id);
 		if (user != null && !TextUtils.isEmpty(user.getUserName()))
 			tvname.setText(user.getUserName());
 		Bitmap qrcode = generateQRCode("JUNS_WeChat@User:" + id);

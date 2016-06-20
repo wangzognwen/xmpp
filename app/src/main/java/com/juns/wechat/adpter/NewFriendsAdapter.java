@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
@@ -50,7 +50,7 @@ public class NewFriendsAdapter extends BaseAdapter {
 		ImageView img_avar = ViewHolder.get(convertView, R.id.img_photo);
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
 		final TextView txt_add = ViewHolder.get(convertView, R.id.txt_add);
-		final User user = GloableParams.UserInfos.get(position);
+		final UserBean user = GloableParams.UserInfos.get(position);
 		txt_name.setText(user.getUserName());
 		txt_add.setOnClickListener(new OnClickListener() {
 

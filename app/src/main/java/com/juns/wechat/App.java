@@ -158,7 +158,7 @@ public class App extends FrontiaApplication {
 		return instance;
 	}
 
-	// add Activity
+	// insertOrUpdate Activity
 	public void addActivity(Activity activity) {
 		mList.add(activity);
 	}

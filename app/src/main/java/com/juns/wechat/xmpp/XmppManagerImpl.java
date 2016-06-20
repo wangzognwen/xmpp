@@ -1,6 +1,7 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.xmpp.listener.RosterLoadedListenerImpl;
 import com.juns.wechat.xmpp.listener.XmppConnectionListener;
 import com.juns.wechat.xmpp.listener.XmppReceivePacketFilter;
 import com.juns.wechat.xmpp.listener.XmppReceivePacketListener;
@@ -15,7 +16,11 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterLoadedListener;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jivesoftware.smackx.search.ReportedData;
+import org.jivesoftware.smackx.search.UserSearchManager;
+import org.jivesoftware.smackx.xdata.Form;
 
 import java.io.IOException;
 import java.nio.channels.NotYetConnectedException;
@@ -33,6 +38,7 @@ public class XmppManagerImpl implements XmppManager {
     private ConnectionListener connectionListener;
     private StanzaListener packetListener;
     private StanzaFilter packetFilter;
+    private RosterLoadedListener rosterLoadedListener;
 
     private static XmppManagerImpl mInstance;
     private Roster mRoster;
@@ -48,6 +54,7 @@ public class XmppManagerImpl implements XmppManager {
         connectionListener = new XmppConnectionListener();
         packetListener = new XmppReceivePacketListener();
         packetFilter = new XmppReceivePacketFilter();
+        rosterLoadedListener = new RosterLoadedListenerImpl();
     }
 
     public static synchronized XmppManagerImpl getInstance() {
@@ -182,6 +189,16 @@ public class XmppManagerImpl implements XmppManager {
         return false;
     }
 
+    @Override
+    public void searchUser(String name) throws SmackException.NotConnectedException,
+            XMPPException.XMPPErrorException, SmackException.NoResponseException {
+        UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
+        Form searchForm = userSearchManager.getSearchForm("search");
+        Form answerForm = searchForm.createAnswerForm();
+        answerForm.setAnswer("name", name);
+        ReportedData data = userSearchManager.getSearchResults(answerForm, "search");
+
+    }
 
     /**
      * 移除各种监听事件
@@ -189,10 +206,12 @@ public class XmppManagerImpl implements XmppManager {
     private void removeListener(){
         xmppConnection.removeConnectionListener(connectionListener);
         xmppConnection.removeAsyncStanzaListener(packetListener);
+        Roster.getInstanceFor(xmppConnection).removeRosterLoadedListener(rosterLoadedListener);
     }
 
     private void registerListener() {
         xmppConnection.addConnectionListener(connectionListener);
         xmppConnection.addAsyncStanzaListener(packetListener, packetFilter);
+        Roster.getInstanceFor(xmppConnection).addRosterLoadedListener(rosterLoadedListener);
     }
 }

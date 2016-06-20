@@ -2,10 +2,8 @@ package com.juns.wechat.view.activity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
-import net.tsz.afinal.FinalDb;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,8 +34,7 @@ import com.juns.health.net.loopj.android.http.RequestParams;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
-import com.juns.wechat.bean.GroupInfo;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.chat.utils.Constant;
 import com.juns.wechat.common.PingYinUtil;
@@ -64,7 +61,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 	private ContactAdapter contactAdapter;
 	/** group中一开始就有的成员 */
 	private List<String> exitingMembers = new ArrayList<String>();
-	private List<User> alluserList;// 好友列表
+	private List<UserBean> alluserList;// 好友列表
 	// 可滑动的显示选中用户的View
 	private LinearLayout menuLinerLayout;
 
@@ -151,8 +148,8 @@ public class AddGroupChatActivity extends BaseActivity implements
 	@Override
 	protected void initData() {
 		// 获取好友列表
-		alluserList = new ArrayList<User>();
-		for (User user : GloableParams.UserInfos) {
+		alluserList = new ArrayList<UserBean>();
+		for (UserBean user : GloableParams.UserInfos) {
 			if (!user.getUserName().equals(Constant.NEW_FRIENDS_USERNAME)
 					& !user.getUserName().equals(Constant.GROUP_USERNAME))
 				alluserList.add(user);
@@ -172,8 +169,8 @@ public class AddGroupChatActivity extends BaseActivity implements
 					int count) {
 				if (s.length() > 0) {
 					String str_s = et_search.getText().toString().trim();
-					List<User> users_temp = new ArrayList<User>();
-					for (User user : alluserList) {
+					List<UserBean> users_temp = new ArrayList<UserBean>();
+					for (UserBean user : alluserList) {
 						String usernick = user.getUserName();
 						if (usernick.contains(str_s)) {
 							users_temp.add(user);
@@ -227,7 +224,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		// 如果只有一个用户说明只是单聊,并且不是从群组加人
 		if (addList.size() == 1 && isCreatingNewGroup) {
 			String userId = addList.get(0);
-			User user = GloableParams.Users.get(userId);
+			UserBean user = GloableParams.Users.get(userId);
 			Intent intent = new Intent(AddGroupChatActivity.this,
 					ChatActivity.class);
 			intent.putExtra(Constants.NAME, user.getUserName());
@@ -249,10 +246,10 @@ public class AddGroupChatActivity extends BaseActivity implements
 		private Context mContext;
 		private boolean[] isCheckedArray;
 		private Bitmap[] bitmaps;
-		private List<User> list = new ArrayList<User>();
+		private List<UserBean> list = new ArrayList<UserBean>();
 
 		@SuppressWarnings("unchecked")
-		public ContactAdapter(Context mContext, List<User> users) {
+		public ContactAdapter(Context mContext, List<UserBean> users) {
 			this.mContext = mContext;
 			this.list = users;
 			bitmaps = new Bitmap[list.size()];
@@ -279,7 +276,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		@Override
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
-			final User user = list.get(position);
+			final UserBean user = list.get(position);
 			if (convertView == null) {
 				convertView = LayoutInflater.from(mContext).inflate(
 						R.layout.contact_item, null);
@@ -299,7 +296,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 				tvCatalog.setVisibility(View.VISIBLE);
 				tvCatalog.setText(catalog);
 			} else {
-				User Nextuser = list.get(position - 1);
+				UserBean Nextuser = list.get(position - 1);
 				String lastCatalog = PingYinUtil.converterToFirstSpell(
 						Nextuser.getUserName()).substring(0, 1);
 				if (catalog.equals(lastCatalog)) {
@@ -366,7 +363,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		@Override
 		public int getPositionForSection(int section) {
 			for (int i = 0; i < list.size(); i++) {
-				User user = list.get(i);
+				UserBean user = list.get(i);
 				String l = PingYinUtil
 						.converterToFirstSpell(user.getUserName()).substring(0,
 								1);
@@ -396,7 +393,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 	}
 
 	// 即时显示被选中用户的头像和昵称。
-	private void showCheckImage(Bitmap bitmap, User glufineid) {
+	private void showCheckImage(Bitmap bitmap, UserBean glufineid) {
 		if (exitingMembers.contains(glufineid.getUserName()) && groupId != null) {
 			return;
 		}
@@ -429,7 +426,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		addList.add(glufineid.getTelephone());
 	}
 
-	private void deleteImage(User glufineid) {
+	private void deleteImage(UserBean glufineid) {
 		View view = (View) menuLinerLayout.findViewWithTag(glufineid);
 
 		menuLinerLayout.removeView(view);

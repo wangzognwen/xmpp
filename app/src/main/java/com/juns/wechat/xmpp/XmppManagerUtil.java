@@ -1,6 +1,7 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.util.ThreadPoolUtil;
+import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;

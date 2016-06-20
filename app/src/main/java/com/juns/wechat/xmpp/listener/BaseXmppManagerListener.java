@@ -1,9 +1,7 @@
 package com.juns.wechat.xmpp.listener;
 
-import com.juns.wechat.xmpp.XmppManagerListener;
-
 /**
- * Created by Administrator on 2016/6/13.
+ * Created by 王宗文 on 2016/6/13.
  */
 public  class BaseXmppManagerListener implements XmppManagerListener {
     @Override

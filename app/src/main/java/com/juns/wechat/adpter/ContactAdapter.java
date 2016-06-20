@@ -1,5 +1,6 @@
 package com.juns.wechat.adpter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,30 +14,33 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.RosterBean;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.PinyinComparator;
 import com.juns.wechat.common.ViewHolder;
 
 public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
-	private List<User> UserInfos;// 好友信息
+	private List<RosterBean> userInfos = new ArrayList<>();// 好友信息
 
-	public ContactAdapter(Context mContext, List<User> UserInfos) {
-		this.mContext = mContext;
-		this.UserInfos = UserInfos;
-		// 排序(实现了中英文混排)
-		Collections.sort(UserInfos, new PinyinComparator());
-	}
+    public ContactAdapter(Context context) {
+        this.mContext = context;
+    }
+
+    public void setData(List<RosterBean> userInfos){
+        this.userInfos = userInfos;
+        notifyDataSetChanged();
+    }
 
 	@Override
 	public int getCount() {
-		return UserInfos.size();
+		return userInfos.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return UserInfos.get(position);
+		return userInfos.get(position);
 	}
 
 	@Override
@@ -46,10 +50,10 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		User user = UserInfos.get(position);
+		RosterBean rosterBean = userInfos.get(position);
 		if (convertView == null) {
 			convertView = LayoutInflater.from(mContext).inflate(
-					R.layout.contact_item, null);
+					R.layout.contact_item, parent, false);
 
 		}
 		ImageView ivAvatar = ViewHolder.get(convertView,
@@ -57,15 +61,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 		TextView tvCatalog = ViewHolder.get(convertView,
 				R.id.contactitem_catalog);
 		TextView tvNick = ViewHolder.get(convertView, R.id.contactitem_nick);
-		String catalog = PingYinUtil.converterToFirstSpell(user.getUserName())
+		String catalog = PingYinUtil.converterToFirstSpell(rosterBean.getContactName())
 				.substring(0, 1);
 		if (position == 0) {
 			tvCatalog.setVisibility(View.VISIBLE);
 			tvCatalog.setText(catalog);
 		} else {
-			User Nextuser = UserInfos.get(position - 1);
+			RosterBean prevRosterBean = userInfos.get(position - 1);
 			String lastCatalog = PingYinUtil.converterToFirstSpell(
-					Nextuser.getUserName()).substring(0, 1);
+                    prevRosterBean.getContactName()).substring(0, 1);
 			if (catalog.equals(lastCatalog)) {
 				tvCatalog.setVisibility(View.GONE);
 			} else {
@@ -75,15 +79,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 		}
 
 		ivAvatar.setImageResource(R.drawable.head);
-		tvNick.setText(user.getUserName());
+		tvNick.setText(rosterBean.getContactName());
 		return convertView;
 	}
 
 	@Override
 	public int getPositionForSection(int section) {
-		for (int i = 0; i < UserInfos.size(); i++) {
-			User user = UserInfos.get(i);
-			String l = PingYinUtil.converterToFirstSpell(user.getUserName())
+		for (int i = 0; i < userInfos.size(); i++) {
+			RosterBean rosterBean = userInfos.get(i);
+			String l = PingYinUtil.converterToFirstSpell(rosterBean.getContactName())
 					.substring(0, 1);
 			char firstChar = l.toUpperCase().charAt(0);
 			if (firstChar == section) {

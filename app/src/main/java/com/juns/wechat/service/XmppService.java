@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.XmppExceptionHandler;
@@ -31,13 +31,9 @@ import java.io.IOException;
 public class XmppService extends Service {
     private XmppManager xmpp;
     /**
-     * 登录Action,由于登录时这个用户的用户和密码可以从{@link com.juns.wechat.bean.User}中取得，所以不需要传用户名和密码
+     * 登录Action,由于登录时这个用户的用户和密码可以从{@link UserBean}中取得，所以不需要传用户名和密码
      */
     public static final String ACTION_LOGIN = "login";
-    /**
-     * 注册Action,需要传用户名，密码
-     */
-    public static final String ACTION_REGISTER = "register";
 
     private volatile boolean mIsLogging = false; //是否正在登录
 
@@ -74,7 +70,7 @@ public class XmppService extends Service {
         String action = intent.getAction();
         if(TextUtils.isEmpty(action)) return;
         if(ACTION_LOGIN.equals(action)){
-            User user = UserManager.getInstance().getUser();
+            UserBean user = UserManager.getInstance().getUser();
             login(user.getUserName(), user.getPassword());
         }
     }

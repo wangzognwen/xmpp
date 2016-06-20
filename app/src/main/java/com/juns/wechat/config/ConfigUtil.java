@@ -55,7 +55,7 @@ public class ConfigUtil {
         return userId + "@" + REAL_XMPP_DOMAIN+ "/" + RESOURCE;
     }
 
-    public static String getUserId(String userJid){
+    public static String getUserName(String userJid){
         int index = userJid.indexOf("@");
         if (index < 1){
             return null;

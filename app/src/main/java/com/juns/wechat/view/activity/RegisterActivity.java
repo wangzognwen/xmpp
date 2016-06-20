@@ -1,8 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -10,7 +7,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,19 +14,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.juns.health.net.loopj.android.http.JsonHttpResponseHandler;
-import com.juns.health.net.loopj.android.http.RequestParams;
-import com.juns.wechat.App;
-import com.juns.wechat.Constants;
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
-import com.juns.wechat.common.DES;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.BaseJsonRes;
-import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.view.BaseActivity;
-import com.juns.wechat.xmpp.XmppManagerListener;
 import com.juns.wechat.xmpp.XmppManagerUtil;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 

@@ -762,7 +762,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	 */
 	private void sendPicture(final String filePath) {
 		String to = toChatUsername;
-		// create and add image message in view
+		// create and insertOrUpdate image message in view
 		/*final EMMessage message = EMMessage
 				.createSendMessage(EMMessage.Type.IMAGE);
 		// 如果是群聊，设置chattype,默认是单聊
@@ -923,7 +923,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 			message.setChatType(ChatType.GroupChat);
 
 		message.setReceipt(toChatUsername);
-		// add message body
+		// insertOrUpdate message body
 		NormalFileMessageBody body = new NormalFileMessageBody(new File(
 				filePath));
 		message.addBody(body);

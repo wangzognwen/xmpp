@@ -11,7 +11,7 @@ import com.juns.health.net.loopj.android.http.RequestParams;
 import com.juns.wechat.App;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.net.NetClient;
 
@@ -22,12 +22,12 @@ public class UserUtils {
 	 * @param context
 	 * @return
 	 */
-	public static User getUserModel(Context context) {
-		User user = null;
+	public static UserBean getUserModel(Context context) {
+		UserBean user = null;
 		String jsondata = Utils.getValue(context, Constants.UserInfo);
 		// Log.e("", jsondata);
 		if (!TextUtils.isEmpty(jsondata))
-			user = JSON.parseObject(jsondata, User.class);
+			user = JSON.parseObject(jsondata, UserBean.class);
 		return user;
 	}
 
@@ -38,7 +38,7 @@ public class UserUtils {
 	 * @return
 	 */
 	public static String getUserID(Context context) {
-		User user = getUserModel(context);
+		UserBean user = getUserModel(context);
 		if (user != null)
 			return user.getTelephone();
 		else
@@ -52,7 +52,7 @@ public class UserUtils {
 	 * @return
 	 */
 	public static String getUserName(Context context) {
-		User user = getUserModel(context);
+		UserBean user = getUserModel(context);
 		if (user != null)
 			return user.getUserName();
 		else
@@ -66,7 +66,7 @@ public class UserUtils {
 	 * @return
 	 */
 	public static String getUserPwd(Context context) {
-		User user = getUserModel(context);
+		UserBean user = getUserModel(context);
 		if (user != null)
 			return user.getPassword();
 		else
@@ -90,7 +90,7 @@ public class UserUtils {
 
 			@Override
 			public void onMySuccess(String data) {
-				User user = JSON.parseObject(data, User.class);
+				UserBean user = JSON.parseObject(data, UserBean.class);
 				if (user != null) {
 					if (user.getUserName() != null) {
 						txt_name.setText(user.getUserName());
@@ -100,8 +100,8 @@ public class UserUtils {
 					}
 					FinalDb db = FinalDb.create(context, Constants.DB_NAME,
 							false);
-					if (db.findById(user.getId(), User.class) != null)
-						db.deleteById(User.class, user.getId());
+					if (db.findById(user.getId(), UserBean.class) != null)
+						db.deleteById(UserBean.class, user.getId());
 					db.save(user);
 					GloableParams.UserInfos.add(user);
 					GloableParams.Users.put(user.getTelephone(), user);

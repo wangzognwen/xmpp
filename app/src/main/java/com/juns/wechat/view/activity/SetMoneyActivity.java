@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.BaseActivity;
 
@@ -47,7 +47,7 @@ public class SetMoneyActivity extends BaseActivity implements OnClickListener {
 	protected void initView() {
 		String UserId = getIntent().getStringExtra(Constants.User_ID);
 		String money = getIntent().getStringExtra(Constants.NAME);
-		User user = GloableParams.Users.get(UserId);
+		UserBean user = GloableParams.Users.get(UserId);
 		String strname = "您正在向 " + user.getUserName() + "<br/>微信号：" + UserId
 				+ " 付钱";
 		tv_msg.setText(Html.fromHtml(strname));

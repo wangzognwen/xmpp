@@ -206,23 +206,8 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait">
         </activity>
-        <!-- 开机自启动服务 -->
-        <receiver android:name="com.easemob.chat.StartServiceReceiver" >
-            <intent-filter android:priority="1000" >
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </receiver>
-
-
-        <!-- 设置环信应用的appkey -->
-        <meta-data
-            android:name="EASEMOB_APPKEY"
-            android:value="juns#wechat" />
-        <!-- 声明sdk所需的service -->
-        <service android:name="com.easemob.chat.EMChatService" />
+        <activity android:name=".activity.AddFriendActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activity.SearchActivity" android:screenOrientation="portrait" />
 
         <!-- 百度地图所需的service -->
         <service
@@ -242,16 +227,6 @@
 
         <!-- push应用定义消息receiver声明 -->
 
-
-        <!-- push必须的receviver和service声明 -->
-        <service
-            android:name="com.baidu.android.pushservice.PushService"
-            android:exported="true"
-            android:process=":bdservice_v1" >
-            <intent-filter >
-                <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE"/>
-            </intent-filter>
-        </service>
         <!-- 4.4版本新增的CommandService声明，提升小米和魅族手机上的实际推送到达率 -->
         <service
             android:name="com.baidu.android.pushservice.CommandService"
@@ -276,36 +251,8 @@
             </intent-filter>
         </receiver>
 
-               <!-- push必须的receviver和service声明 -->
-        <!--
-        <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver"
-            android:process=":bdservice_v1">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
-                <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
-                <action android:name="android.intent.action.MEDIA_MOUNTED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-        </receiver>
-    -->
-        <!--
-        <receiver android:name="com.baidu.android.pushservice.RegistrationReceiver"
-            android:process=":bdservice_v1">
-            <intent-filter>
-                <action android:name="com.baidu.android.pushservice.action.METHOD" />
-                <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        -->
-        <!-- push结束 -->
+        <service android:name=".service.XmppService"
+                android:exported="true" />
 
         <!-- 在百度开发者中心查询应用的API Key -->
         <meta-data android:name="api_key" android:value="Uvw5AMP15i9v1cUoS5aY7GR1" />

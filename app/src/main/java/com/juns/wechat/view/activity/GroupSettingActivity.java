@@ -18,13 +18,12 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.GroupInfo;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.chat.widght.ExpandGridView;
 import com.juns.wechat.common.Utils;
@@ -52,7 +51,7 @@ public class GroupSettingActivity extends BaseActivity implements
 	private String hxid;
 	private String group_name;// 群名称
 	boolean is_admin = false;// 是否是管理员
-	List<User> members = new ArrayList<User>();
+	List<UserBean> members = new ArrayList<UserBean>();
 	String longClickUsername = null;
 
 	private String groupId;
@@ -124,9 +123,9 @@ public class GroupSettingActivity extends BaseActivity implements
 				txt_title.setText("聊天信息(" + String.valueOf(m_total) + ")");
 				// 解析群组成员信息
 				for (int i = 0; i < m_total; i++) {
-					User user = GloableParams.Users.get(manbers[i]);
+					UserBean user = GloableParams.Users.get(manbers[i]);
 					if (user == null) {
-						user = new User();
+						user = new UserBean();
 						user.setTelephone(manbers[i]);
 					}
 					members.add(user);
@@ -143,7 +142,7 @@ public class GroupSettingActivity extends BaseActivity implements
 	}
 
 	// 显示群成员头像昵称的gridview
-	private void showMembers(List<User> members) {
+	private void showMembers(List<UserBean> members) {
 		adapter = new GridAdapter(this, members);
 		gridview.setAdapter(adapter);
 
@@ -195,10 +194,10 @@ public class GroupSettingActivity extends BaseActivity implements
 	private class GridAdapter extends BaseAdapter {
 
 		public boolean isInDeleteMode;
-		private List<User> objects;
+		private List<UserBean> objects;
 		Context context;
 
-		public GridAdapter(Context context, List<User> objects) {
+		public GridAdapter(Context context, List<UserBean> objects) {
 
 			this.objects = objects;
 			this.context = context;
@@ -265,7 +264,7 @@ public class GroupSettingActivity extends BaseActivity implements
 			}
 
 			else { // 普通item，显示群组成员
-				final User user = GloableParams.UserInfos.get(position);
+				final UserBean user = GloableParams.UserInfos.get(position);
 				String usernick = user.getUserName();
 				final String userhid = user.getTelephone();
 				final String useravatar = user.getHeadUrl();

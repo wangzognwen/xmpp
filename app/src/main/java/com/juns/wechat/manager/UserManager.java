@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.juns.wechat.App;
 import com.juns.wechat.Constants;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.util.SharedPreferencesUtil;
 
 /**
@@ -12,7 +12,7 @@ import com.juns.wechat.util.SharedPreferencesUtil;
  */
 public class UserManager {
     private static UserManager instance;
-    private User user;
+    private UserBean user;
     private Context context = App.getInstance();
 
     public synchronized static UserManager getInstance(){
@@ -27,13 +27,13 @@ public class UserManager {
     }
 
     private void initUser(){
-        user = new User();
-        user.setId(SharedPreferencesUtil.getValue(context, User.ID));
-        user.setUserName(SharedPreferencesUtil.getValue(context, User.USERNAME));
-        user.setPassword(SharedPreferencesUtil.getValue(context, User.PASSWORD));
+        user = new UserBean();
+        user.setId(SharedPreferencesUtil.getIntValue(context, UserBean.ID));
+        user.setUserName(SharedPreferencesUtil.getValue(context, UserBean.USERNAME));
+        user.setPassword(SharedPreferencesUtil.getValue(context, UserBean.PASSWORD));
     }
 
-    public User getUser(){
+    public UserBean getUser(){
         return user;
     }
 
@@ -45,18 +45,18 @@ public class UserManager {
         SharedPreferencesUtil.putBooleanValue(context, Constants.LoginState, login);
     }
 
-    public void setId(String userId){
-        SharedPreferencesUtil.putValue(context, User.ID, userId);
+    public void setId(int userId){
+        SharedPreferencesUtil.putIntValue(context, UserBean.ID, userId);
         user.setId(userId);
     }
 
     public void setUserName(String userName){
-        SharedPreferencesUtil.putValue(context, User.USERNAME, userName);
+        SharedPreferencesUtil.putValue(context, UserBean.USERNAME, userName);
         user.setUserName(userName);
     }
 
     public void setPassword(String password){
-        SharedPreferencesUtil.putValue(context, User.PASSWORD, password);
+        SharedPreferencesUtil.putValue(context, UserBean.PASSWORD, password);
         user.setPassword(password);
     }
 

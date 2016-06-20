@@ -47,8 +47,8 @@ public class MessageEntity implements Comparable<MessageEntity> {
             if(!TextUtils.isEmpty(message.getStanzaId())){
                 messageEntity.setPacketId(message.getStanzaId());
             }
-            int fromUserId = Integer.parseInt(ConfigUtil.getUserId(message.getFrom()));
-            int toUserId = Integer.parseInt(ConfigUtil.getUserId(message.getTo()));
+            int fromUserId = Integer.parseInt(ConfigUtil.getUserName(message.getFrom()));
+            int toUserId = Integer.parseInt(ConfigUtil.getUserName(message.getTo()));
             messageEntity.setMyselfUserId(toUserId);
             messageEntity.setOtherUserId(fromUserId);
             messageEntity.setDirection(ChatTable.INCOMING);

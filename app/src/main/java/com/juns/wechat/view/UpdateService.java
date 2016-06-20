@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.bean.GroupInfo;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.net.NetClient;
@@ -83,21 +83,21 @@ public class UpdateService extends Service {
 
 	// 获取好友列表和订阅号
 	private void initUserList() {
-		GloableParams.UserInfos = db.findAll(User.class);
+		GloableParams.UserInfos = db.findAll(UserBean.class);
 
 		netClient.post(Constants.getUserInfoURL, null, new BaseJsonRes() {
 
 			@Override
 			public void onMySuccess(String data) {
-				List<User> new_users = JSON.parseArray(data, User.class);
-				for (User user : new_users) {
+				List<UserBean> new_users = JSON.parseArray(data, UserBean.class);
+				for (UserBean user : new_users) {
 					if (user.getUserName() == null) {
 						user.setUserName("WX" + user.getTelephone());
 						new_users.remove(user);
 						new_users.add(user);
 					}
-					if (db.findById(user.getId(), User.class) != null)
-						db.deleteById(User.class, user.getId());
+					if (db.findById(user.getId(), UserBean.class) != null)
+						db.deleteById(UserBean.class, user.getId());
 					db.save(user);
 					GloableParams.Users.put(user.getTelephone(), user);
 				}

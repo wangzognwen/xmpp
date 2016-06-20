@@ -1,14 +1,12 @@
 package com.juns.wechat.xmpp;
 
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.util.NetWorkUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.sasl.SASLError;
-import org.jivesoftware.smack.sasl.SASLErrorException;
 
 import java.io.IOException;
 
@@ -46,7 +44,7 @@ public class XmppExceptionHandler {
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
-                User user = UserManager.getInstance().getUser();
+                UserBean user = UserManager.getInstance().getUser();
                 XmppManager xmppManager = XmppManagerImpl.getInstance();
 
             }

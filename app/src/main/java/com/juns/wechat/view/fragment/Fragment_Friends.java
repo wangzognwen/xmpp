@@ -22,9 +22,12 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.RosterBean;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
+import com.juns.wechat.dao.RosterDao;
+import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.view.activity.FriendMsgActivity;
 import com.juns.wechat.view.activity.GroupListActivity;
 import com.juns.wechat.view.activity.NewFriendsListActivity;
@@ -32,40 +35,36 @@ import com.juns.wechat.view.activity.PublishUserListActivity;
 import com.juns.wechat.view.activity.SearchActivity;
 import com.juns.wechat.widght.SideBar;
 
+import java.util.List;
+
 //通讯录
 
 public class Fragment_Friends extends Fragment implements OnClickListener,
 		OnItemClickListener {
-	private Activity ctx;
 	private View layout, layout_head;
 	private ListView lvContact;
 	private SideBar indexBar;
 	private TextView mDialogText;
 	private WindowManager mWindowManager;
+    private RosterDao rosterDao = RosterDao.getInstance();
+    private List<RosterBean> rosterBeans;
+    private ContactAdapter contactAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		if (layout == null) {
-			ctx = this.getActivity();
-			layout = ctx.getLayoutInflater().inflate(R.layout.fragment_friends,
-					null);
-			mWindowManager = (WindowManager) ctx
-					.getSystemService(Context.WINDOW_SERVICE);
-			initViews();
-			initData();
-			setOnListener();
-		} else {
-			ViewGroup parent = (ViewGroup) layout.getParent();
-			if (parent != null) {
-				parent.removeView(layout);
-			}
-		}
+        layout = inflater.inflate(R.layout.fragment_friends, container, false);
+        mWindowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        initViews();
+        initData();
+        setOnListener();
 		return layout;
 	}
 
 	private void initViews() {
 		lvContact = (ListView) layout.findViewById(R.id.lvContact);
+        contactAdapter = new ContactAdapter(getActivity());
+        lvContact.setAdapter(contactAdapter);
 
 		mDialogText = (TextView) LayoutInflater.from(getActivity()).inflate(
 				R.layout.list_position, null);
@@ -80,10 +79,9 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 				PixelFormat.TRANSLUCENT);
 		mWindowManager.addView(mDialogText, lp);
 		indexBar.setTextView(mDialogText);
-		layout_head = ctx.getLayoutInflater().inflate(
+		layout_head = getActivity().getLayoutInflater().inflate(
 				R.layout.layout_head_friend, null);
 		lvContact.addHeaderView(layout_head);
-
 	}
 
 	@Override
@@ -100,21 +98,9 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	}
 
 	private void initData() {
-		if (GloableParams.UserInfos != null) {
-			lvContact.setAdapter(new ContactAdapter(getActivity(),
-					GloableParams.UserInfos));
-		} else {
-			FinalDb db = FinalDb
-					.create(getActivity(), Constants.DB_NAME, false);
-			GloableParams.UserInfos = db.findAllByWhere(User.class, "type='N'");
-			lvContact.setAdapter(new ContactAdapter(getActivity(),
-					GloableParams.UserInfos));
-			for (User user : GloableParams.UserInfos) {
-				GloableParams.Users.put(user.getTelephone(), user);
-			}
-			// Intent intent = new Intent(getActivity(), UpdateService.class);
-			// getActivity().startService(intent);
-		}
+        String ownerName = UserManager.getInstance().getUser().getUserName();
+	    rosterBeans = rosterDao.queryAllByOwner(ownerName);
+        contactAdapter.setData(rosterBeans);
 	}
 
 	private void setOnListener() {
@@ -148,7 +134,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		User user = GloableParams.UserInfos.get(arg2 - 1);
+		UserBean user = GloableParams.UserInfos.get(arg2 - 1);
 		if (user != null) {
 			Intent intent = new Intent(getActivity(), FriendMsgActivity.class);
 			intent.putExtra(Constants.NAME, user.getUserName());

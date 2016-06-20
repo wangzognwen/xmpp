@@ -1,13 +1,9 @@
 package com.juns.wechat.view.fragment;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,10 +19,7 @@ import android.widget.TextView;
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.NewMsgAdpter;
-import com.juns.wechat.bean.GroupInfo;
 import com.juns.wechat.bean.PublicMsgInfo;
-import com.juns.wechat.bean.User;
-import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.NetUtil;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.activity.PublishMsgListActivity;
@@ -89,7 +82,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 			// TODO 加载订阅号信息 ，增加一个Item
 			// if (GloableParams.isHasPulicMsg) {
 			/*EMConversation nee = new EMConversation("100000");
-			conversationList.add(0, nee);*/
+			conversationList.insertOrUpdate(0, nee);*/
 			String time = Utils.getValue(getActivity(), "Time");
 			String content = Utils.getValue(getActivity(), "Content");
 			time = "下午 02:45";
@@ -108,8 +101,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 
 	/**
 	 * 获取所有会话
-	 * 
-	 * @param context
+	 *
 	 * @return +
 	 */
 	private List loadConversationsWithRecentChat() {
@@ -120,7 +112,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 		// 过滤掉messages seize为0的conversation
 		for (EMConversation conversation : conversations.values()) {
 			if (conversation.getAllMessages().size() != 0)
-				list.add(conversation);
+				list.insertOrUpdate(conversation);
 		}
 		// 排序
 		sortConversationByLastChatTime(list);
@@ -130,8 +122,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 
 	/**
 	 * 根据最后一条消息的时间排序
-	 * 
-	 * @param usernames
+	 *
 	 */
 /*	private void sortConversationByLastChatTime(
 			List<EMConversation> conversationList) {
@@ -168,49 +159,6 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 		if (adpter.PublicMsg != null && position == 0) {
 			// 打开订阅号列表页面
 			Utils.start_Activity(getActivity(), PublishMsgListActivity.class);
-		} else {
-			((MainActivity) getActivity()).updateUnreadLabel();
-			/*EMConversation conversation = conversationList.get(position);
-			Intent intent = new Intent(getActivity(), ChatActivity.class);
-			Hashtable<String, String> ChatRecord = adpter.getChatRecord();
-			if (ChatRecord != null) {
-				if (conversation.isGroup()) {
-					GroupInfo info = GloableParams.GroupInfos.get(conversation
-							.getUserName());
-					if (info != null) {
-						intent.putExtra(Constants.TYPE,
-								ChatActivity.CHATTYPE_GROUP);
-						intent.putExtra(Constants.GROUP_ID, info.getGroup_id());
-						intent.putExtra(Constants.NAME, info.getGroup_name());// 设置标题
-						getActivity().startActivity(intent);
-					} else {
-						intent.putExtra(Constants.TYPE,
-								ChatActivity.CHATTYPE_GROUP);
-						intent.putExtra(Constants.GROUP_ID, info.getGroup_id());
-						intent.putExtra(Constants.NAME, R.string.group_chats);// 设置标题
-						getActivity().startActivity(intent);
-					}
-				} else {
-					User user = GloableParams.Users.get(conversation
-							.getUserName());
-					if (user != null) {
-						intent.putExtra(Constants.NAME, user.getUserName());// 设置昵称
-						intent.putExtra(Constants.TYPE,
-								ChatActivity.CHATTYPE_SINGLE);
-						intent.putExtra(Constants.User_ID,
-								conversation.getUserName());
-						getActivity().startActivity(intent);
-					} else {
-						intent.putExtra(Constants.NAME, "好友");
-						intent.putExtra(Constants.TYPE,
-								ChatActivity.CHATTYPE_SINGLE);
-						intent.putExtra(Constants.User_ID,
-								conversation.getUserName());
-						getActivity().startActivity(intent);
-					}
-				}
-			}*/
-
 		}
 	}
 

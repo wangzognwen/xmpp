@@ -2,15 +2,15 @@ package com.juns.wechat.common;
 
 import java.util.Comparator;
 
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 
 public class PinyinComparator implements Comparator {
 
 	@Override
 	public int compare(Object arg0, Object arg1) {
 		// 按照名字排序
-		User user0 = (User) arg0;
-		User user1 = (User) arg1;
+		UserBean user0 = (UserBean) arg0;
+		UserBean user1 = (UserBean) arg1;
 		String catalog0 = "";
 		String catalog1 = "";
 

@@ -14,16 +14,16 @@ import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.view.activity.FriendMsgActivity;
 
 public class FromContactAdapter extends BaseAdapter {
 	protected Context context;
-	protected List<User> UserInfos;
+	protected List<UserBean> UserInfos;
 
-	public FromContactAdapter(Context ctx, List<User> UserInfos) {
+	public FromContactAdapter(Context ctx, List<UserBean> UserInfos) {
 		context = ctx;
 		this.UserInfos = UserInfos;
 	}
@@ -53,7 +53,7 @@ public class FromContactAdapter extends BaseAdapter {
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
 		TextView txt_msg = ViewHolder.get(convertView, R.id.txt_msg);
 		final TextView txt_add = ViewHolder.get(convertView, R.id.txt_add);
-		final User user = UserInfos.get(position);
+		final UserBean user = UserInfos.get(position);
 		txt_name.setText(user.getUserName());
 		txt_add.setText("添加");
 		txt_msg.setText("微信号:" + user.getTelephone() + "   "

@@ -14,7 +14,7 @@ import com.juns.health.net.loopj.android.http.RequestParams;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.FromContactAdapter;
-import com.juns.wechat.bean.User;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.view.BaseActivity;
@@ -52,8 +52,8 @@ public class AddFromContactActivity extends BaseActivity implements
 
 					@Override
 					public void onMySuccess(String data) {
-						List<User> UserInfos = JSON
-								.parseArray(data, User.class);
+						List<UserBean> UserInfos = JSON
+								.parseArray(data, UserBean.class);
 						mlistview.setAdapter(new FromContactAdapter(
 								AddFromContactActivity.this, UserInfos));
 						getLoadingDialog("正在获取联系人").dismiss();

@@ -39,8 +39,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Method is called during creation of the database
     @Override
     public void onCreate(SQLiteDatabase database) {
-
-
+        RosterTable.onCreate(database);
+        UserTable.onCreate(database);
     }
 
     // Method is called during an upgrade of the database,
@@ -48,8 +48,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
                           int newVersion) {
-
-
+        RosterTable.onUpgrade(database, oldVersion, newVersion);
+        UserTable.onUpgrade(database, oldVersion, newVersion);
     }
 
 }
