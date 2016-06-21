@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.chat.BaseActivity;
+import com.juns.wechat.util.ThreadPoolUtil;
+import com.juns.wechat.xmpp.XmppManagerUtil;
 
 /**
  * Created by 王宗文 on 2016/6/20.
@@ -76,6 +78,6 @@ public class SearchActivity extends BaseActivity {
         dialog.setMessage("正在查找联系人...");
         dialog.show();
 
-
+        XmppManagerUtil.search(search);
     }
 }

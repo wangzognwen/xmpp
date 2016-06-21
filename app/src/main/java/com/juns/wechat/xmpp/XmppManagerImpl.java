@@ -193,10 +193,16 @@ public class XmppManagerImpl implements XmppManager {
     public void searchUser(String name) throws SmackException.NotConnectedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
-        Form searchForm = userSearchManager.getSearchForm("search");
+        Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
         Form answerForm = searchForm.createAnswerForm();
-        answerForm.setAnswer("name", name);
-        ReportedData data = userSearchManager.getSearchResults(answerForm, "search");
+       // answerForm.setAnswer("username", name);
+        answerForm.setAnswer("search", name);
+        //answerForm.setAnswer("Name", Boolean.TRUE);
+        answerForm.setAnswer("Username", Boolean.TRUE);
+       // answerForm.setAnswer("Email", Boolean.TRUE);
+       // answerForm.setAnswer("last", name);
+       // answerForm.setAnswer("nick", name);
+        ReportedData data = userSearchManager.getSearchResults(answerForm, "search." + xmppConnection.getServiceName());
 
     }
 

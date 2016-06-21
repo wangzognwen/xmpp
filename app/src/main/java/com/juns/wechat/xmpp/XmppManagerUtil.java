@@ -54,4 +54,21 @@ public class XmppManagerUtil {
         });
     }
 
+    public static void search(final String name){
+        ThreadPoolUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    XMPP_MANAGER.searchUser(name);
+                } catch (SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                } catch (XMPPException.XMPPErrorException e) {
+                    e.printStackTrace();
+                } catch (SmackException.NoResponseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }
