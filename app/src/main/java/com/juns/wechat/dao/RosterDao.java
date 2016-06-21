@@ -3,14 +3,11 @@ package com.juns.wechat.dao;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.j256.ormlite.stmt.PreparedStmt;
 import com.juns.wechat.bean.RosterBean;
 import com.juns.wechat.database.DatabaseHelper;
 import com.juns.wechat.database.RosterTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**

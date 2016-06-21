@@ -1,6 +1,8 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.listener.RosterLoadedListenerImpl;
 import com.juns.wechat.xmpp.listener.XmppConnectionListener;
 import com.juns.wechat.xmpp.listener.XmppReceivePacketFilter;
@@ -24,6 +26,8 @@ import org.jivesoftware.smackx.xdata.Form;
 
 import java.io.IOException;
 import java.nio.channels.NotYetConnectedException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /*******************************************************
@@ -190,20 +194,43 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     @Override
-    public void searchUser(String name) throws SmackException.NotConnectedException,
+    public List<SearchResult> searchUser(String search) throws SmackException.NotConnectedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
         Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
         Form answerForm = searchForm.createAnswerForm();
-       // answerForm.setAnswer("username", name);
-        answerForm.setAnswer("search", name);
-        //answerForm.setAnswer("Name", Boolean.TRUE);
+        answerForm.setAnswer("search", search);
+        answerForm.setAnswer("Name", Boolean.TRUE);
         answerForm.setAnswer("Username", Boolean.TRUE);
-       // answerForm.setAnswer("Email", Boolean.TRUE);
-       // answerForm.setAnswer("last", name);
-       // answerForm.setAnswer("nick", name);
-        ReportedData data = userSearchManager.getSearchResults(answerForm, "search." + xmppConnection.getServiceName());
+        answerForm.setAnswer("Email", Boolean.TRUE);
 
+        ReportedData data = userSearchManager.getSearchResults(answerForm, "search." + xmppConnection.getServiceName());
+        List<ReportedData.Row> rows = data.getRows();
+        List<SearchResult> searchResults = new ArrayList<>();
+
+        for(ReportedData.Row row : rows){
+            SearchResult searchResult = new SearchResult();
+            for(ReportedData.Column column : data.getColumns()){
+                if(column.getVariable().equalsIgnoreCase("username")){
+                    List<String> values = row.getValues(column.getVariable());
+                    if(values.size() > 0){
+                        searchResult.userName = row.getValues(column.getVariable()).get(0);
+                    }
+                }else if(column.getVariable().equalsIgnoreCase("name")){
+                    List<String> values = row.getValues(column.getVariable());
+                    if(values.size() > 0){
+                        searchResult.nickName = row.getValues(column.getVariable()).get(0);
+                    }
+                }else if(column.getVariable().equalsIgnoreCase("email")){
+                    List<String> values = row.getValues(column.getVariable());
+                    if(values.size() > 0){
+                        searchResult.email = row.getValues(column.getVariable()).get(0);
+                    }
+                }
+            }
+            searchResults.add(searchResult);
+        }
+        return searchResults;
     }
 
     /**

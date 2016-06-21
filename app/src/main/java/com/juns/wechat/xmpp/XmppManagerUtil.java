@@ -1,12 +1,18 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.util.ThreadPoolUtil;
+import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
 import java.io.IOException;
+import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by 王宗文 on 2016/6/12.
@@ -59,16 +65,27 @@ public class XmppManagerUtil {
             @Override
             public void run() {
                 try {
-                    XMPP_MANAGER.searchUser(name);
+                   List<SearchResult> searchResults =  XMPP_MANAGER.searchUser(name);
+                   create(searchResults);
                 } catch (SmackException.NotConnectedException e) {
-                    e.printStackTrace();
+                    create(e);
                 } catch (XMPPException.XMPPErrorException e) {
-                    e.printStackTrace();
+                    create(e);
                 } catch (SmackException.NoResponseException e) {
-                    e.printStackTrace();
+                    create(e);
                 }
             }
         });
+    }
+
+    private static <T> Observable<T> create(final T t){
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+                subscriber.onNext(t);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io());
     }
 
 }

@@ -2,11 +2,8 @@ package com.juns.wechat.bean;
 
 import android.database.Cursor;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 import com.juns.wechat.database.UserTable;
 
-@DatabaseTable(tableName = "user")
 public class UserBean {
 	public static final String ID = "id";
 	public static final String USERNAME = "userName";

@@ -1,11 +1,14 @@
 package com.juns.wechat.xmpp;
 
+import com.juns.wechat.xmpp.bean.SearchResult;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterEntry;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 /*******************************************************
@@ -27,5 +30,5 @@ public interface XmppManager {
     boolean sendMessage(MessageEntity messageEntity);
     boolean isFriends(int otherUserId);
     boolean addFriend(int otherUserId, String nickName);
-    void searchUser(String name) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
+    List<SearchResult> searchUser(String name) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
 }
