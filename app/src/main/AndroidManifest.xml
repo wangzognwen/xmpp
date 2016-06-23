@@ -30,7 +30,6 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
@@ -40,21 +39,23 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- 环信结束 -->
     <!-- Push service 运行需要的权限 -->
-    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
+        android:name=".App"
         android:allowBackup="true"
-        android:name="com.juns.wechat.App"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,70 +63,89 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"  android:screenOrientation="portrait">
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.LoginActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.LoginActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.RegisterActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.RegisterActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.FriendMsgActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.FriendMsgActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.PublishUserListActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.PublishUserListActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.PublicActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.PublicActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.SearchActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.SearchActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.NewFriendsListActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.NewFriendsListActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.GroupListActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.GroupListActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.PublishMsgListActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.PublishMsgListActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.SettingActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.SettingActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.AlbumActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.AlbumActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.PublishMsgDetailActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.PublishMsgDetailActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.GetMoneyActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.GetMoneyActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.SetMoneyActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.SetMoneyActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.AddFromContactActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.AddFromContactActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".view.activity.EditUserNameActivity"  android:screenOrientation="portrait">
+            android:name=".view.activity.EditUserNameActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".view.activity.WebViewActivity"
-            android:screenOrientation="sensor"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="sensor"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" >
         </activity>
+        <activity
+            android:name=".zxing.CaptureActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.MyCodeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
-        <activity
-            android:name=".zxing.CaptureActivity"  android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".view.activity.MyCodeActivity"  android:screenOrientation="portrait">
-        </activity>
-        <service android:name=".view.UpdateService"></service>
+        <service android:name=".view.UpdateService" />
         <!-- 朋友圈分享 -->
         <activity
             android:name=".view.activity.ShareActivity"
@@ -156,65 +176,68 @@
 
         <activity
             android:name=".chat.ChatActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:windowSoftInputMode="adjustResize|adjustPan"  >
+            android:windowSoftInputMode="adjustResize|adjustPan" >
         </activity>
         <activity
             android:name=".view.activity.AddGroupChatActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".view.activity.GroupSettingActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".chat.VoiceCallActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".chat.VideoCallActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".chat.BaiduMapActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".chat.AlertDialog"
-            android:theme="@style/MyDialogStyle"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/MyDialogStyle" >
         </activity>
         <activity
             android:name=".chat.ContextMenu"
-            android:theme="@style/MyDialogStyle"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/MyDialogStyle" >
         </activity>
         <activity
             android:name=".chat.ShowBigImage"
-            android:theme="@style/horizontal_slide"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" >
         </activity>
         <activity
             android:name=".chat.ShowNormalFileActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".chat.ShowVideoActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait">
+            android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
-        <activity android:name=".activity.AddFriendActivity" android:screenOrientation="portrait" />
-        <activity android:name=".activity.SearchActivity" android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AddFriendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait" />
 
         <!-- 百度地图所需的service -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"
-            />
+            android:process=":remote" />
         <!-- umeng appkey，可忽略 -->
         <meta-data
             android:name="UMENG_APPKEY"
@@ -223,16 +246,20 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="3ecea51f560650b1ed8a4b99808f52e8" />
-        <!-- 环信结束-->
+        <!-- 环信结束 -->
+
 
         <!-- push应用定义消息receiver声明 -->
+
 
         <!-- 4.4版本新增的CommandService声明，提升小米和魅族手机上的实际推送到达率 -->
         <service
             android:name="com.baidu.android.pushservice.CommandService"
             android:exported="true" />
-        <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver"
-            android:process=":bdservice_v1">
+
+        <receiver
+            android:name="com.baidu.android.pushservice.PushServiceReceiver"
+            android:process=":bdservice_v1" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -241,8 +268,9 @@
             </intent-filter>
         </receiver>
         <!-- push应用定义消息receiver声明 -->
-        <receiver android:name="com.juns.wechat.PushMessageReceiver">
+        <receiver android:name=".PushMessageReceiver" >
             <intent-filter>
+
                 <!-- 接收push消息 -->
                 <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
                 <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
@@ -251,11 +279,17 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.XmppService"
-                android:exported="true" />
+        <service
+            android:name=".service.XmppService"
+            android:exported="true" />
 
         <!-- 在百度开发者中心查询应用的API Key -->
-        <meta-data android:name="api_key" android:value="Uvw5AMP15i9v1cUoS5aY7GR1" />
+        <meta-data
+            android:name="api_key"
+            android:value="Uvw5AMP15i9v1cUoS5aY7GR1" />
+
+        <activity android:name=".activity.SearchResultActivity" >
+        </activity>
     </application>
 
 </manifest>

@@ -199,11 +199,21 @@ public class XmppManagerImpl implements XmppManager {
         UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
         Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
         Form answerForm = searchForm.createAnswerForm();
+<<<<<<< .mine
         answerForm.setAnswer("search", search);
         answerForm.setAnswer("Name", Boolean.TRUE);
+=======
+        answerForm.setAnswer("search", name);
+        answerForm.setAnswer("Name", Boolean.TRUE);
+>>>>>>> .theirs
         answerForm.setAnswer("Username", Boolean.TRUE);
+<<<<<<< .mine
         answerForm.setAnswer("Email", Boolean.TRUE);
 
+=======
+       answerForm.setAnswer("Email", Boolean.TRUE);
+
+>>>>>>> .theirs
         ReportedData data = userSearchManager.getSearchResults(answerForm, "search." + xmppConnection.getServiceName());
         List<ReportedData.Row> rows = data.getRows();
         List<SearchResult> searchResults = new ArrayList<>();

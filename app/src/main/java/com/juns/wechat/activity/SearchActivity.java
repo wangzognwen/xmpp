@@ -1,6 +1,7 @@
 package com.juns.wechat.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.text.Editable;
@@ -15,6 +16,12 @@ import com.juns.wechat.R;
 import com.juns.wechat.chat.BaseActivity;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.XmppManagerUtil;
+import com.juns.wechat.xmpp.bean.SearchResult;
+import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
+import com.juns.wechat.xmpp.listener.XmppManagerListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 王宗文 on 2016/6/20.
@@ -78,6 +85,22 @@ public class SearchActivity extends BaseActivity {
         dialog.setMessage("正在查找联系人...");
         dialog.show();
 
-        XmppManagerUtil.search(search);
+        XmppManagerUtil.search(search, xmppManagerListener);
     }
+
+    private XmppManagerListener xmppManagerListener = new BaseXmppManagerListener(){
+        @Override
+        public void onSearchSuccess(ArrayList<SearchResult> searchResults) {
+            if(searchResults != null && !searchResults.isEmpty()){
+                Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
+                intent.putParcelableArrayListExtra(SearchResultActivity.ARG_SEARCH_RESULTS, searchResults);
+                startActivity(intent);
+            }
+        }
+
+        @Override
+        public void onSearchFailed(Exception e) {
+            super.onSearchFailed(e);
+        }
+    };
 }

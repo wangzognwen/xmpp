@@ -16,7 +16,7 @@
             android:background="@color/common_top_bar_blue" >
 
             <ImageView
-                android:id="@+id/iv_back"
+                android:id="@+id/ivBack"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
@@ -37,7 +37,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_toRightOf="@+id/iv_back"
+                android:layout_toRightOf="@+id/ivBack"
                 android:background="@drawable/edittext_login"
                 android:gravity="bottom"
                 android:textColor="#fff"
@@ -57,12 +57,12 @@
                 android:src="@drawable/icon_search" />
 
             <View
-                android:id="@+id/view_temp"
+                android:id="@+id/viewDivider"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_toRightOf="@id/iv_back"
+                android:layout_toRightOf="@id/ivBack"
                 android:background="#14191A" />
         </RelativeLayout>
 

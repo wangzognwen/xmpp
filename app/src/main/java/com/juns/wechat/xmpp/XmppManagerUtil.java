@@ -8,6 +8,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -60,32 +61,23 @@ public class XmppManagerUtil {
         });
     }
 
-    public static void search(final String name){
+    public static void search(final String name, final XmppManagerListener listener){
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                   List<SearchResult> searchResults =  XMPP_MANAGER.searchUser(name);
-                   create(searchResults);
+                    ArrayList<SearchResult> searchResults = (ArrayList<SearchResult>) XMPP_MANAGER.searchUser(name);
+                    listener.onSearchSuccess(searchResults);
                 } catch (SmackException.NotConnectedException e) {
-                    create(e);
+                    listener.onSearchFailed(e);
                 } catch (XMPPException.XMPPErrorException e) {
-                    create(e);
+                    listener.onSearchFailed(e);
                 } catch (SmackException.NoResponseException e) {
-                    create(e);
+                    listener.onSearchFailed(e);
                 }
             }
         });
     }
 
-    private static <T> Observable<T> create(final T t){
-        return Observable.create(new Observable.OnSubscribe<T>() {
-            @Override
-            public void call(Subscriber<? super T> subscriber) {
-                subscriber.onNext(t);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io());
-    }
 
 }
