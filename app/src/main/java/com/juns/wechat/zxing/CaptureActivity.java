@@ -33,7 +33,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.SplashActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.view.activity.FriendMsgActivity;
+import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.view.activity.SetMoneyActivity;
 import com.juns.wechat.zxing.camera.CameraManager;
 import com.juns.wechat.zxing.decoding.CaptureActivityHandler;
@@ -262,7 +262,7 @@ public class CaptureActivity extends Activity implements Callback {
 					String[] name = resultString.split(":");
 					Log.e("", "扫描到的好友为：" + name[1]);
 					Utils.start_Activity(CaptureActivity.this,
-							FriendMsgActivity.class, new BasicNameValuePair(
+							UserInfoActivity.class, new BasicNameValuePair(
 									Constants.User_ID, name[1]),
 							new BasicNameValuePair(Constants.NAME, name[1]));
 				} else if (resultString.startsWith("JUNS_WeChat@getMoney")) {

@@ -51,7 +51,7 @@ public class MyGroupAdpter extends BaseAdapter {
 			public void onClick(View v) {
 				Intent intent = new Intent(context, ChatActivity.class);
 				intent.putExtra(Constants.NAME, group.getGroupName());
-				intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_GROUP);
+				intent.putExtra(Constants.COLUMN_TYPE, ChatActivity.CHATTYPE_GROUP);
 				intent.putExtra(Constants.GROUP_ID, group.getGroupId());
 				context.startActivity(intent);
 			}

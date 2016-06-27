@@ -17,7 +17,7 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
-import com.juns.wechat.view.activity.FriendMsgActivity;
+import com.juns.wechat.activity.UserInfoActivity;
 
 public class NewFriendsAdapter extends BaseAdapter {
 	protected Context context;
@@ -73,7 +73,7 @@ public class NewFriendsAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(context, FriendMsgActivity.class);
+				Intent intent = new Intent(context, UserInfoActivity.class);
 				intent.putExtra(Constants.NAME, user.getUserName());
 				intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
 				intent.putExtra(Constants.User_ID, user.getTelephone());

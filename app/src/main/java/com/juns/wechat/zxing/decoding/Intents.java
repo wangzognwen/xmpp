@@ -105,7 +105,7 @@ public final class Intents {
 
 		/**
 		 * The type of data being supplied if the format is QR Code. Use
-		 * Intent.putExtra(TYPE, type) with one of Contents.Type.
+		 * Intent.putExtra(COLUMN_TYPE, type) with one of Contents.Type.
 		 */
 		public static final String TYPE = "ENCODE_TYPE";
 
@@ -154,7 +154,7 @@ public final class Intents {
 		/**
 		 * The network to connect to, all the configuration provided here.
 		 */
-		public static final String TYPE = "TYPE";
+		public static final String TYPE = "COLUMN_TYPE";
 
 		/**
 		 * The network to connect to, all the configuration provided here.

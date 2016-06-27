@@ -52,13 +52,13 @@ public class MessageEntity implements Comparable<MessageEntity> {
             messageEntity.setMyselfUserId(toUserId);
             messageEntity.setOtherUserId(fromUserId);
             messageEntity.setDirection(ChatTable.INCOMING);
-            messageEntity.setType(jsonObject.optInt(ChatTable.TYPE));
+            messageEntity.setType(jsonObject.optInt(ChatTable.COLUMN_TYPE));
             int type = messageEntity.getType();
             if(type >= MsgType.MSG_TYPE_TEXT){
-                messageEntity.setMsg(jsonObject.optString(ChatTable.MSG));
+                messageEntity.setMsg(jsonObject.optString(ChatTable.COLUMN_CONTENT));
             }else {
                 try {
-                    String oldMsg = jsonObject.optString(ChatTable.MSG);
+                    String oldMsg = jsonObject.optString(ChatTable.COLUMN_CONTENT);
                     String newMsg = oldMsgToNewMsg(oldMsg, type);
                     messageEntity.setMsg(newMsg);
                 } catch (Exception e) {

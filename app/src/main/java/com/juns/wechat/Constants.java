@@ -22,7 +22,7 @@ public interface Constants {
 	String IsZhen = "IsZhen";
 	String User_ID = "User_ID";
 	String GROUP_ID = "GROUP_ID";
-	String TYPE = "TYPE";
+	String TYPE = "COLUMN_TYPE";
 	// JSON status
 	String Info = "info";
 	String Value = "data";

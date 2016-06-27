@@ -1,7 +1,5 @@
 package com.juns.wechat.view.fragment;
 
-import net.tsz.afinal.FinalDb;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -19,16 +17,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.RosterBean;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dao.RosterDao;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.view.activity.FriendMsgActivity;
+import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.view.activity.GroupListActivity;
 import com.juns.wechat.view.activity.NewFriendsListActivity;
 import com.juns.wechat.view.activity.PublishUserListActivity;
@@ -133,17 +129,16 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		UserBean user = GloableParams.UserInfos.get(arg2 - 1);
-		if (user != null) {
-			Intent intent = new Intent(getActivity(), FriendMsgActivity.class);
-			intent.putExtra(Constants.NAME, user.getUserName());
-			intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
-			intent.putExtra(Constants.User_ID, user.getTelephone());
-			getActivity().startActivity(intent);
-			getActivity().overridePendingTransition(R.anim.push_left_in,
-					R.anim.push_left_out);
-		}
+	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
+		RosterBean rosterBean = rosterBeans.get(position - 1);
+
+        Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+        intent.putExtra(Constants.NAME, rosterBean.getContactName());
+        intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
+
+        getActivity().startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.push_left_in,
+                R.anim.push_left_out);
 
 	}
 }

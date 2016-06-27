@@ -1,8 +1,6 @@
 package com.juns.wechat.chat;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +10,10 @@ import org.apache.http.message.BasicNameValuePair;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,7 +57,6 @@ import com.juns.wechat.chat.adpter.ExpressionPagerAdapter;
 import com.juns.wechat.chat.adpter.MessageAdapter;
 import com.juns.wechat.chat.adpter.VoicePlayClickListener;
 import com.juns.wechat.chat.utils.CommonUtils;
-import com.juns.wechat.chat.utils.ImageUtils;
 import com.juns.wechat.chat.utils.SmileUtils;
 import com.juns.wechat.chat.widght.ExpandGridView;
 import com.juns.wechat.chat.widght.PasteEditText;
@@ -72,7 +64,7 @@ import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.net.NetClient;
-import com.juns.wechat.view.activity.FriendMsgActivity;
+import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.view.activity.GroupSettingActivity;
 
 //聊天页面
@@ -562,7 +554,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.img_right:
 			if (chatType == CHATTYPE_SINGLE) { // 单聊
-				Utils.start_Activity(this, FriendMsgActivity.class,
+				Utils.start_Activity(this, UserInfoActivity.class,
 						new BasicNameValuePair(Constants.User_ID,
 								toChatUsername), new BasicNameValuePair(
 								Constants.NAME, Name));
