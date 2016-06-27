@@ -1,24 +1,14 @@
 package com.juns.wechat.chat;
 
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
+
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-/*import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMMessage;
-import com.easemob.chat.EMMessage.Type;
-import com.easemob.util.EasyUtils;*/
-import com.juns.wechat.MainActivity;
-import com.juns.wechat.R;
-import com.juns.wechat.chat.utils.CommonUtils;
 
-public class BaseActivity extends FragmentActivity {
+public class BaseActivity extends AppCompatActivity {
 	private static final int notifiId = 11;
 	protected NotificationManager notificationManager;
 

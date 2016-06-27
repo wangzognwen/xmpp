@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -163,9 +164,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-		initView();
-		setUpView();
-		setListener();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+		//initView();
+		//setUpView();
+		//setListener()
 	}
 
 	@Override
@@ -285,8 +288,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 		// position = getIntent().getIntExtra("position", -1);
 		clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		/*getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);*/
 		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE))
 				.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		// 判断单聊还是群聊
@@ -1354,7 +1357,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		adapter.refresh();
+		//adapter.refresh();
 	}
 
 	@Override

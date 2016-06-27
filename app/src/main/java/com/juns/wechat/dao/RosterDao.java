@@ -33,9 +33,15 @@ public class RosterDao {
                     .append("', '").append(rosterBean.getSubType()).append("', '").append(rosterBean.getRemark())
                     .append("'), ");
         }
-
         sb = sb.delete(sb.lastIndexOf(","), sb.length());
-        sqLiteDatabase.execSQL(sb.toString());
+        sqLiteDatabase.beginTransaction();
+        try {
+            sqLiteDatabase.execSQL(sb.toString());
+            sqLiteDatabase.setTransactionSuccessful();
+        }finally {
+            sqLiteDatabase.endTransaction();
+        }
+
 
     }
 

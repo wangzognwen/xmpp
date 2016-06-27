@@ -3,10 +3,14 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="android:Theme.Light">
-        <item name="android:windowNoTitle">true</item>
-     <!--<item name="android:windowIsTranslucent">true</item>  -->
-        <item name="android:windowBackground">@color/windows_color</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="AppTheme.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="actionMenuTextAppearance">@style/TextAppearance.AppCompat.Medium</item>
     </style>
  <!-- 标题1样式 -->
     <style name="txt_titleStyle1">

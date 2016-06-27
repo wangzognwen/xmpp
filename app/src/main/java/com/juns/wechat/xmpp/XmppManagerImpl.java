@@ -196,6 +196,10 @@ public class XmppManagerImpl implements XmppManager {
     @Override
     public List<SearchResult> searchUser(String search) throws SmackException.NotConnectedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
+        if(!connect()){
+            throw new SmackException.NotConnectedException();
+        }
+
         UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
         Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
         Form answerForm = searchForm.createAnswerForm();

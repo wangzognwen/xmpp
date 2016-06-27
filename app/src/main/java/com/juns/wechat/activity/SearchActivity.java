@@ -22,6 +22,8 @@ import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created by 王宗文 on 2016/6/20.
@@ -85,7 +87,7 @@ public class SearchActivity extends BaseActivity {
         dialog.setMessage("正在查找联系人...");
         dialog.show();
 
-        XmppManagerUtil.search(search, xmppManagerListener);
+
     }
 
     private XmppManagerListener xmppManagerListener = new BaseXmppManagerListener(){

@@ -2,7 +2,9 @@ package com.juns.wechat.util;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +48,10 @@ public class ThreadPoolUtil {
 
     public static void execute(Runnable r){
         sExecutor.execute(r);
+    }
+
+    public static <V>  Future<V> submit(Callable<V> callable){
+        return sExecutor.submit(callable);
     }
 
     public static void shutDown(){

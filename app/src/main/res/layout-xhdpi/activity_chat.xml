@@ -6,32 +6,42 @@
 	android:layout_height="match_parent"
 	android:background="#f2f0eb"
     android:orientation="vertical">
-	<include
-		android:id="@+id/top_bar"
-		layout="@layout/layout_title" />
 
-	<RelativeLayout
+   <include android:id="@+id/toolbar"
+            layout="@layout/comm_toolbar" />
+
+	<!--<include
+		android:id="@+id/top_bar"
+		layout="@layout/layout_title" />-->
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:scrollbars="none"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_below="@id/top_bar"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:visibility="gone">
 		<ProgressBar
 			android:id="@+id/pb_load_more"
 			android:layout_width="28dp"
 			android:layout_height="28dp"
 			android:layout_centerHorizontal="true"
 			android:visibility="gone" />
-		<ListView
-			android:id="@+id/list"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:layout_below="@id/pb_load_more"
-			android:cacheColorHint="#00000000"
-			android:divider="@null" 
-			android:scrollbars="none"
-			android:listSelector="#00000000" 
-			android:transcriptMode="disabled" />
-
            <!-- 录音动画 -->
 		<LinearLayout
 			android:id="@+id/view_talk"
@@ -67,7 +77,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="2dip"
-        android:paddingTop="2dip">
+        android:paddingTop="2dip"
+        android:visibility="gone">
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
@@ -133,7 +144,6 @@
                     android:background="@null"
                     android:maxLines="3"
                     android:minHeight="40dp"
-                    android:onClick="editClick"
                     android:paddingBottom="3dp"
                     android:paddingLeft="1dp"
                     android:paddingRight="1dp"

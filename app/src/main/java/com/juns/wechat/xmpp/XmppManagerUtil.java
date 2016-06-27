@@ -10,6 +10,9 @@ import org.jivesoftware.smack.XMPPException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -61,22 +64,21 @@ public class XmppManagerUtil {
         });
     }
 
-    public static void search(final String name, final XmppManagerListener listener){
-        ThreadPoolUtil.execute(new Runnable() {
+    public static void search(final String name){
+        Future<List<SearchResult>> future = ThreadPoolUtil.submit(new Callable<List<SearchResult>>() {
             @Override
-            public void run() {
-                try {
-                    ArrayList<SearchResult> searchResults = (ArrayList<SearchResult>) XMPP_MANAGER.searchUser(name);
-                    listener.onSearchSuccess(searchResults);
-                } catch (SmackException.NotConnectedException e) {
-                    listener.onSearchFailed(e);
-                } catch (XMPPException.XMPPErrorException e) {
-                    listener.onSearchFailed(e);
-                } catch (SmackException.NoResponseException e) {
-                    listener.onSearchFailed(e);
-                }
+            public List<SearchResult> call() throws Exception {
+                return XMPP_MANAGER.searchUser(name);
             }
         });
+        try {
+            List<SearchResult> searchResults = future.get();
+            ;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
