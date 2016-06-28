@@ -11,6 +11,8 @@
     <style name="AppTheme.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="actionMenuTextColor">@color/white</item>
         <item name="actionMenuTextAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
     </style>
  <!-- 标题1样式 -->
     <style name="txt_titleStyle1">

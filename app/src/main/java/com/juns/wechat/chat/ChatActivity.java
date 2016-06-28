@@ -139,9 +139,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	private File cameraFile;
 	static int resendPos;
 
-	//private GroupListener groupListener;
-	private TextView txt_title;
-	private ImageView iv_emoticons_normal, img_right;
+	private ImageView iv_emoticons_normal;
 	private ImageView iv_emoticons_checked;
 	private RelativeLayout edittext_layout;
 	private ProgressBar loadmorePB;
@@ -166,9 +164,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_chat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-		//initView();
-		//setUpView();
-		//setListener()
+		initView();
+		setUpView();
+		setListener();
 	}
 
 	@Override
@@ -186,8 +184,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	protected void initView() {
 		netClient = new NetClient(this);
 		recordingContainer = findViewById(R.id.view_talk);
-		txt_title = (TextView) findViewById(R.id.txt_title);
-		img_right = (ImageView) findViewById(R.id.img_right);
 		micImage = (ImageView) findViewById(R.id.mic_image);
 		animationDrawable = (AnimationDrawable) micImage.getBackground();
 		animationDrawable.setOneShot(false);
@@ -295,25 +291,25 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 		// 判断单聊还是群聊
 		chatType = getIntent().getIntExtra(Constants.TYPE, CHATTYPE_SINGLE);
 		Name = getIntent().getStringExtra(Constants.NAME);
-		img_right.setVisibility(View.VISIBLE);
+		//img_right.setVisibility(View.VISIBLE);
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
 			toChatUsername = getIntent().getStringExtra(Constants.User_ID);
-			img_right.setImageResource(R.drawable.icon_chat_user);
+			//img_right.setImageResource(R.drawable.icon_chat_user);
 			if (TextUtils.isEmpty(Name)) {
 				initUserInfo();
 			} else {
-				txt_title.setText(Name);
+				//txt_title.setText(Name);
 			}
 		} else {
 			// 群聊
 			if (TextUtils.isEmpty(Name)) {
 				initGroupInfo();
 			} else {
-				txt_title.setText(Name);
+				//txt_title.setText(Name);
 			}
 			findViewById(R.id.view_location_video).setVisibility(View.GONE);
 			toChatUsername = getIntent().getStringExtra(Constants.GROUP_ID);
-			img_right.setImageResource(R.drawable.icon_groupinfo);
+			//img_right.setImageResource(R.drawable.icon_groupinfo);
 		}
 		//conversation = EMChatManager.getInstance().getConversation(
 				//toChatUsername);
@@ -377,16 +373,15 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	}
 
 	protected void setListener() {
-		findViewById(R.id.img_back).setVisibility(View.VISIBLE);
-		findViewById(R.id.img_back).setOnClickListener(this);
+		//findViewById(R.id.img_back).setOnClickListener(this);
 		findViewById(R.id.view_camera).setOnClickListener(this);
 		findViewById(R.id.view_file).setOnClickListener(this);
 		findViewById(R.id.view_video).setOnClickListener(this);
 		findViewById(R.id.view_photo).setOnClickListener(this);
 		findViewById(R.id.view_location).setOnClickListener(this);
 		findViewById(R.id.view_audio).setOnClickListener(this);
-		findViewById(R.id.img_back).setOnClickListener(this);
-		img_right.setOnClickListener(this);
+//		findViewById(R.id.img_back).setOnClickListener(this);
+		//img_right.setOnClickListener(this);
 	}
 
 	/**
@@ -1616,7 +1611,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 			public void onMySuccess(String data) {
 				GroupInfo group = JSON.parseObject(data, GroupInfo.class);
 				// NetClient.getIconBitmap(img_avar, group.getGroup_name());
-				txt_title.setText(group.getGroup_name());
+				//txt_title.setText(group.getGroup_name());
 			}
 
 			@Override
