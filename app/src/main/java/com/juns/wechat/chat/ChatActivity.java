@@ -61,15 +61,18 @@ import com.juns.wechat.chat.utils.CommonUtils;
 import com.juns.wechat.chat.utils.SmileUtils;
 import com.juns.wechat.chat.widght.ExpandGridView;
 import com.juns.wechat.chat.widght.PasteEditText;
+import com.juns.wechat.common.BaseActivity;
+import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.net.NetClient;
 import com.juns.wechat.activity.UserInfoActivity;
+import com.juns.wechat.util.ToolBarUtil;
 import com.juns.wechat.view.activity.GroupSettingActivity;
 
 //聊天页面
-public class ChatActivity extends BaseActivity implements OnClickListener {
+public class ChatActivity extends ToolbarActivity implements OnClickListener {
 
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
 	public static final int REQUEST_CODE_CONTEXT_MENU = 3;
@@ -162,8 +165,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ToolBarUtil.setToolBar(this);
 		initView();
 		setUpView();
 		setListener();

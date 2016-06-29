@@ -1,6 +1,8 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.xmpp.iq.IQUserInfo;
+import com.juns.wechat.xmpp.provider.UserInfoProvider;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -41,7 +43,7 @@ public class XmppConnUtil {
     private static void initConnection() {
         XMPPTCPConnectionConfiguration configuration = XMPPTCPConnectionConfiguration.builder().setConnectTimeout(CONN_TIME_OUT).
                 setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
-                .setServiceName(SERVER_NAME).setHost(SERVER_HOST).setPort(SERVER_PORT)
+                .setServiceName(SERVER_NAME).setHost("192.168.199.61").setPort(SERVER_PORT)
                 .setResource(RESOURCE).setDebuggerEnabled(true).build();
         xmppConnection = new XMPPTCPConnection(configuration);
         /** 自动向服务器发送ping pong 消息，保持socket连接*/
@@ -80,6 +82,8 @@ public class XmppConnUtil {
     private static void initProvider() {
        ProviderManager.addExtensionProvider(DelayInformation.ELEMENT, DelayInformation.NAMESPACE,
                DelayInformationProvider.INSTANCE);
+
+       ProviderManager.addIQProvider(IQUserInfo.ELEMENT, IQUserInfo.NAME_SPACE, UserInfoProvider.INSTANCE);
     }
 
 }

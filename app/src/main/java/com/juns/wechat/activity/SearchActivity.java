@@ -3,7 +3,6 @@ package com.juns.wechat.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -13,17 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
-import com.juns.wechat.chat.BaseActivity;
-import com.juns.wechat.util.ThreadPoolUtil;
-import com.juns.wechat.xmpp.XmppManagerUtil;
+import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * Created by 王宗文 on 2016/6/20.

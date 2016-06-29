@@ -3,6 +3,7 @@ package com.juns.wechat.util;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 
 /*******************************************************
  *
@@ -20,6 +21,8 @@ public class AppUtil {
             ActivityInfo activityInfo = pm.getActivityInfo(activity.getComponentName(), PackageManager.PERMISSION_GRANTED);
             return activity.getResources().getString(activityInfo.labelRes);
         } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }catch (Resources.NotFoundException e){
             e.printStackTrace();
         }
         return null;

@@ -3,7 +3,6 @@ package com.juns.wechat.chat;
 import java.io.File;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.juns.wechat.R;
 import com.juns.wechat.chat.task.DownloadImageTask;
 import com.juns.wechat.chat.utils.ImageCache;
+import com.juns.wechat.common.BaseActivity;
 
 public class AlertDialog extends BaseActivity {
 	private TextView mTextView;

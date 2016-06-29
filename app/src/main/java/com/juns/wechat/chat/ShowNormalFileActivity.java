@@ -5,11 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.juns.wechat.R;
+import com.juns.wechat.common.BaseActivity;
 
 public class ShowNormalFileActivity extends BaseActivity {
 	private ProgressBar progressBar;

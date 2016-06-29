@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import com.juns.wechat.R;
+
+import com.juns.wechat.common.BaseActivity;
 
 public class ContextMenu extends BaseActivity {
 

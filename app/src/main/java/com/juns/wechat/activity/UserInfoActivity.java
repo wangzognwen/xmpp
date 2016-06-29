@@ -14,40 +14,32 @@ import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
+import com.juns.wechat.util.ToolBarUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //好友详情
-public class UserInfoActivity extends BaseActivity implements OnClickListener {
-	private TextView txt_title, tv_name, tv_accout;
-	private ImageView img_back, img_right;
+public class UserInfoActivity extends ToolbarActivity implements OnClickListener {
+	private TextView tv_name, tv_accout;
 	private String Name, UserId;
 	private Button btn_sendmsg;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_friendmsg);
 		super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_friendmsg);
+        ToolBarUtil.setToolBar(this);
+        ToolBarUtil.setToolbarRight(this, 2, R.drawable.icon_more);
 	}
 
-	@Override
-	protected void initControl() {
-		txt_title = (TextView) findViewById(R.id.txt_title);
-		txt_title.setText("详细资料");
-		img_back = (ImageView) findViewById(R.id.img_back);
-		img_back.setVisibility(View.VISIBLE);
-		img_right = (ImageView) findViewById(R.id.img_right);
-		img_right.setImageResource(R.drawable.icon_more);
-		img_right.setVisibility(View.VISIBLE);
-		btn_sendmsg = (Button) findViewById(R.id.btn_sendmsg);
-		btn_sendmsg.setTag("1");
-		tv_name = (TextView) findViewById(R.id.tv_name);
-		tv_accout = (TextView) findViewById(R.id.tv_accout);
-	}
 
 	@Override
 	protected void initView() {
-
+        btn_sendmsg = (Button) findViewById(R.id.btn_sendmsg);
+        btn_sendmsg.setTag("1");
+        tv_name = (TextView) findViewById(R.id.tv_name);
+        tv_accout = (TextView) findViewById(R.id.tv_accout);
 	}
 
 	@Override
@@ -58,8 +50,6 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void setListener() {
-		img_back.setOnClickListener(this);
-		img_right.setOnClickListener(this);
 		btn_sendmsg.setOnClickListener(this);
 	}
 

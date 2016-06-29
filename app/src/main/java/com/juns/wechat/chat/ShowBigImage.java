@@ -8,17 +8,15 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
 import com.juns.wechat.R;
-import com.juns.wechat.chat.task.LoadLocalBigImgTask;
 import com.juns.wechat.chat.utils.ImageCache;
+import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.widght.TouchImageView.TouchImageView;
 
 /**

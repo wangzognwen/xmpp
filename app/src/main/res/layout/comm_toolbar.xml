@@ -33,7 +33,7 @@
             android:layout_centerVertical="true"/>
 
         <TextView
-            android:id="@+id/tvRightBtn"
+            android:id="@+id/tvRightText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"

@@ -3,11 +3,16 @@ package com.juns.wechat.xmpp.listener;
 
 import android.text.TextUtils;
 
+import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.xmpp.iq.IQUserInfo;
 
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamError;
 
 /*******************************************************
@@ -25,7 +30,16 @@ public class XmppConnectionListener implements ConnectionListener {
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
-
+        IQUserInfo iqUserInfo = new IQUserInfo();
+        iqUserInfo.setType(IQ.Type.get);
+        UserBean userBean = new UserBean();
+        userBean.setUserName("13540654252");
+        iqUserInfo.setUserBean(userBean);
+        try {
+            connection.sendStanza(iqUserInfo);
+        } catch (SmackException.NotConnectedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

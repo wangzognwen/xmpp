@@ -29,9 +29,6 @@ public class ToolBarUtil {
      */
     public static void setToolBar(final AppCompatActivity activity) {
         Toolbar toolBar = (Toolbar) activity.findViewById(R.id.toolbar);
-        if(toolBar == null){   // 一些activity并没有使用toolbar
-            return;
-        }
         setTitle(activity, AppUtil.getActivityLabel(activity));
 
         ImageView ivReturn = (ImageView) toolBar.findViewById(R.id.ivReturn);
@@ -72,6 +69,20 @@ public class ToolBarUtil {
         setTitle(activity, activity.getString(resId));
     }
 
+    public static void setToolbarRight(AppCompatActivity activity, int type, int resId){
+        Toolbar toolBar = (Toolbar) activity.findViewById(R.id.toolbar);
+        TextView tvRightText = (TextView) activity.findViewById(R.id.tvRightText);
+        ImageView ivRightBtn = (ImageView) activity.findViewById(R.id.ivRightBtn);
+        if(type == 1){
+            tvRightText.setVisibility(View.VISIBLE);
+            ivRightBtn.setVisibility(View.GONE);
+            tvRightText.setText(resId);
+        }else if(type == 2){
+            tvRightText.setVisibility(View.GONE);
+            ivRightBtn.setVisibility(View.VISIBLE);
+            ivRightBtn.setImageResource(resId);
+        }
+    }
 
 
 }

@@ -26,8 +26,16 @@ public class UserDao {
         Cursor cursor = database.rawQuery(sql, null);
         if(cursor.moveToNext()){
             UserBean userBean = new UserBean(cursor);
+            closeCursor(cursor);
             return userBean;
         }
+        closeCursor(cursor);
         return null;
+    }
+
+    private void closeCursor(Cursor cursor){
+        if(cursor != null){
+            cursor.close();
+        }
     }
 }

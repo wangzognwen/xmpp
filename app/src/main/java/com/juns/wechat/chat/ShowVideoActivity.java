@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.juns.wechat.R;
+import com.juns.wechat.common.BaseActivity;
 
 /**
  * 展示视频内容
