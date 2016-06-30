@@ -12,6 +12,9 @@ public class IQUserInfo extends IQ{
     public static final String NAME_SPACE = "xmpp:custom:userinfo";
 
     private UserBean userBean;
+    private int errorCode;
+    private String errorDetail;
+
     public IQUserInfo() {
         super(ELEMENT, NAME_SPACE);
     }
@@ -33,5 +36,21 @@ public class IQUserInfo extends IQ{
 
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
+    }
+
+    public String getErrorDetail() {
+        return errorDetail;
+    }
+
+    public void setErrorDetail(String errorDetail) {
+        this.errorDetail = errorDetail;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 }

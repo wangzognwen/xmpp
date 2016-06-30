@@ -7,6 +7,8 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.iq.IQUserInfo;
+import com.juns.wechat.xmpp.provider.UserInfoProvider;
+import com.juns.wechat.xmpp.util.UserInfoManager;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
@@ -30,16 +32,7 @@ public class XmppConnectionListener implements ConnectionListener {
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
-        IQUserInfo iqUserInfo = new IQUserInfo();
-        iqUserInfo.setType(IQ.Type.get);
-        UserBean userBean = new UserBean();
-        userBean.setUserName("13540654252");
-        iqUserInfo.setUserBean(userBean);
-        try {
-            connection.sendStanza(iqUserInfo);
-        } catch (SmackException.NotConnectedException e) {
-            e.printStackTrace();
-        }
+        initInfo();
     }
 
     @Override
@@ -64,16 +57,20 @@ public class XmppConnectionListener implements ConnectionListener {
 
     @Override
     public void reconnectionSuccessful() {
-        LogUtil.i("reconnectionSuccessful");
+
     }
 
     @Override
     public void reconnectingIn(int seconds) {
-        LogUtil.i("reconnectingIn seconds : " + seconds);
+
     }
 
     @Override
     public void reconnectionFailed(Exception e) {
-        LogUtil.i("reconnectFailed");
+
+    }
+
+    private void initInfo(){
+        UserInfoManager.queryUserInfo(null); //拉取个人信息mk
     }
 }

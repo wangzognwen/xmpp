@@ -7,6 +7,7 @@ import com.juns.wechat.database.UserTable;
 public class UserBean {
 	public static final String ID = "id";
 	public static final String USERNAME = "userName";
+    public static final String NICKNAME = "nickName";
 	public static final String PASSWORD = "passWord";
 	public static final String HEADURL = "headUrl";
 	public static final String SIGNATURE = "signature";
@@ -18,6 +19,7 @@ public class UserBean {
 
     public int id;//
     public String userName;// 用户名
+    public String nickName; //昵称
     public String password;// 头像保存路径
     public String telephone;// 手机号
     public String headUrl;// 头像保存路径
@@ -56,7 +58,15 @@ public class UserBean {
 		return telephone;
 	}
 
-	public void setTelephone(String telephone) {
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void setTelephone(String telephone) {
 		this.telephone = telephone;
 	}
 

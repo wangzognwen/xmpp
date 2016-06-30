@@ -19,17 +19,30 @@ public class UserInfoProvider extends IQProvider<IQUserInfo> {
     @Override
     public IQUserInfo parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         int eventType = parser.getEventType();
+        IQUserInfo iqUserInfo = new IQUserInfo();
         UserBean userBean = null;
         while (eventType != XmlPullParser.END_DOCUMENT){
             if(eventType == XmlPullParser.START_TAG){
                 if(parser.getNamespace().equals(IQUserInfo.NAME_SPACE)){
                     userBean = new UserBean();
-
+                    userBean.setUserName(parser.getAttributeValue(null, UserBean.USERNAME));
+                    userBean.setNickName(parser.getAttributeValue(null, UserBean.NICKNAME));
+                    userBean.setHeadUrl(parser.getAttributeValue(null, UserBean.HEADURL));
+                    userBean.setBirthday(parser.getAttributeValue(null, UserBean.BIRTHDAY));
+                    userBean.setLocation(parser.getAttributeValue(null, UserBean.LOCATION));
+                    userBean.setSex( parser.getAttributeValue(null, UserBean.SEX));
+                    userBean.setSignature(parser.getAttributeValue(null, UserBean.SIGNATURE));
+                    userBean.setTelephone(parser.getAttributeValue(null, UserBean.TELEPHONE));
+                    userBean.setType(parser.getAttributeValue(null, UserBean.TYPE));
+                }else if(parser.getName().equals("error")){
+                    int errorCode = Integer.parseInt(parser.getAttributeValue(null, "code"));
+                    String errorDetail = parser.nextText();
+                    iqUserInfo.setErrorCode(errorCode);
+                    iqUserInfo.setErrorDetail(errorDetail);
                 }
             }
             eventType = parser.next();
         }
-        IQUserInfo iqUserInfo = new IQUserInfo();
         iqUserInfo.setUserBean(userBean);
         return iqUserInfo;
     }

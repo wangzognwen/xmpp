@@ -1,10 +1,11 @@
 package com.juns.wechat.xmpp.listener;
 
-import android.content.Context;
 
+import com.juns.wechat.xmpp.process.IQRouter;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
@@ -17,16 +18,6 @@ import org.jivesoftware.smack.packet.Stanza;
  * Created by 王宗文 on 2015/11/19
  *******************************************************/
 public class XmppReceivePacketListener implements StanzaListener {
-    //private MessageDao messageDao;
-    private Context mContext;
-    //private ConcurrentMap<Integer, MessageProcess> processMap;
-    private Object lock = new Object();
-
-    public XmppReceivePacketListener(){
-       // messageDao = MessageDao.getInstance();
-       // mContext = YunPianApplication.getApplication();
-      //  processMap = new ConcurrentHashMap<>();
-    }
 
     /**
      * 处理包：stanaza有3种子类型：Message(消息），Presence(状态),IQ（信息查询）
@@ -41,6 +32,9 @@ public class XmppReceivePacketListener implements StanzaListener {
         }else if(packet instanceof Presence){
             Presence presence = (Presence) packet;
             handlePresence(presence);
+        }else if(packet instanceof  IQ){
+            IQ iq = (IQ) packet;
+            handleIQ(iq);
         }
     }
 
@@ -66,6 +60,10 @@ public class XmppReceivePacketListener implements StanzaListener {
      */
     private void handlePresence(Presence presence){
 
+    }
+
+    private void handleIQ(IQ iq){
+        IQRouter.getInstance().routeIQ(iq);
     }
 
     /**
