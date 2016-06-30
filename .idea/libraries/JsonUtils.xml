@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="JsonUtils">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/JsonUtils.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
