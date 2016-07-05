@@ -37,4 +37,6 @@ dependencies {
     compile "org.igniterealtime.smack:smack-tcp:4.1.0"
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.makeramen:roundedimageview:2.2.1'
+    // add AndroidEventBus dependency
+    compile 'org.simple:androideventbus:1.0.5.1'
 }

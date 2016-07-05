@@ -1,12 +1,16 @@
 package com.juns.wechat.xmpp;
 
+import com.juns.wechat.App;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.service.XmppService;
 import com.juns.wechat.util.NetWorkUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
+import com.juns.wechat.xmpp.event.XmppEvent;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
 
@@ -25,15 +29,20 @@ public class XmppExceptionHandler {
                 || e instanceof SmackException.NotLoggedInException) {
             reLoginToXmpp();
         }
+        XmppEvent xmppEvent = new XmppEvent(XmppEvent.FAILED, e);
+        EventBus.getDefault().post(xmppEvent);
     }
 
     public static void handleXmppExecption(XMPPException e){
         e.printStackTrace();
-
+        XmppEvent xmppEvent = new XmppEvent(XmppEvent.FAILED, e);
+        EventBus.getDefault().post(xmppEvent);
     }
 
     public static void handleIOException(IOException e){
-
+        e.printStackTrace();
+        XmppEvent xmppEvent = new XmppEvent(XmppEvent.FAILED, e);
+        EventBus.getDefault().post(xmppEvent);
     }
 
     /**
@@ -41,13 +50,6 @@ public class XmppExceptionHandler {
      */
     private static void reLoginToXmpp(){
         if(!NetWorkUtil.isNetworkAvailable()) return;
-        ThreadPoolUtil.execute(new Runnable() {
-            @Override
-            public void run() {
-                UserBean user = UserManager.getInstance().getUser();
-                XmppManager xmppManager = XmppManagerImpl.getInstance();
-
-            }
-        });
+        XmppService.login(App.getInstance());
     }
 }

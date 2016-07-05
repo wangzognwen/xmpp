@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.juns.wechat.activity.AddFriendActivity;
 import com.juns.wechat.adpter.MainAdapter;
+import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dialog.WarnTipDialog;
 import com.juns.wechat.dialog.TitleMenu.ActionItem;
@@ -34,7 +35,7 @@ import com.juns.wechat.view.activity.GetMoneyActivity;
 import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.zxing.CaptureActivity;
 
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends BaseActivity{
 	private TextView txt_title;
 	private ImageView img_right;
 	private WarnTipDialog Tipdialog;

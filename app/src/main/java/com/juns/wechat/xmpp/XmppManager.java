@@ -19,9 +19,9 @@ import java.util.Set;
  * Created by 王宗文 on 2015/11/19
  *******************************************************/
 public interface XmppManager {
-    boolean connect();
-    void login(String accountName, String passWord) throws IOException, XMPPException, SmackException;
-    void regNewUser(String accountName, String passWord) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
+    boolean connect() throws IOException, XMPPException, SmackException;
+    boolean login(String accountName, String passWord);
+    void regNewUser(String accountName, String passWord);
     Set<RosterEntry> getRoster(String userName);
     void disConnect();
     void shutDownConn();
@@ -30,5 +30,5 @@ public interface XmppManager {
     boolean sendMessage(MessageEntity messageEntity);
     boolean isFriends(int otherUserId);
     boolean addFriend(int otherUserId, String nickName);
-    List<SearchResult> searchUser(String name) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
+    List<SearchResult> searchUser(String name);
 }

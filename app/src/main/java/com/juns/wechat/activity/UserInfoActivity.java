@@ -33,8 +33,6 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
         ToolBarUtil.setToolbarRight(this, 2, R.drawable.icon_more);
 	}
 
-
-	@Override
 	protected void initView() {
         btn_sendmsg = (Button) findViewById(R.id.btn_sendmsg);
         btn_sendmsg.setTag("1");
@@ -42,13 +40,12 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
         tv_accout = (TextView) findViewById(R.id.tv_accout);
 	}
 
-	@Override
+
 	protected void initData() {
 		Name = getIntent().getStringExtra(Constants.NAME);
         tv_name.setText(Name);
 	}
 
-	@Override
 	protected void setListener() {
 		btn_sendmsg.setOnClickListener(this);
 	}

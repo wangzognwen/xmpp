@@ -4,6 +4,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.SASLErrorException;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,13 +24,12 @@ import android.widget.Toast;
 import com.juns.wechat.Constants;
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
+import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.util.ToastUtil;
-import com.juns.wechat.view.BaseActivity;
-import com.juns.wechat.xmpp.listener.XmppManagerListener;
+import com.juns.wechat.xmpp.event.XmppEvent;
 import com.juns.wechat.xmpp.XmppManagerUtil;
-import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 
 import java.io.IOException;
 
@@ -38,18 +39,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private ImageView img_back;
 	private Button btn_login, btn_register;
 	private EditText et_usertel, et_password;
-    private XmppManagerListener xmppManagerListener = new XmppManagerListenerImpl();
     private String userName, password;
 
     private Handler handler = new Handler();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-		super.onCreate(savedInstanceState);
+        initControl();
+        setListener();
+        EventBus.getDefault().register(this);
     }
 
-	@Override
 	protected void initControl() {
 		txt_title = (TextView) findViewById(R.id.txt_title);
 		txt_title.setText("登陆");
@@ -61,17 +63,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		et_password = (EditText) findViewById(R.id.et_password);
 	}
 
-	@Override
-	protected void initView() {
 
-	}
+    protected void initView() {
 
-	@Override
-	protected void initData() {
-	}
+    }
 
-	@Override
-	protected void setListener() {
+    protected void initData() {
+
+    }
+
+    protected void setListener() {
 		img_back.setOnClickListener(this);
 		btn_login.setOnClickListener(this);
 		btn_register.setOnClickListener(this);
@@ -121,95 +122,60 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
     private void loginToXmpp(String userName, String password){
-        XmppManagerUtil.asyncLogin(userName, password, xmppManagerListener);
+        XmppManagerUtil.asyncLogin(userName, password);
     }
 
-    class XmppManagerListenerImpl extends BaseXmppManagerListener{
-
-        @Override
-        public void onLoginSuccess() {
-            getLoadingDialog("正在登录...").dismiss();
-            UserManager.getInstance().setLogin(true);
-            UserManager.getInstance().setUserName(userName);
-            UserManager.getInstance().setPassword(password);
-
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
+    @Subscriber
+    private void onLoginFailed(XmppEvent event){
+        if(event.getResultCode() == XmppEvent.SUCCESS){
+            onLoginSuccess();
+        }else {
+            onLoginFailed(event.getException());
         }
+    }
 
-        @Override
-        public void onLoginFailed(Exception e) {
-            getLoadingDialog("正在登录...").dismiss();
-            if(e instanceof IOException || e instanceof SmackException){
+    public void onLoginSuccess() {
+        getLoadingDialog("正在登录...").dismiss();
+        UserManager.getInstance().setLogin(true);
+        UserManager.getInstance().setUserName(userName);
+        UserManager.getInstance().setPassword(password);
+
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        Utils.finish(this);
+    }
+
+    public void onLoginFailed(Exception e) {
+        getLoadingDialog("正在登录...").dismiss();
+        if(e instanceof IOException || e instanceof SmackException){
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast("网络可能存在问题，请检查网络设置", Toast.LENGTH_LONG);
+                }
+            });
+
+        }
+        if(e instanceof SASLErrorException){
+            SASLErrorException saslError = (SASLErrorException) e;
+            if(SASLError.not_authorized == saslError.getSASLFailure().getSASLError()){
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.showToast("网络可能存在问题，请检查网络设置", Toast.LENGTH_LONG);
+                        ToastUtil.showToast("用户名或密码错误，请重试", Toast.LENGTH_LONG);
                     }
                 });
-
-            }
-            if(e instanceof SASLErrorException){
-                SASLErrorException saslError = (SASLErrorException) e;
-                if(SASLError.not_authorized == saslError.getSASLFailure().getSASLError()){
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ToastUtil.showToast("用户名或密码错误，请重试", Toast.LENGTH_LONG);
-                        }
-                    });
-                }
             }
         }
     }
 
-	private void getChatserive(final String userName, final String password) {
-	/*	EMChatManager.getInstance().login(userName, password, new EMCallBack() {// 回调
-					@Override
-					public void onSuccess() {
-						runOnUiThread(new Runnable() {
-							public void run() {
-								Utils.putBooleanValue(LoginActivity.this,
-										Constants.LoginState, true);
-								Utils.putValue(LoginActivity.this,
-										Constants.User_ID, userName);
-								Utils.putValue(LoginActivity.this,
-										Constants.PWD, password);
-								Log.d("main", "登陆聊天服务器成功！");
-								// 加载群组和会话
-								EMGroupManager.getInstance().loadAllGroups();
-								EMChatManager.getInstance()
-										.loadAllConversations();
-								getLoadingDialog("正在登录...").dismiss();
-								Intent intent = new Intent(LoginActivity.this,
-										MainActivity.class);
-								startActivity(intent);
-								overridePendingTransition(R.anim.push_up_in,
-										R.anim.push_up_out);
-								finish();
-							}
-						});
-					}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
-					@Override
-					public void onProgress(int progress, String status) {
-
-					}
-
-					@Override
-					public void onError(int code, String message) {
-						Log.d("main", "登陆聊天服务器失败！");
-						runOnUiThread(new Runnable() {
-							public void run() {
-								getLoadingDialog("正在登录...").dismiss();
-								Utils.showLongToast(LoginActivity.this, "登陆失败！");
-							}
-						});
-					}
-				});*/
-	}
-
-	// EditText监听器
+    // EditText监听器
 	class TextChange implements TextWatcher {
 
 		@Override

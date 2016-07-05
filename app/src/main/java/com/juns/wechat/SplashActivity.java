@@ -44,6 +44,7 @@ public class SplashActivity extends Activity {
 			public void run() {
 				Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
 				startActivity(intent);
+                finish();
 			}
 		}, 600);
 	}

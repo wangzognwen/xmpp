@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.juns.wechat.App;
 
 /**
- * Created by liehuo on 2014/5/23.
+ * Created by 王宗文 on 2016/5/25
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "weixin.db";

@@ -27,9 +27,12 @@ public class ToolBarUtil {
      *
      * @param activity
      */
-    public static void setToolBar(final AppCompatActivity activity) {
+    public static Toolbar setToolBar(final AppCompatActivity activity) {
         Toolbar toolBar = (Toolbar) activity.findViewById(R.id.toolbar);
-        setTitle(activity, AppUtil.getActivityLabel(activity));
+
+        if(activity.getSupportActionBar() != null){
+            return toolBar;
+        }
 
         ImageView ivReturn = (ImageView) toolBar.findViewById(R.id.ivReturn);
         ivReturn.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +46,8 @@ public class ToolBarUtil {
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         activity.getSupportActionBar().setDisplayShowHomeEnabled(false);
 
+        return toolBar;
+
     }
 
     /**
@@ -52,7 +57,7 @@ public class ToolBarUtil {
      * @param text
      */
     public static void setTitle(AppCompatActivity activity, String text) {
-        Toolbar toolBar = (Toolbar) activity.findViewById(R.id.toolbar);
+        Toolbar toolBar = setToolBar(activity);
         TextView tvTitle = (TextView) toolBar.findViewById(R.id.tvTitle);
         if(!TextUtils.isEmpty(text)){
             tvTitle.setText(text);
@@ -70,9 +75,9 @@ public class ToolBarUtil {
     }
 
     public static void setToolbarRight(AppCompatActivity activity, int type, int resId){
-        Toolbar toolBar = (Toolbar) activity.findViewById(R.id.toolbar);
-        TextView tvRightText = (TextView) activity.findViewById(R.id.tvRightText);
-        ImageView ivRightBtn = (ImageView) activity.findViewById(R.id.ivRightBtn);
+        Toolbar toolBar = setToolBar(activity);
+        TextView tvRightText = (TextView) toolBar.findViewById(R.id.tvRightText);
+        ImageView ivRightBtn = (ImageView) toolBar.findViewById(R.id.ivRightBtn);
         if(type == 1){
             tvRightText.setVisibility(View.VISIBLE);
             ivRightBtn.setVisibility(View.GONE);

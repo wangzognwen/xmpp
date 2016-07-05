@@ -72,23 +72,15 @@ public class XmppManagerImpl implements XmppManager {
      * 连接到XMPP服务器：1：检测是否已连接，如果连接，应该先断开连接再连接 2：注册各种监听事件
      */
     @Override
-    public boolean connect(){
+    public boolean connect() throws IOException, XMPPException, SmackException {
         if(xmppConnection == null){
             xmppConnection = XmppConnUtil.getXmppConnection();
         }
         if(xmppConnection.isConnected()) return true;
-        try {
-            xmppConnection.connect();
-            registerListener();
-            return true;
-        } catch (SmackException e) {
-            XmppExceptionHandler.handleSmackException(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XMPPException e) {
-            XmppExceptionHandler.handleXmppExecption(e);
-        }
-        return false;
+
+        xmppConnection.connect();
+        registerListener();
+        return true;
     }
 
     /**
@@ -100,28 +92,48 @@ public class XmppManagerImpl implements XmppManager {
      * @return
      */
     @Override
-    public void login(String accountName, String passWord) throws SmackException, IOException, XMPPException {
-        if(!connect()){
-            throw new SmackException.NotConnectedException();
+    public boolean login(String accountName, String passWord){
+        try {
+            connect();
+            if(xmppConnection.isAuthenticated()) return true;
+            xmppConnection.login(accountName, passWord);
+        } catch (IOException e) {
+            XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
+            XmppExceptionHandler.handleXmppExecption(e);
+        } catch (SmackException e) {
+            XmppExceptionHandler.handleSmackException(e);
         }
-        if(xmppConnection.isAuthenticated()) return;
-        xmppConnection.login(accountName, passWord);
+        return false;
     }
 
     @Override
-    public void regNewUser(String accountName, String passWord) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
-        if(!connect()){
-            throw new SmackException.NotConnectedException();
+    public void regNewUser(String accountName, String passWord){
+        try {
+            connect();
+            AccountManager.getInstance(xmppConnection).createAccount(accountName, passWord);
+        } catch (IOException e) {
+            XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
+            XmppExceptionHandler.handleXmppExecption(e);
+        } catch (SmackException e) {
+            XmppExceptionHandler.handleSmackException(e);
         }
-        AccountManager.getInstance(xmppConnection).createAccount(accountName, passWord);
     }
 
     public Set<RosterEntry> getRoster(String userName){
-        if(!connect()){
-            return null;
+        try {
+            connect();
+            Roster roster = Roster.getInstanceFor(xmppConnection);
+            return roster.getEntries();
+        }catch (IOException e) {
+            XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
+            XmppExceptionHandler.handleXmppExecption(e);
+        } catch (SmackException e) {
+            XmppExceptionHandler.handleSmackException(e);
         }
-        Roster roster = Roster.getInstanceFor(xmppConnection);
-        return roster.getEntries();
+        return null;
     }
 
     @Override
@@ -149,7 +161,11 @@ public class XmppManagerImpl implements XmppManager {
             connect();
             xmppConnection.sendStanza(packet);
             return true;
-        } catch (SmackException.NotConnectedException e) {
+        } catch (IOException e) {
+            XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
+            XmppExceptionHandler.handleXmppExecption(e);
+        } catch (SmackException e) {
             XmppExceptionHandler.handleSmackException(e);
         }
         return false;
@@ -177,65 +193,70 @@ public class XmppManagerImpl implements XmppManager {
     @Override
     public boolean addFriend(int otherUserId, String nickName) {
         String jid = ConfigUtil.getXmppJid(otherUserId);
+
         try {
             connect();
             mRoster.createEntry(jid, nickName, null);
             return true;
-        } catch (SmackException.NotLoggedInException e) {
-            XmppExceptionHandler.handleSmackException(e);
-        } catch (SmackException.NoResponseException e) {
-            XmppExceptionHandler.handleSmackException(e);
-        } catch (XMPPException.XMPPErrorException e) {
+        }catch (IOException e) {
+            XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
             XmppExceptionHandler.handleXmppExecption(e);
-        } catch (SmackException.NotConnectedException e) {
+        } catch (SmackException e) {
             XmppExceptionHandler.handleSmackException(e);
         }
         return false;
     }
 
     @Override
-    public List<SearchResult> searchUser(String search) throws SmackException.NotConnectedException,
-            XMPPException.XMPPErrorException, SmackException.NoResponseException {
-        if(!connect()){
-            throw new SmackException.NotConnectedException();
-        }
+    public List<SearchResult> searchUser(String search){
+        try {
+            connect();
+            UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
+            Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
+            Form answerForm = searchForm.createAnswerForm();
 
-        UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
-        Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
-        Form answerForm = searchForm.createAnswerForm();
+            answerForm.setAnswer("search", search);
+            answerForm.setAnswer("Name", Boolean.TRUE);
+            answerForm.setAnswer("Username", Boolean.TRUE);
+            answerForm.setAnswer("Email", Boolean.TRUE);
 
-        answerForm.setAnswer("search", search);
-        answerForm.setAnswer("Name", Boolean.TRUE);
-        answerForm.setAnswer("Username", Boolean.TRUE);
-        answerForm.setAnswer("Email", Boolean.TRUE);
+            ReportedData data = userSearchManager.getSearchResults(answerForm, "search." + xmppConnection.getServiceName());
+            List<ReportedData.Row> rows = data.getRows();
+            List<SearchResult> searchResults = new ArrayList<>();
 
-        ReportedData data = userSearchManager.getSearchResults(answerForm, "search." + xmppConnection.getServiceName());
-        List<ReportedData.Row> rows = data.getRows();
-        List<SearchResult> searchResults = new ArrayList<>();
-
-        for(ReportedData.Row row : rows){
-            SearchResult searchResult = new SearchResult();
-            for(ReportedData.Column column : data.getColumns()){
-                if(column.getVariable().equalsIgnoreCase("username")){
-                    List<String> values = row.getValues(column.getVariable());
-                    if(values.size() > 0){
-                        searchResult.userName = row.getValues(column.getVariable()).get(0);
-                    }
-                }else if(column.getVariable().equalsIgnoreCase("name")){
-                    List<String> values = row.getValues(column.getVariable());
-                    if(values.size() > 0){
-                        searchResult.nickName = row.getValues(column.getVariable()).get(0);
-                    }
-                }else if(column.getVariable().equalsIgnoreCase("email")){
-                    List<String> values = row.getValues(column.getVariable());
-                    if(values.size() > 0){
-                        searchResult.email = row.getValues(column.getVariable()).get(0);
+            for(ReportedData.Row row : rows){
+                SearchResult searchResult = new SearchResult();
+                for(ReportedData.Column column : data.getColumns()){
+                    if(column.getVariable().equalsIgnoreCase("username")){
+                        List<String> values = row.getValues(column.getVariable());
+                        if(values.size() > 0){
+                            searchResult.userName = row.getValues(column.getVariable()).get(0);
+                        }
+                    }else if(column.getVariable().equalsIgnoreCase("name")){
+                        List<String> values = row.getValues(column.getVariable());
+                        if(values.size() > 0){
+                            searchResult.nickName = row.getValues(column.getVariable()).get(0);
+                        }
+                    }else if(column.getVariable().equalsIgnoreCase("email")){
+                        List<String> values = row.getValues(column.getVariable());
+                        if(values.size() > 0){
+                            searchResult.email = row.getValues(column.getVariable()).get(0);
+                        }
                     }
                 }
+                searchResults.add(searchResult);
             }
-            searchResults.add(searchResult);
+            return searchResults;
+        } catch (IOException e) {
+            XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
+            XmppExceptionHandler.handleXmppExecption(e);
+        } catch (SmackException e) {
+            XmppExceptionHandler.handleSmackException(e);
         }
-        return searchResults;
+
+        return null;
     }
 
     /**

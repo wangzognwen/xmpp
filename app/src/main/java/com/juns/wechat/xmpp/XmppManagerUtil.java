@@ -24,24 +24,15 @@ import rx.schedulers.Schedulers;
 public class XmppManagerUtil {
     private static final XmppManager XMPP_MANAGER = XmppManagerImpl.getInstance();
 
-    public static void login(String userName, String passWord, XmppManagerListener listener){
-        try {
-            XMPP_MANAGER.login(userName, passWord);
-            listener.onLoginSuccess();
-        } catch (IOException e) {
-            listener.onLoginFailed(e);
-        } catch (XMPPException e) {
-            listener.onLoginFailed(e);
-        } catch (SmackException e) {
-            listener.onLoginFailed(e);
-        }
+    public static boolean login(String userName, String passWord){
+        return XMPP_MANAGER.login(userName, passWord);
     }
 
-    public static void asyncLogin(final String userName, final String passWord, final XmppManagerListener listener){
+    public static void asyncLogin(final String userName, final String passWord){
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
-                login(userName, passWord, listener);
+                login(userName, passWord);
             }
         });
     }
@@ -50,16 +41,8 @@ public class XmppManagerUtil {
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    XMPP_MANAGER.regNewUser(accountName, passWord);
-                    listener.onRegisterSuccess();
-                } catch (SmackException.NotConnectedException e) {
-                    listener.onRegisterFailed(e);
-                } catch (XMPPException.XMPPErrorException e) {
-                    listener.onRegisterFailed(e);
-                } catch (SmackException.NoResponseException e) {
-                    listener.onRegisterFailed(e);
-                }
+                XMPP_MANAGER.regNewUser(accountName, passWord);
+                listener.onRegisterSuccess();
             }
         });
     }

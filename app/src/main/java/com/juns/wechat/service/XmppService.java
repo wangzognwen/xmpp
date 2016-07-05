@@ -14,6 +14,7 @@ import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.XmppExceptionHandler;
 import com.juns.wechat.xmpp.XmppManager;
 import com.juns.wechat.xmpp.XmppManagerImpl;
+import com.juns.wechat.xmpp.XmppManagerUtil;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -35,7 +36,6 @@ public class XmppService extends Service {
      */
     public static final String ACTION_LOGIN = "login";
 
-    private volatile boolean mIsLogging = false; //是否正在登录
 
     @Override
     public void onCreate() {
@@ -82,26 +82,10 @@ public class XmppService extends Service {
      * @param passWord
      */
     public void login(final String accName, final String passWord){
-        if(mIsLogging) return;
-        mIsLogging = true;
         if(!UserManager.getInstance().isLogin()){
             return;
         }
-        ThreadPoolUtil.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    xmpp.login(accName, passWord);
-                } catch (IOException e) {
-                    XmppExceptionHandler.handleIOException(e);
-                } catch (XMPPException e) {
-                    XmppExceptionHandler.handleXmppExecption(e);
-                } catch (SmackException e) {
-                    XmppExceptionHandler.handleSmackException(e);
-                }
-                mIsLogging = false;
-            }
-        });
+        XmppManagerUtil.asyncLogin(accName, passWord);
     }
 
     public static void login(Context context){
