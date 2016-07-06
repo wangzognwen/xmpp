@@ -15,12 +15,6 @@ public class ToolbarActivity extends BaseActivity {
     protected Toolbar toolbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_toolbar);
-    }
-
-    @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         toolbar = ToolBarUtil.setToolBar(this);
@@ -42,8 +36,8 @@ public class ToolbarActivity extends BaseActivity {
         ToolBarUtil.setTitle(this, text);
     }
 
-    protected void setToolbarRight(){
-
+    protected void setToolbarRight(int type, int resId){
+        ToolBarUtil.setToolbarRight(this, type, resId);
     }
 
     @Override

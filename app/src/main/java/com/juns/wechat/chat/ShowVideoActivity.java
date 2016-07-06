@@ -64,11 +64,11 @@ public class ShowVideoActivity extends BaseActivity {
 	public String getLocalFilePath(String remoteUrl) {
 		String localPath = null;
 		/*if (remoteUrl.contains("/")) {
-			localPath = PathUtil.getInstance().getVideoPath().getAbsolutePath()
+			localPath = PathUtil.getDbManager().getVideoPath().getAbsolutePath()
 					+ "/" + remoteUrl.substring(remoteUrl.lastIndexOf("/") + 1)
 					+ ".mp4";
 		} else {
-			localPath = PathUtil.getInstance().getVideoPath().getAbsolutePath()
+			localPath = PathUtil.getDbManager().getVideoPath().getAbsolutePath()
 					+ "/" + remoteUrl + ".mp4";
 		}*/
 		return localPath;
@@ -102,7 +102,7 @@ public class ShowVideoActivity extends BaseActivity {
 		}
 		loadingLayout.setVisibility(View.VISIBLE);
 		/*final HttpFileManager httpFileMgr = new HttpFileManager(this,
-				EMChatConfig.getInstance().getStorageUrl());
+				EMChatConfig.getDbManager().getStorageUrl());
 		final CloudOperationCallback callback = new CloudOperationCallback() {
 
 			@Override

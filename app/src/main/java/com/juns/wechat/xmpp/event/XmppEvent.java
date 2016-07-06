@@ -10,6 +10,7 @@ public class XmppEvent {
     private Exception exception;
 
     public XmppEvent(int resultCode, Exception exception) {
+        this.resultCode = resultCode;
         this.exception = exception;
     }
 

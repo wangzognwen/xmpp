@@ -99,7 +99,7 @@
     <string name="To_join_the_chat">加入群聊</string>
     <string name="login">登陆</string>
     <string name="user_name">用户名</string>
-    <string name="password">密码</string>
+    <string name="passWord">密码</string>
     <string name="register">注册</string>
     <string name="confirmpassword">确认密码</string>
     <string name="downwaiting">正在下载文件请稍后</string>

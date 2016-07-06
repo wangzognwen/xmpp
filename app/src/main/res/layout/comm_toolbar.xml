@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:layout_centerVertical="true"/>
+            android:layout_centerInParent="true"/>
 
         <TextView
             android:id="@+id/tvRightText"

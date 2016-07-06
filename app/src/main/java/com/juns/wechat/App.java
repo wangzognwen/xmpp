@@ -19,6 +19,8 @@ import com.baidu.frontia.FrontiaApplication;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.chat.VoiceCallActivity;
 
+import org.xutils.x;
+
 public class App extends FrontiaApplication {
 
 	private static Context _context;
@@ -28,13 +30,11 @@ public class App extends FrontiaApplication {
 		super.onCreate();
 		_context = getApplicationContext();
 		initEMChat();
-		//EMChat.getInstance().init(_context);
-		//EMChat.getInstance().setDebugMode(true);
-		//EMChat.getInstance().setAutoLogin(true);
-		//EMChatManager.getInstance().getChatOptions().setUseRoster(true);
 		FrontiaApplication.initFrontiaApplication(this);
-		// CrashHandler crashHandler = CrashHandler.getInstance();// 全局异常捕捉
+		// CrashHandler crashHandler = CrashHandler.getDbManager();// 全局异常捕捉
 		// crashHandler.init(_context);
+        x.Ext.init(this);
+        x.Ext.setDebug(BuildConfig.DEBUG); // 开启debug会影响性能
 	}
 
 	private void initEMChat() {
@@ -44,7 +44,7 @@ public class App extends FrontiaApplication {
 				|| !processAppName.equalsIgnoreCase("com.juns.wechat")) {
 			return;
 		}
-	/*	EMChatOptions options = EMChatManager.getInstance().getChatOptions();
+	/*	EMChatOptions options = EMChatManager.getDbManager().getChatOptions();
 		// 获取到EMChatOptions对象
 		// 设置自定义的文字提示
 		options.setNotifyText(new OnMessageNotifyListener() {
@@ -88,7 +88,7 @@ public class App extends FrontiaApplication {
 			}
 		});*/
 		// IntentFilter callFilter = new
-		// IntentFilter(EMChatManager.getInstance()
+		// IntentFilter(EMChatManager.getDbManager()
 		// .getIncomingCallBroadcastAction());
 		// registerReceiver(new CallReceiver(), callFilter);
 	}
@@ -156,11 +156,6 @@ public class App extends FrontiaApplication {
 			instance = new App();
 		}
 		return instance;
-	}
-
-	// insertOrUpdate Activity
-	public void addActivity(Activity activity) {
-		mList.add(activity);
 	}
 
 	// 关闭每一个list内的activity

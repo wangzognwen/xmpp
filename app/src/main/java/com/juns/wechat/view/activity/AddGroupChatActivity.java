@@ -130,7 +130,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		userId = getIntent().getStringExtra(Constants.User_ID);
 		if (groupId != null) {
 		/*	isCreatingNewGroup = false;
-			group = EMGroupManager.getInstance().getGroup(groupId);
+			group = EMGroupManager.getDbManager().getGroup(groupId);
 			if (group != null) {
 				exitingMembers = group.getMembers();
 				groupname = group.getGroupName();
@@ -475,7 +475,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 							}
 						}
 					}
-					*//*final EMGroup group = EMGroupManager.getInstance()
+					*//*final EMGroup group = EMGroupManager.getDbManager()
 							.createPublicGroup(groupName, "", strmembers, true);
 					runOnUiThread(new Runnable() {
 						public void run() {

@@ -25,7 +25,7 @@ public class AppUtil {
         }catch (Resources.NotFoundException e){
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
 }

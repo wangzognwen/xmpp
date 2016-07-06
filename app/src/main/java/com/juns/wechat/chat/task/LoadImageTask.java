@@ -77,7 +77,7 @@ public class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
 
 						@Override
 						public void run() {
-							EMChatManager.getInstance().asyncFetchMessage(
+							EMChatManager.getDbManager().asyncFetchMessage(
 									message);
 						}
 					}).start();

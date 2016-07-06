@@ -1,19 +1,13 @@
 package com.juns.wechat.dao;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
 import com.juns.wechat.bean.RosterBean;
-import com.juns.wechat.database.DatabaseHelper;
-import com.juns.wechat.database.RosterTable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by 王宗文 on 2016/6/20.
  */
-public class RosterDao {
+public class RosterDao extends BaseDao<RosterBean>{
     private static RosterDao mInstance;
 
     public static RosterDao getInstance(){
@@ -25,7 +19,7 @@ public class RosterDao {
 
     public void insertOrUpdate(List<RosterBean> rosterBeans){
         if(rosterBeans == null || rosterBeans.isEmpty()) return;
-        SQLiteDatabase sqLiteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
+       /* SQLiteDatabase sqLiteDatabase = DbUtil.getDbManager();
         StringBuilder sb = new StringBuilder("replace into rosters(ownerName, contactName, subType, remark) ");
 
         for(RosterBean rosterBean : rosterBeans){
@@ -40,14 +34,14 @@ public class RosterDao {
             sqLiteDatabase.setTransactionSuccessful();
         }finally {
             sqLiteDatabase.endTransaction();
-        }
+        }*/
 
 
     }
 
     public List<RosterBean> queryAllByOwner(String ownerName){
-        String sql = "select * from " + RosterTable.TABLE_NAME + " where " + RosterTable.COLUMN_OWNER_NAME + " = ?";
-        SQLiteDatabase sqLiteDatabase = DatabaseHelper.getInstance().getWritableDatabase();
+       /* String sql = "select * from " + RosterTable.TABLE_NAME + " where " + RosterTable.COLUMN_OWNER_NAME + " = ?";
+        SQLiteDatabase sqLiteDatabase = DbUtil.getDbManager().getWritableDatabase();
         String[] bindArgs = {ownerName};
         Cursor cursor = sqLiteDatabase.rawQuery(sql, bindArgs);
         List<RosterBean> rosterBeans = new ArrayList<>();
@@ -55,6 +49,7 @@ public class RosterDao {
             RosterBean rosterBean = new RosterBean(cursor);
             rosterBeans.add(rosterBean);
         }
-        return rosterBeans;
+        return rosterBeans;*/
+        return null;
     }
 }

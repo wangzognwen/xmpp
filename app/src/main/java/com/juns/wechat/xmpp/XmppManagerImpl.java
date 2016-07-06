@@ -3,6 +3,7 @@ package com.juns.wechat.xmpp;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
+import com.juns.wechat.xmpp.event.XmppEvent;
 import com.juns.wechat.xmpp.listener.RosterLoadedListenerImpl;
 import com.juns.wechat.xmpp.listener.XmppConnectionListener;
 import com.juns.wechat.xmpp.listener.XmppReceivePacketFilter;
@@ -23,6 +24,7 @@ import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.search.UserSearchManager;
 import org.jivesoftware.smackx.xdata.Form;
+import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
 import java.nio.channels.NotYetConnectedException;
@@ -95,8 +97,13 @@ public class XmppManagerImpl implements XmppManager {
     public boolean login(String accountName, String passWord){
         try {
             connect();
-            if(xmppConnection.isAuthenticated()) return true;
+            XmppEvent xmppEvent = new XmppEvent(0, null);
+            if(xmppConnection.isAuthenticated()){
+                EventBus.getDefault().post(xmppEvent);
+                return true;
+            }
             xmppConnection.login(accountName, passWord);
+            EventBus.getDefault().post(xmppEvent);
         } catch (IOException e) {
             XmppExceptionHandler.handleIOException(e);
         } catch (XMPPException e) {

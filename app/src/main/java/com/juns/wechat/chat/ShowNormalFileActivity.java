@@ -32,7 +32,7 @@ public class ShowNormalFileActivity extends BaseActivity {
 		new Thread(new Runnable() {
 			public void run() {
 				/*HttpFileManager fileManager = new HttpFileManager(
-						ShowNormalFileActivity.this, EMChatConfig.getInstance()
+						ShowNormalFileActivity.this, EMChatConfig.getDbManager()
 								.getStorageUrl());
 				fileManager.downloadFile(messageBody.getRemoteUrl(),
 						messageBody.getLocalUrl(), maps,

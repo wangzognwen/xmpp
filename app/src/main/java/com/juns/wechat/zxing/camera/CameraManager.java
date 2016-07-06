@@ -23,13 +23,13 @@ public final class CameraManager {
 	private static final String TAG = CameraManager.class.getSimpleName();
 
 	/*private static final int MIN_FRAME_WIDTH = DensityUtil.dip2px(
-			App.getInstance(), 250);
+			App.getDbManager(), 250);
 	private static final int MIN_FRAME_HEIGHT = DensityUtil.dip2px(
-			App.getInstance(), 250);;
+			App.getDbManager(), 250);;
 	private static final int MAX_FRAME_WIDTH = DensityUtil.dip2px(
-			App.getInstance(), 250);
+			App.getDbManager(), 250);
 	private static final int MAX_FRAME_HEIGHT = DensityUtil.dip2px(
-			App.getInstance(), 250);*/
+			App.getDbManager(), 250);*/
 	private static CameraManager cameraManager;
 
 	static final int SDK_INT; // Later we can use Build.VERSION.SDK_INT

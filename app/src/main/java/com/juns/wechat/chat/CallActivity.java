@@ -166,7 +166,7 @@ public class CallActivity extends BaseActivity {
 		message.setMsgId(msgid);
 
 		// 保存
-		EMChatManager.getInstance().saveMessage(message, false);*/
+		EMChatManager.getDbManager().saveMessage(message, false);*/
 	}
 
 	enum CallingState {

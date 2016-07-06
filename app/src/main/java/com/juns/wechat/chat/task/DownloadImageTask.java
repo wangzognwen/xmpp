@@ -53,8 +53,8 @@ public class DownloadImageTask extends AsyncTask<Object, Integer, Bitmap>{
 //		final String remoteFilePath = message.getFilePath();
 //		final String localFilePath = User.getImagePath() + "/"+ message.getImageName();
 		SMTLog.d("###", "download picture from remote "+ remoteFilePath + " to local:" + localFilePath);
-		final HttpFileManager httpFileMgr = new HttpFileManager(EaseMobUserConfig.getInstance().applicationContext,
-		        EaseMobChatConfig.getInstance().EASEMOB_STORAGE_URL);
+		final HttpFileManager httpFileMgr = new HttpFileManager(EaseMobUserConfig.getDbManager().applicationContext,
+		        EaseMobChatConfig.getDbManager().EASEMOB_STORAGE_URL);
 		CloudOperationCallback callback = new CloudOperationCallback() {
 			public void onSuccess() {
 				SMTLog.d("###", "offline file saved to "+ localFilePath);
@@ -86,9 +86,9 @@ public class DownloadImageTask extends AsyncTask<Object, Integer, Bitmap>{
 			}
 		};
 		if (downloadThumbnail) {
-		    httpFileMgr.downloadThumbnailFile(remoteFilePath, localFilePath, EaseMobUserConfig.getInstance().APPKEY, null, callback);
+		    httpFileMgr.downloadThumbnailFile(remoteFilePath, localFilePath, EaseMobUserConfig.getDbManager().APPKEY, null, callback);
 		} else {
-		    httpFileMgr.downloadFile(remoteFilePath, localFilePath, EaseMobUserConfig.getInstance().APPKEY, null, callback);
+		    httpFileMgr.downloadFile(remoteFilePath, localFilePath, EaseMobUserConfig.getDbManager().APPKEY, null, callback);
 		}
 		return bitmap;
 		*/

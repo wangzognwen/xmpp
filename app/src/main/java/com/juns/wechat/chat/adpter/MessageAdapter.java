@@ -84,7 +84,7 @@ public class MessageAdapter extends BaseAdapter {
 		this.context = context;
 		inflater = LayoutInflater.from(context);
 		activity = (Activity) context;
-		/*this.conversation = EMChatManager.getInstance().getConversation(
+		/*this.conversation = EMChatManager.getDbManager().getConversation(
 				username);*/
 	}
 
@@ -392,7 +392,7 @@ public class MessageAdapter extends BaseAdapter {
 				if (!message.getBooleanAttribute(
 						Constant.MESSAGE_ATTR_IS_VOICE_CALL, false)) {
 					try {
-						EMChatManager.getInstance().ackMessageRead(
+						EMChatManager.getDbManager().ackMessageRead(
 								message.getFrom(), message.getMsgId());
 						// 发送已读回执
 						message.isAcked = true;
@@ -707,7 +707,7 @@ public class MessageAdapter extends BaseAdapter {
 			final ViewHolder holder, final int position, View convertView) {
 
 		VideoMessageBody videoBody = (VideoMessageBody) message.getBody();
-		// final File image=new File(PathUtil.getInstance().getVideoPath(),
+		// final File image=new File(PathUtil.getDbManager().getVideoPath(),
 		// videoBody.getFileName());
 		String localThumb = videoBody.getLocalThumb();
 
@@ -981,7 +981,7 @@ public class MessageAdapter extends BaseAdapter {
 				if (message.direct == EMMessage.Direct.RECEIVE
 						&& !message.isAcked) {
 					try {
-						EMChatManager.getInstance().ackMessageRead(
+						EMChatManager.getDbManager().ackMessageRead(
 								message.getFrom(), message.getMsgId());
 						message.isAcked = true;
 					} catch (EaseMobException e) {
@@ -1127,7 +1127,7 @@ public class MessageAdapter extends BaseAdapter {
 
 		final long start = System.currentTimeMillis();
 		// 调用sdk发送异步发送方法
-		EMChatManager.getInstance().sendMessage(message, new EMCallBack() {
+		EMChatManager.getDbManager().sendMessage(message, new EMCallBack() {
 
 			@Override
 			public void onSuccess() {
@@ -1219,7 +1219,7 @@ public class MessageAdapter extends BaseAdapter {
 
 			final long start = System.currentTimeMillis();
 			// if (chatType == ChatActivity.CHATTYPE_SINGLE) {
-			EMChatManager.getInstance().sendMessage(message, new EMCallBack() {
+			EMChatManager.getDbManager().sendMessage(message, new EMCallBack() {
 
 				@Override
 				public void onSuccess() {
@@ -1330,7 +1330,7 @@ public class MessageAdapter extends BaseAdapter {
 		final String remote = remoteDir;
 		EMLog.d("###", "local = " + localFullSizePath + " remote: " + remote);
 		// first check if the thumbnail image already loaded into cache
-		Bitmap bitmap = ImageCache.getInstance().get(thumbernailPath);
+		Bitmap bitmap = ImageCache.getDbManager().get(thumbernailPath);
 		if (bitmap != null) {
 			// thumbnail image is already loaded, reuse the drawable
 			iv.setImageBitmap(bitmap);
@@ -1362,7 +1362,7 @@ public class MessageAdapter extends BaseAdapter {
 							&& !message.isAcked
 							&& message.getChatType() != ChatType.GroupChat) {
 						try {
-							EMChatManager.getInstance().ackMessageRead(
+							EMChatManager.getDbManager().ackMessageRead(
 									message.getFrom(), message.getMsgId());
 							message.isAcked = true;
 						} catch (Exception e) {
@@ -1389,7 +1389,7 @@ public class MessageAdapter extends BaseAdapter {
 	/*private void showVideoThumbView(String localThumb, ImageView iv,
 			String thumbnailUrl, final EMMessage message) {
 		// first check if the thumbnail image already loaded into cache
-		Bitmap bitmap = ImageCache.getInstance().get(localThumb);
+		Bitmap bitmap = ImageCache.getDbManager().get(localThumb);
 		if (bitmap != null) {
 			// thumbnail image is already loaded, reuse the drawable
 			iv.setImageBitmap(bitmap);
@@ -1413,7 +1413,7 @@ public class MessageAdapter extends BaseAdapter {
 					// && message.getChatType() != ChatType.GroupChat) {
 					// message.isAcked = true;
 					// try {
-					// EMChatManager.getInstance().ackMessageRead(
+					// EMChatManager.getDbManager().ackMessageRead(
 					// message.getFrom(), message.getMsgId());
 					// } catch (Exception e) {
 					// e.printStackTrace();

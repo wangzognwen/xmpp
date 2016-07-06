@@ -141,7 +141,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
     }
 
 	private void getChatserive(final String userName, final String password) {
-	/*	EMChatManager.getInstance().login(userName, password, new EMCallBack() {// 回调
+	/*	EMChatManager.getDbManager().login(userName, passWord, new EMCallBack() {// 回调
 					@Override
 					public void onSuccess() {
 						runOnUiThread(new Runnable() {
@@ -151,11 +151,11 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 								Utils.putValue(RegisterActivity.this,
 										Constants.User_ID, userName);
 								Utils.putValue(RegisterActivity.this,
-										Constants.PWD, password);
+										Constants.PWD, passWord);
 								Log.d("main", "登陆聊天服务器成功！");
 								// 加载群组和会话
-								EMGroupManager.getInstance().loadAllGroups();
-								EMChatManager.getInstance()
+								EMGroupManager.getDbManager().loadAllGroups();
+								EMChatManager.getDbManager()
 										.loadAllConversations();
 								getLoadingDialog("正在登录...").dismiss();
 								Utils.showLongToast(RegisterActivity.this,

@@ -10,16 +10,9 @@ import android.text.TextUtils;
 
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.util.ThreadPoolUtil;
-import com.juns.wechat.xmpp.XmppExceptionHandler;
 import com.juns.wechat.xmpp.XmppManager;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.XmppManagerUtil;
-
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-
-import java.io.IOException;
 
 
 /*******************************************************
@@ -71,7 +64,7 @@ public class XmppService extends Service {
         if(TextUtils.isEmpty(action)) return;
         if(ACTION_LOGIN.equals(action)){
             UserBean user = UserManager.getInstance().getUser();
-            login(user.getUserName(), user.getPassword());
+            login(user.getUserName(), user.getPassWord());
         }
     }
 

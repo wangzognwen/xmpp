@@ -69,7 +69,7 @@ public class AlertDialog extends BaseActivity {
 			} else {
 				/*Bitmap bm = ImageUtils.decodeScaleImage(path, 150, 150);
 				imageView.setImageBitmap(bm);
-				ImageCache.getInstance().put(path, bm);*/
+				ImageCache.getDbManager().put(path, bm);*/
 			}
 
 		}

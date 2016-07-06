@@ -2,6 +2,7 @@ package com.juns.wechat.view.activity;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,13 +71,15 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.btnexit:
-			//EMChatManager.getInstance().logout();// 退出环信聊天
+			//EMChatManager.getDbManager().logout();// 退出环信聊天
 			Utils.RemoveValue(context, Constants.LoginState);
 			Utils.RemoveValue(context, Constants.UserInfo);
 			Utils.RemoveValue(context, Constants.NAME);
 			Utils.RemoveValue(context, Constants.PWD);
-			App.getInstance2().exit();
-			Utils.start_Activity(this, LoginActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+            finish();
 			break;
 		default:
 			break;

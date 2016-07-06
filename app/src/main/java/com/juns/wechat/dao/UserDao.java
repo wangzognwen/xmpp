@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.database.DatabaseHelper;
+import com.juns.wechat.database.DbUtil;
 import com.juns.wechat.database.UserTable;
 
 /**
@@ -22,7 +22,7 @@ public class UserDao {
 
     public UserBean getUserByName(String userName){
         String sql = "select * from " + UserTable.TABLE_NAME + " where userName = " + userName;
-        SQLiteDatabase database = DatabaseHelper.getInstance().getReadableDatabase();
+        SQLiteDatabase database = DbUtil.getDbManager().getReadableDatabase();
         Cursor cursor = database.rawQuery(sql, null);
         if(cursor.moveToNext()){
             UserBean userBean = new UserBean(cursor);

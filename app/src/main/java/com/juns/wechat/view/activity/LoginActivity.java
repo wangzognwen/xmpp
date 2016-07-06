@@ -27,6 +27,7 @@ import com.juns.wechat.R;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ToastUtil;
 import com.juns.wechat.xmpp.event.XmppEvent;
 import com.juns.wechat.xmpp.XmppManagerUtil;
@@ -49,7 +50,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         setContentView(R.layout.activity_login);
         initControl();
         setListener();
-        EventBus.getDefault().register(this);
     }
 
 	protected void initControl() {
@@ -122,11 +122,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
     private void loginToXmpp(String userName, String password){
+        EventBus.getDefault().register(this);
         XmppManagerUtil.asyncLogin(userName, password);
     }
 
     @Subscriber
-    private void onLoginFailed(XmppEvent event){
+    private void onLoginFinish(XmppEvent event){
+        EventBus.getDefault().unregister(this);
+        LogUtil.i("resultCode: " + event.getResultCode());
         if(event.getResultCode() == XmppEvent.SUCCESS){
             onLoginSuccess();
         }else {

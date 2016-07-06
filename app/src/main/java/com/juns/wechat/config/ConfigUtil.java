@@ -25,31 +25,31 @@ public class ConfigUtil {
 
     public static final String RESOURCE = "XMPP";
 
-    private static boolean mIsDebug = BuildConfig.DEBUG;
+    public static boolean isDebug = BuildConfig.DEBUG;
 
     public static String getXmppServer(){
-        if (mIsDebug){
+        if (isDebug){
             return DEBUG_XMPP_SERVER;
         }
         return REAL_XMPP_SERVER;
     }
 
     public static String getXmppDomain(){
-        if (mIsDebug){
+        if (isDebug){
             return DEBUG_XMPP_DOMAIN;
         }
         return REAL_XMPP_DOMAIN;
     }
 
     public static String getApiUrl(){
-        if (mIsDebug){
+        if (isDebug){
             return DEBUG_API_URL;
         }
         return REAL_API_URL;
     }
 
     public static String getXmppJid(int userId){
-        if (mIsDebug){
+        if (isDebug){
             return userId + "@" + DEBUG_XMPP_DOMAIN + "/" + RESOURCE;
         }
         return userId + "@" + REAL_XMPP_DOMAIN+ "/" + RESOURCE;
@@ -61,7 +61,7 @@ public class ConfigUtil {
             return null;
         }
         userJid = userJid.substring(0, index);
-        if (mIsDebug){
+        if (isDebug){
             if (userJid.contains("office")){
                 userJid = userJid.replace("office", "");
             }

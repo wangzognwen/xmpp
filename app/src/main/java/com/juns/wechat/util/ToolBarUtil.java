@@ -34,6 +34,9 @@ public class ToolBarUtil {
             return toolBar;
         }
 
+        TextView tvTitle = (TextView) toolBar.findViewById(R.id.tvTitle);
+        tvTitle.setText(AppUtil.getActivityLabel(activity));
+
         ImageView ivReturn = (ImageView) toolBar.findViewById(R.id.ivReturn);
         ivReturn.setOnClickListener(new View.OnClickListener() {
             @Override

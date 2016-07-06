@@ -68,13 +68,13 @@ public class UserUtils {
 	public static String getUserPwd(Context context) {
 		UserBean user = getUserModel(context);
 		if (user != null)
-			return user.getPassword();
+			return user.getPassWord();
 		else
 			return "";
 	}
 
 	public static void getLogout(Context context) {
-	//	EMChatManager.getInstance().logout();// 退出环信聊天
+	//	EMChatManager.getDbManager().logout();// 退出环信聊天
 		Utils.RemoveValue(context, Constants.LoginState);
 		Utils.RemoveValue(context, Constants.UserInfo);
 		App.getInstance2().exit();

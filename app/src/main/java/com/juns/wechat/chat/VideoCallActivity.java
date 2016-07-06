@@ -108,7 +108,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 		localSurfaceHolder = localSurface.getHolder();
 
 		// 获取callHelper,cameraHelper
-		//callHelper = EMVideoCallHelper.getInstance();
+		//callHelper = EMVideoCallHelper.getDbManager();
 		//cameraHelper = new CameraHelper(callHelper, localSurfaceHolder);
 
 		// 显示对方图像的surfaceview
@@ -189,7 +189,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 				if (!isInComingCall) {
 					/*try {
 						// 拨打视频通话
-						EMChatManager.getInstance().makeVideoCall(username);
+						EMChatManager.getDbManager().makeVideoCall(username);
 						// 通知cameraHelper可以写入数据
 						cameraHelper.setStartFlag(true);
 					} catch (EMServiceNotReadyException e) {
@@ -213,7 +213,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 	 * 设置通话状态监听
 	 */
 	void addCallStateListener() {
-	/*	EMChatManager.getInstance().addVoiceCallStateChangeListener(
+	/*	EMChatManager.getDbManager().addVoiceCallStateChangeListener(
 				new EMCallStateChangeListener() {
 
 					@Override
@@ -385,7 +385,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 			if (ringtone != null)
 				ringtone.stop();
 			try {
-				//EMChatManager.getInstance().rejectCall();
+				//EMChatManager.getDbManager().rejectCall();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				saveCallRecord(1);
@@ -405,7 +405,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 			if (isInComingCall) {
 				try {
 					isAnswered = true;
-					//EMChatManager.getInstance().answerCall();
+					//EMChatManager.getDbManager().answerCall();
 					cameraHelper.setStartFlag(true);
 
 					openSpeakerOn();
@@ -425,7 +425,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 				soundPool.stop(streamID);
 			endCallTriggerByMe = true;
 			try {
-				//EMChatManager.getInstance().endCall();
+				//EMChatManager.getDbManager().endCall();
 			} catch (Exception e) {
 				e.printStackTrace();
 				saveCallRecord(1);
@@ -489,7 +489,7 @@ public class VideoCallActivity extends CallActivity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
-		//EMChatManager.getInstance().endCall();
+		//EMChatManager.getDbManager().endCall();
 		callDruationText = chronometer.getText().toString();
 		saveCallRecord(1);
 		finish();

@@ -1,11 +1,14 @@
 package com.juns.wechat.xmpp;
 
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
+import com.juns.wechat.xmpp.event.XmppEvent;
 import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;

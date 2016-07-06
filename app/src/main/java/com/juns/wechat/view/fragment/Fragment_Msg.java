@@ -107,7 +107,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 	private List loadConversationsWithRecentChat() {
 		/*// 获取所有会话，包括陌生人
 		Hashtable<String, EMConversation> conversations = EMChatManager
-				.getInstance().getAllConversations();
+				.getDbManager().getAllConversations();
 		List<EMConversation> list = new ArrayList<EMConversation>();
 		// 过滤掉messages seize为0的conversation
 		for (EMConversation conversation : conversations.values()) {

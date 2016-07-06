@@ -97,10 +97,10 @@ public class ShowBigImage extends BaseActivity {
 	public String getLocalFilePath(String remoteUrl) {
 		String localPath = null;
 		/*if (remoteUrl.contains("/")) {
-			localPath = PathUtil.getInstance().getImagePath().getAbsolutePath()
+			localPath = PathUtil.getDbManager().getImagePath().getAbsolutePath()
 					+ "/" + remoteUrl.substring(remoteUrl.lastIndexOf("/") + 1);
 		} else {
-			localPath = PathUtil.getInstance().getImagePath().getAbsolutePath()
+			localPath = PathUtil.getDbManager().getImagePath().getAbsolutePath()
 					+ "/" + remoteUrl;
 		}*/
 		return localPath;
@@ -121,7 +121,7 @@ public class ShowBigImage extends BaseActivity {
 		pd.show();
 		localFilePath = getLocalFilePath(remoteFilePath);
 		/*final HttpFileManager httpFileMgr = new HttpFileManager(this,
-				EMChatConfig.getInstance().getStorageUrl());
+				EMChatConfig.getDbManager().getStorageUrl());
 		final CloudOperationCallback callback = new CloudOperationCallback() {
 			public void onSuccess(String resultMsg) {
 
@@ -140,7 +140,7 @@ public class ShowBigImage extends BaseActivity {
 							image.setImageResource(default_res);
 						} else {
 							image.setImageBitmap(bitmap);
-							ImageCache.getInstance().put(localFilePath, bitmap);
+							ImageCache.getDbManager().put(localFilePath, bitmap);
 							isDownloaded = true;
 						}
 						if (pd != null) {

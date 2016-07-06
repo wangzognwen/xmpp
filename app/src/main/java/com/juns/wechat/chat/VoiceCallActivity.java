@@ -103,7 +103,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 			}, 300);
 			/*try {
 				// 拨打语音电话
-				EMChatManager.getInstance().makeVoiceCall(username);
+				EMChatManager.getDbManager().makeVoiceCall(username);
 			} catch (EMServiceNotReadyException e) {
 				e.printStackTrace();
 				final String st2 = getResources().getString(
@@ -129,7 +129,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 	 * 设置电话监听
 	 */
 	void addCallStateListener() {
-	/*	EMChatManager.getInstance().addVoiceCallStateChangeListener(
+	/*	EMChatManager.getDbManager().addVoiceCallStateChangeListener(
 				new EMCallStateChangeListener() {
 
 					@Override
@@ -299,7 +299,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 			if (ringtone != null)
 				ringtone.stop();
 			try {
-				//EMChatManager.getInstance().rejectCall();
+				//EMChatManager.getDbManager().rejectCall();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				saveCallRecord(0);
@@ -318,7 +318,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 			if (isInComingCall) {
 				try {
 					isAnswered = true;
-					//EMChatManager.getInstance().answerCall();
+					//EMChatManager.getDbManager().answerCall();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -333,7 +333,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 				soundPool.stop(streamID);
 			endCallTriggerByMe = true;
 			try {
-				//EMChatManager.getInstance().endCall();
+				//EMChatManager.getDbManager().endCall();
 			} catch (Exception e) {
 				e.printStackTrace();
 				saveCallRecord(0);
@@ -378,7 +378,7 @@ public class VoiceCallActivity extends CallActivity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
-		//EMChatManager.getInstance().endCall();
+		//EMChatManager.getDbManager().endCall();
 		callDruationText = chronometer.getText().toString();
 		saveCallRecord(0);
 		finish();

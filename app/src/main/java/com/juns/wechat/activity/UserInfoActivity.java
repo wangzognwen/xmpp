@@ -29,8 +29,10 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friendmsg);
-        ToolBarUtil.setToolBar(this);
-        ToolBarUtil.setToolbarRight(this, 2, R.drawable.icon_more);
+        setToolbarRight(2, R.drawable.icon_more);
+        initView();
+        initData();
+        setListener();
 	}
 
 	protected void initView() {
@@ -69,7 +71,7 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 				overridePendingTransition(R.anim.push_left_in,
 						R.anim.push_left_out);
 			} else {
-				// TODO 添加好友
+
 			}
 			break;
 		default:

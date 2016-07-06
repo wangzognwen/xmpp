@@ -87,7 +87,7 @@ public class CameraHelper implements PreviewCallback {
 			mCamera.setPreviewDisplay(localSurfaceHolder);
 			mCamera.setPreviewCallbackWithBuffer(this);
 
-			//EMVideoCallHelper.getInstance().setResolution(mwidth, mheight);
+			//EMVideoCallHelper.getDbManager().setResolution(mwidth, mheight);
 
 			mCamera.startPreview();
 			Log.d(TAG, "camera start preview");

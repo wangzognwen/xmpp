@@ -10,7 +10,7 @@ public class UserTable {
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_USER_NAME = "userName";
-    public static final String COLUMN_PASSWORD = "password";
+    public static final String COLUMN_PASSWORD = "passWord";
     public static final String COLUMN_HEAD_URL = "headUrl";
     public static final String COLUMN_SIGNATURE = "signature";
     public static final String COLUMN_SEX = "sex";
@@ -18,12 +18,16 @@ public class UserTable {
     public static final String COLUMN_BIRTHDAY = "birthday";
     public static final String COLUMN_TYPE ="type";
     public static final String COLUMN_TELEPHONE = "telephone";
+    public static final String COLUMN_CREATE_DATE = "createDate";
+    public static final String COLUMN_MOFIDY_DATE = "modifyDate";
+
 
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "("
             + "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "userName TEXT NOT NULL, password TEXT NOT NULL,"
-            + "headUrl TEXT, signature TEXT, sex TEXT, location TEXT, birthday TEXT, type TEXT DEFAULT 'N', telephone TEXT);";
+            + "userName TEXT NOT NULL, passWord TEXT NOT NULL,"
+            + "headUrl TEXT, signature TEXT, sex TEXT, location TEXT, birthday TEXT, type TEXT DEFAULT 'N', " +
+            " createDate timestamp default current_timestamp, modifyDate timestamp, telephone TEXT);";
 
 
 

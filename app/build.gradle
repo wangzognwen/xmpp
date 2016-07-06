@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.juns.wechat"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 21
     }
 
@@ -39,4 +39,5 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.2.1'
     // add AndroidEventBus dependency
     compile 'org.simple:androideventbus:1.0.5.1'
+    compile 'org.xutils:xutils:3.3.36'
 }

@@ -1,9 +1,10 @@
 package com.juns.wechat.bean;
 
-import android.database.Cursor;
-
 import com.juns.wechat.dao.UserDao;
-import com.juns.wechat.database.RosterTable;
+
+import org.xutils.DbManager;
+import org.xutils.db.annotation.Column;
+import org.xutils.ex.DbException;
 
 /**
  * Created by 王宗文 on 2016/6/20.
@@ -11,31 +12,27 @@ import com.juns.wechat.database.RosterTable;
 
 
 public class RosterBean {
-    private int rosterId;
+    @Column(name = "id", isId = true)
+    private int id;
+    @Column(name = "ownerName")
     private String ownerName;
+    @Column(name = "contactName")
     private String contactName;
-    private UserBean contactUser;
+    @Column(name = "subType")
     private String subType;
+    @Column(name = "remark")
     private String remark;
 
     public RosterBean(){
 
     }
 
-    public RosterBean(Cursor cursor){
-        rosterId = cursor.getInt(cursor.getColumnIndex(RosterTable.COLUMN_ID));
-        ownerName = cursor.getString(cursor.getColumnIndex(RosterTable.COLUMN_OWNER_NAME));
-        contactName = cursor.getString(cursor.getColumnIndex(RosterTable.COLUMN_CONTACT_NAME));
-        subType = cursor.getString(cursor.getColumnIndex(RosterTable.COLUMN_SUB_TYPE));
-        remark = cursor.getString(cursor.getColumnIndex(RosterTable.COLUMN_REMARK));
+    public int getId() {
+        return id;
     }
 
-    public int getRosterId() {
-        return rosterId;
-    }
-
-    public void setRosterId(int rosterId) {
-        this.rosterId = rosterId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getOwnerName() {
@@ -54,17 +51,6 @@ public class RosterBean {
         this.contactName = contactName;
     }
 
-    public UserBean getContactUser() {
-        if(contactUser == null){
-            contactUser = UserDao.getInstance().getUserByName(contactName);
-        }
-        return contactUser;
-    }
-
-    public void setContactUser(UserBean contactUser) {
-        this.contactUser = contactUser;
-    }
-
     public String getSubType() {
         return subType;
     }
@@ -79,5 +65,14 @@ public class RosterBean {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public UserBean getContactUser(DbManager db) {
+        try {
+            return db.selector(UserBean.class).where("userName", "=", contactName).findFirst();
+        } catch (DbException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

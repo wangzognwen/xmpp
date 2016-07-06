@@ -30,7 +30,7 @@ public class UserManager {
         user = new UserBean();
         user.setId(SharedPreferencesUtil.getIntValue(context, UserBean.ID));
         user.setUserName(SharedPreferencesUtil.getValue(context, UserBean.USERNAME));
-        user.setPassword(SharedPreferencesUtil.getValue(context, UserBean.PASSWORD));
+        user.setPassWord(SharedPreferencesUtil.getValue(context, UserBean.PASSWORD));
     }
 
     public UserBean getUser(){
@@ -57,7 +57,7 @@ public class UserManager {
 
     public void setPassword(String password){
         SharedPreferencesUtil.putValue(context, UserBean.PASSWORD, password);
-        user.setPassword(password);
+        user.setPassWord(password);
     }
 
 }

@@ -62,7 +62,7 @@ public class NewFriendsAdapter extends BaseAdapter {
 				txt_add.setText("已添加");
 				Utils.showLongToast(context, "添加好友成功，等待对方同意");
 			/*	try {
-					EMContactManager.getInstance().addContact(
+					EMContactManager.getDbManager().addContact(
 							user.getTelephone(), "请求添加你为朋友");
 				} catch (EaseMobException e) {
 					e.printStackTrace();

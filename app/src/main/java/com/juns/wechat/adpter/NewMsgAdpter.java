@@ -162,7 +162,7 @@ public class NewMsgAdpter extends BaseAdapter {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 		/*	EMConversation conversation = conversationList.get(deleteID);
-			EMChatManager.getInstance().deleteConversation(
+			EMChatManager.getDbManager().deleteConversation(
 					conversation.getUserName());
 			// Utils.showLongToast((Activity) context, "删除成功");
 			conversationList.remove(deleteID);

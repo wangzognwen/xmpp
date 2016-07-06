@@ -21,7 +21,6 @@ public abstract class BaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = this;
-		App.getInstance2().addActivity(this);
 		netClient = new NetClient(this);
 		initControl();
 		initView();

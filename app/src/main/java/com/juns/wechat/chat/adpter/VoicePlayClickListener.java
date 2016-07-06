@@ -88,7 +88,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 				.getSystemService(Context.AUDIO_SERVICE);
 
 		mediaPlayer = new MediaPlayer();
-		/*if (EMChatManager.getInstance().getChatOptions().getUseSpeaker()) {
+		/*if (EMChatManager.getDbManager().getChatOptions().getUseSpeaker()) {
 			audioManager.setMode(AudioManager.MODE_NORMAL);
 			audioManager.setSpeakerphoneOn(true);
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
@@ -125,7 +125,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 						message.isAcked = true;
 						// 告知对方已读这条消息
 						if (chatType != ChatType.GroupChat)
-							EMChatManager.getInstance().ackMessageRead(
+							EMChatManager.getDbManager().ackMessageRead(
 									message.getFrom(), message.getMsgId());
 					}
 				} catch (Exception e) {
@@ -135,7 +135,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 						&& iv_read_status.getVisibility() == View.VISIBLE) {
 					// 隐藏自己未播放这条语音消息的标志
 					iv_read_status.setVisibility(View.INVISIBLE);
-					EMChatManager.getInstance().setMessageListened(message);
+					EMChatManager.getDbManager().setMessageListened(message);
 				}
 
 			}*/
@@ -191,7 +191,7 @@ public class VoicePlayClickListener implements View.OnClickListener {
 
 					@Override
 					protected Void doInBackground(Void... params) {
-						EMChatManager.getInstance().asyncFetchMessage(message);
+						EMChatManager.getDbManager().asyncFetchMessage(message);
 						return null;
 					}
 

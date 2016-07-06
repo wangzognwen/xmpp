@@ -91,11 +91,11 @@ public class GroupSettingActivity extends BaseActivity implements
 		// 获取传过来的groupid
 		groupId = getIntent().getStringExtra(Constants.GROUP_ID);
 		// 获取本地该群数据
-		/*group = EMGroupManager.getInstance().getGroup(groupId);
+		/*group = EMGroupManager.getDbManager().getGroup(groupId);
 		if (group == null) {
 			try {
 				// 去网络中查找该群
-				group = EMGroupManager.getInstance()
+				group = EMGroupManager.getDbManager()
 						.getGroupFromServer(groupId);
 				if (group == null) {
 					Toast.makeText(GroupSettingActivity.this, "该群已经被解散...",
@@ -284,7 +284,7 @@ public class GroupSettingActivity extends BaseActivity implements
 					public void onClick(View v) {
 						if (isInDeleteMode) {
 							// 如果是删除自己，return
-						/*	if (EMChatManager.getInstance().getCurrentUser()
+						/*	if (EMChatManager.getDbManager().getCurrentUser()
 									.equals(userhid)) {
 								Utils.showLongToast(GroupSettingActivity.this,
 										"不能删除自己");

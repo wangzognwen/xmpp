@@ -313,7 +313,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			toChatUsername = getIntent().getStringExtra(Constants.GROUP_ID);
 			//img_right.setImageResource(R.drawable.icon_groupinfo);
 		}
-		//conversation = EMChatManager.getInstance().getConversation(
+		//conversation = EMChatManager.getDbManager().getConversation(
 				//toChatUsername);
 		// 把此会话的未读数置为0
 		//conversation.resetUnreadMsgCount();
@@ -342,20 +342,20 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		// 注册接收消息广播
 		receiver = new NewMessageBroadcastReceiver();
 		/*IntentFilter intentFilter = new IntentFilter(EMChatManager
-				.getInstance().getNewMessageBroadcastAction());
+				.getDbManager().getNewMessageBroadcastAction());
 		// 设置广播的优先级别大于Mainacitivity,这样如果消息来的时候正好在chat页面，直接显示消息，而不是提示消息未读
 		intentFilter.setPriority(5);
 		registerReceiver(receiver, intentFilter);
 
 		// 注册一个ack回执消息的BroadcastReceiver
 		IntentFilter ackMessageIntentFilter = new IntentFilter(EMChatManager
-				.getInstance().getAckMessageBroadcastAction());
+				.getDbManager().getAckMessageBroadcastAction());
 		ackMessageIntentFilter.setPriority(5);
 		registerReceiver(ackMessageReceiver, ackMessageIntentFilter);
 
 		// 注册一个消息送达的BroadcastReceiver
 		IntentFilter deliveryAckMessageIntentFilter = new IntentFilter(
-				EMChatManager.getInstance()
+				EMChatManager.getDbManager()
 						.getDeliveryAckMessageBroadcastAction());
 		deliveryAckMessageIntentFilter.setPriority(5);
 		registerReceiver(deliveryAckMessageReceiver,
@@ -363,7 +363,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 
 		// 监听当前会话的群聊解散被T事件
 		groupListener = new GroupListener();
-		EMGroupManager.getInstance().addGroupChangeListener(groupListener);*/
+		EMGroupManager.getDbManager().addGroupChangeListener(groupListener);*/
 
 		// show forward message if the message is not null
 		String forward_msg_id = getIntent().getStringExtra("forward_msg_id");
@@ -434,7 +434,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		if (resultCode == RESULT_OK) { // 清空消息
 			if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {
 				// 清空会话
-				EMChatManager.getInstance().clearConversation(toChatUsername);
+				EMChatManager.getDbManager().clearConversation(toChatUsername);
 				adapter.refresh();
 			} else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
 				if (cameraFile != null && cameraFile.exists())
@@ -443,7 +443,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 
 				int duration = data.getIntExtra("dur", 0);
 				String videoPath = data.getStringExtra("path");
-				File file = new File(PathUtil.getInstance().getImagePath(),
+				File file = new File(PathUtil.getDbManager().getImagePath(),
 						"thvideo" + System.currentTimeMillis());
 				Bitmap bitmap = null;
 				FileOutputStream fos = null;
@@ -575,7 +575,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			break;
 		case R.id.view_video:
 			// 视频通话
-			/*if (!EMChatManager.getInstance().isConnected())
+			/*if (!EMChatManager.getDbManager().isConnected())
 				Toast.makeText(this, Constants.NET_ERROR, 0).show();
 			else
 				startActivity(new Intent(this, VideoCallActivity.class)
@@ -592,7 +592,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			break;
 		case R.id.view_audio:
 			// 语音通话
-		/*	if (!EMChatManager.getInstance().isConnected())
+		/*	if (!EMChatManager.getDbManager().isConnected())
 				Toast.makeText(this, Constants.NET_ERROR, 0).show();
 			else
 				startActivity(new Intent(ChatActivity.this,
@@ -636,7 +636,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			return;
 		}
 
-		/*cameraFile = new File(PathUtil.getInstance().getImagePath(), "Walk"
+		/*cameraFile = new File(PathUtil.getDbManager().getImagePath(), "Walk"
 				+ System.currentTimeMillis() + ".jpg");*/
 		cameraFile.getParentFile().mkdirs();
 		startActivityForResult(
@@ -1063,7 +1063,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			String username = intent.getStringExtra("from");
 			String msgid = intent.getStringExtra("msgid");
 			// 收到这个广播的时候，message已经在db和内存里了，可以通过id获取mesage对象
-		/*	EMMessage message = EMChatManager.getInstance().getMessage(msgid);
+		/*	EMMessage message = EMChatManager.getDbManager().getMessage(msgid);
 			// 如果是群聊消息，获取到group id
 			if (message.getChatType() == ChatType.GroupChat) {
 				username = message.getTo();
@@ -1074,7 +1074,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 				return;
 			}
 			// conversation =
-			// EMChatManager.getInstance().getConversation(toChatUsername);
+			// EMChatManager.getDbManager().getConversation(toChatUsername);
 			// 通知adapter有新消息，更新ui
 			adapter.refresh();
 			listView.setSelection(listView.getCount() - 1);
@@ -1092,7 +1092,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 
 			String msgid = intent.getStringExtra("msgid");
 			String from = intent.getStringExtra("from");
-		/*	EMConversation conversation = EMChatManager.getInstance()
+		/*	EMConversation conversation = EMChatManager.getDbManager()
 					.getConversation(from);
 			if (conversation != null) {
 				// 把message设为已读
@@ -1116,7 +1116,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 
 			String msgid = intent.getStringExtra("msgid");
 			String from = intent.getStringExtra("from");
-		/*	EMConversation conversation = EMChatManager.getInstance()
+		/*	EMConversation conversation = EMChatManager.getDbManager()
 					.getConversation(from);
 			if (conversation != null) {
 				// 把message设为已读
@@ -1335,7 +1335,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		activityInstance = null;
-		//EMGroupManager.getInstance().removeGroupChangeListener(groupListener);
+		//EMGroupManager.getDbManager().removeGroupChangeListener(groupListener);
 		// 注销广播
 		try {
 			unregisterReceiver(receiver);
@@ -1400,7 +1400,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		String st12 = getResources().getString(
 				R.string.Move_into_blacklist_failure);
 	/*	try {
-			EMContactManager.getInstance().addUserToBlackList(username, false);
+			EMContactManager.getDbManager().addUserToBlackList(username, false);
 			Toast.makeText(getApplicationContext(), st11, 0).show();
 		} catch (EaseMobException e) {
 			e.printStackTrace();
@@ -1507,7 +1507,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * @param forward_msg_id
 	 */
 	protected void forwardMessage(String forward_msg_id) {
-		/*EMMessage forward_msg = EMChatManager.getInstance().getMessage(
+		/*EMMessage forward_msg = EMChatManager.getDbManager().getMessage(
 				forward_msg_id);
 		EMMessage.Type type = forward_msg.getType();
 		switch (type) {
