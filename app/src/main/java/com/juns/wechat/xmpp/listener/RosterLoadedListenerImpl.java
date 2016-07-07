@@ -33,6 +33,6 @@ public class RosterLoadedListenerImpl implements RosterLoadedListener {
             rosterBean.setRemark(rosterEntry.getName());
             rosterBeans.add(rosterBean);
         }
-        rosterDao.insertOrUpdate(rosterBeans);
+        rosterDao.replace(rosterBeans);
     }
 }

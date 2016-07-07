@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by 王宗文 on 2016/6/14.
  */
 public class RosterTable {
-    public static final String TABLE_NAME = "rosters";
+    public static final String TABLE_NAME = "wcroster";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_OWNER_NAME = "ownerName";
@@ -19,8 +19,8 @@ public class RosterTable {
             + "ownerName TEXT NOT NULL, contactName TEXT NOT NULL,"
             + "subtype TEXT, remark TEXT);";
 
-    private static final String CREATE_INDEX = "create unique index index_rosters on rosters(ownerName, contactName)";
-    private static final String DELETE_INDEX = "drop index index_rosters";
+    public static final String CREATE_INDEX = "create unique index index_rosters on wcroster(ownerName, contactName)";
+    public static final String DELETE_INDEX = "drop index index_rosters";
 
 
     public static void onCreate(SQLiteDatabase database) {
@@ -33,7 +33,6 @@ public class RosterTable {
         if (oldVersion != newVersion){
             database.execSQL(DELETE_INDEX);
             database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-            database.execSQL(CREATE_TABLE);
         }
     }
     

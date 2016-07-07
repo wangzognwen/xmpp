@@ -59,8 +59,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		img_back.setVisibility(View.VISIBLE);
 		btn_login = (Button) findViewById(R.id.btn_login);
 		btn_register = (Button) findViewById(R.id.btn_qtlogin);
-		et_usertel = (EditText) findViewById(R.id.et_usertel);
-		et_password = (EditText) findViewById(R.id.et_password);
+		et_usertel = (EditText) findViewById(R.id.etInputName);
+		et_password = (EditText) findViewById(R.id.etPassWord);
 	}
 
 
@@ -98,21 +98,21 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
 			break;
 		case R.id.btn_login:
-			getLogin();
+			startLogin();
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void getLogin() {
+	private void startLogin() {
 		userName = et_usertel.getText().toString().trim();
 		password = et_password.getText().toString().trim();
 		getLoadingDialog("正在登录...").show();
-		getLogin(userName, password);
+		startLogin(userName, password);
 	}
 
-	private void getLogin(final String userName, final String password) {
+	private void startLogin(final String userName, final String password) {
 		if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(password)) {
             loginToXmpp(userName, password);
 

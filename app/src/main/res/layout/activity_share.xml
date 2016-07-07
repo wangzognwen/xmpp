@@ -19,7 +19,7 @@
 			android:layout_height="wrap_content">
 			  
 		  <EditText
-                android:id="@+id/et_usertel"
+                android:id="@+id/etInputName"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:hint="这一刻的想法..."

@@ -12,6 +12,6 @@ public interface IDao<T> {
     List<T> findAllByParams(Map<String, Object> params);
     void save(T t);
     void save(List<T> list);
-    void saveOrUpdate(T t);
-    void saveOrUpdate(List<T> list);
+    void replace(T t);
+    void replace(List<T> list);
 }

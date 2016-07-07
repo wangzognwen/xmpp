@@ -1,16 +1,18 @@
 package com.juns.wechat.bean;
 
 import com.juns.wechat.dao.UserDao;
+import com.juns.wechat.database.RosterTable;
 
 import org.xutils.DbManager;
 import org.xutils.db.annotation.Column;
+import org.xutils.db.annotation.Table;
 import org.xutils.ex.DbException;
 
 /**
  * Created by 王宗文 on 2016/6/20.
  */
 
-
+@Table(name = RosterTable.TABLE_NAME, onCreated = RosterTable.CREATE_INDEX)
 public class RosterBean {
     @Column(name = "id", isId = true)
     private int id;

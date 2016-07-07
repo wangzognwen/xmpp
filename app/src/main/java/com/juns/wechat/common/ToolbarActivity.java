@@ -1,15 +1,14 @@
 package com.juns.wechat.common;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.juns.wechat.R;
-import com.juns.wechat.annotation.AnnotationUtil;
-import com.juns.wechat.util.ToastUtil;
+
 import com.juns.wechat.util.ToolBarUtil;
+
+import org.xutils.x;
 
 public class ToolbarActivity extends BaseActivity {
     protected Toolbar toolbar;

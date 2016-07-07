@@ -92,25 +92,20 @@ public class BaseDao<T> implements IDao<T> {
     }
 
     @Override
-    public void saveOrUpdate(T t) {
-
+    public void replace(T t) {
+        try {
+            dbManager.replace(t);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void saveOrUpdate(List<T> list) {
+    public void replace(List<T> list) {
         try {
-            beginTransaction();
-            if (list == null || list.isEmpty()) return;
-            TableEntity<?> table = null;
-            try {
-                table = dbManager.getTable(list.get(0).getClass());
-            } catch (DbException e) {
-                e.printStackTrace();
-            }
-
-            setTransactionSuccessful();
-        } finally {
-            endTransaction();
+            dbManager.replace(list);
+        } catch (DbException e) {
+            e.printStackTrace();
         }
     }
 

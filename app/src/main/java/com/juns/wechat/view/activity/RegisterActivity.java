@@ -11,62 +11,59 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
+import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.view.BaseActivity;
+import com.juns.wechat.net.BaseCallBack;
+import com.juns.wechat.net.BaseResponse;
+import com.juns.wechat.net.UserRequest;
 import com.juns.wechat.xmpp.XmppManagerUtil;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
 
-//注册
-public class RegisterActivity extends BaseActivity implements OnClickListener {
-	private TextView txt_title;
-	private ImageView img_back;
-	private Button btn_register, btn_send;
-	private EditText et_usertel, et_password, et_code;
+
+/**
+ * 用户注册
+ * create by 王者 on 2061/2/7
+ */
+@ContentView(R.layout.activity_register)
+public class RegisterActivity extends ToolbarActivity implements OnClickListener {
+    @ViewInject(R.id.btnRegister)
+	private Button btn_register;
+    @ViewInject(R.id.btn_send)
+    private Button btn_send;
+    @ViewInject(R.id.etInputName)
+	private EditText etInputName;
+    @ViewInject(R.id.etPassWord)
+    private EditText etPassword, et_code;
 	private MyCount mc;
     private Handler handler = new Handler();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_register);
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
+        initControl();
+        setListener();
 	}
 
-	@Override
 	protected void initControl() {
-		txt_title = (TextView) findViewById(R.id.txt_title);
-		txt_title.setText("注册");
-		img_back = (ImageView) findViewById(R.id.img_back);
-		img_back.setVisibility(View.VISIBLE);
 		btn_send = (Button) findViewById(R.id.btn_send);
-		btn_register = (Button) findViewById(R.id.btn_register);
-		et_usertel = (EditText) findViewById(R.id.et_usertel);
-		et_password = (EditText) findViewById(R.id.et_password);
-		et_code = (EditText) findViewById(R.id.et_code);
+		btn_register = (Button) findViewById(R.id.btnRegister);
+		etInputName = (EditText) findViewById(R.id.etInputName);
+		etPassword = (EditText) findViewById(R.id.etPassWord);
+		et_code = (EditText) findViewById(R.id.etVerifyCode);
 	}
 
-	@Override
-	protected void initView() {
-
-	}
-
-	@Override
-	protected void initData() {
-	}
-
-	@Override
 	protected void setListener() {
-		img_back.setOnClickListener(this);
 		btn_send.setOnClickListener(this);
 		btn_register.setOnClickListener(this);
-		et_usertel.addTextChangedListener(new TelTextChange());
-		et_password.addTextChangedListener(new TextChange());
+		etInputName.addTextChangedListener(new TelTextChange());
+		etPassword.addTextChangedListener(new TextChange());
 	}
 
 	@Override
@@ -81,7 +78,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			}
 			mc.start();
 			break;
-		case R.id.btn_register:
+		case R.id.btnRegister:
 			getRegister();
 			break;
 		default:
@@ -90,8 +87,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void getRegister() {
-		final String name = et_usertel.getText().toString();
-		final String pwd = et_password.getText().toString();
+		final String name = etInputName.getText().toString();
+		final String pwd = etPassword.getText().toString();
 		String code = et_code.getText().toString();
 		if (!Utils.isMobileNO(name)) {
 			Utils.showLongToast(RegisterActivity.this, "请使用手机号码注册账户！ ");
@@ -111,6 +108,17 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
         registerToXmpp(name, pwd);
 	}
 
+    private void register(String name, String pwd){
+        UserRequest.register(name, pwd, registerCallBack);
+    }
+
+    private BaseCallBack<BaseResponse> registerCallBack = new BaseCallBack<BaseResponse>(){
+        @Override
+        public void onSuccess(BaseResponse result) {
+
+        }
+    };
+
     private void registerToXmpp(final String name, final String pwd){
         XmppManagerUtil.regNewUser(name, pwd, new BaseXmppManagerListener(){
             @Override
@@ -120,8 +128,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                 userManager.setUserName(name);
                 userManager.setPassword(pwd);
 
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                startActivity(intent);
+                Utils.start_Activity(RegisterActivity.this, MainActivity.class);
+                Utils.finish(RegisterActivity.this);
                 getLoadingDialog("正在注册...").dismiss();
             }
 
@@ -134,61 +142,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                         btn_send.setEnabled(true);
                     }
                 });
-
                 e.printStackTrace();
             }
         });
     }
-
-	private void getChatserive(final String userName, final String password) {
-	/*	EMChatManager.getDbManager().login(userName, passWord, new EMCallBack() {// 回调
-					@Override
-					public void onSuccess() {
-						runOnUiThread(new Runnable() {
-							public void run() {
-								Utils.putBooleanValue(RegisterActivity.this,
-										Constants.LoginState, true);
-								Utils.putValue(RegisterActivity.this,
-										Constants.User_ID, userName);
-								Utils.putValue(RegisterActivity.this,
-										Constants.PWD, passWord);
-								Log.d("main", "登陆聊天服务器成功！");
-								// 加载群组和会话
-								EMGroupManager.getDbManager().loadAllGroups();
-								EMChatManager.getDbManager()
-										.loadAllConversations();
-								getLoadingDialog("正在登录...").dismiss();
-								Utils.showLongToast(RegisterActivity.this,
-										"注册成功！");
-								Intent intent = new Intent(
-										RegisterActivity.this,
-										EditUserNameActivity.class);
-								startActivity(intent);
-								overridePendingTransition(R.anim.push_up_in,
-										R.anim.push_up_out);
-								finish();
-							}
-						});
-					}
-
-					@Override
-					public void onProgress(int progress, String status) {
-
-					}
-
-					@Override
-					public void onError(int code, String message) {
-						Log.d("main", "登陆聊天服务器失败！");
-						runOnUiThread(new Runnable() {
-							public void run() {
-								getLoadingDialog("正在注册...").dismiss();
-								Utils.showLongToast(RegisterActivity.this,
-										"注册失败！");
-							}
-						});
-					}
-				});*/
-	}
 
 	// 手机号 EditText监听器
 	class TelTextChange implements TextWatcher {
@@ -207,7 +164,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		@Override
 		public void onTextChanged(CharSequence cs, int start, int before,
 				int count) {
-			String phone = et_usertel.getText().toString();
+			String phone = etInputName.getText().toString();
 			if (phone.length() == 11) {
 				if (Utils.isMobileNO(phone)) {
 					btn_send.setBackgroundDrawable(getResources().getDrawable(
@@ -219,8 +176,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					btn_register.setTextColor(0xFFFFFFFF);
 					btn_register.setEnabled(true);
 				} else {
-					et_usertel.requestFocus();
-					Utils.showLongToast(context, "请输入正确的手机号码！");
+					etInputName.requestFocus();
+					showToast("请输入正确的手机号码！");
 				}
 			} else {
 				btn_send.setBackgroundDrawable(getResources().getDrawable(
@@ -253,8 +210,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		public void onTextChanged(CharSequence cs, int start, int before,
 				int count) {
 			boolean Sign1 = et_code.getText().length() > 0;
-			boolean Sign2 = et_usertel.getText().length() > 0;
-			boolean Sign3 = et_password.getText().length() > 0;
+			boolean Sign2 = etInputName.getText().length() > 0;
+			boolean Sign3 = etPassword.getText().length() > 0;
 
 			if (Sign1 & Sign2 & Sign3) {
 				btn_register.setBackgroundDrawable(getResources().getDrawable(

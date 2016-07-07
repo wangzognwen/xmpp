@@ -40,4 +40,5 @@ dependencies {
     // add AndroidEventBus dependency
     compile 'org.simple:androideventbus:1.0.5.1'
     compile 'org.xutils:xutils:3.3.36'
+    compile 'com.google.code.gson:gson:2.3.1'
 }

@@ -9,7 +9,7 @@ import org.xutils.db.annotation.Table;
 
 import java.util.Date;
 
-@Table(name = "wcuser")
+@Table(name = UserTable.TABLE_NAME)
 public class UserBean {
 	public static final String ID = "id";
 	public static final String USERNAME = "userName";

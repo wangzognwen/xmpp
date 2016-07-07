@@ -27,6 +27,7 @@
     <string name="search">搜索</string>
     <string name="countries_and_areas">国家和地区</string>
     <string name="passWord">密码</string>
+    <string name="toast_network_unavailable">网络不可用，请打开网络设置</string>
 
     <string name="action_settings">Settings</string>
 
@@ -36,4 +37,5 @@
     <string name="menu_money">微信支付</string>
 
     <string name="label_activity_user_info">详细资料</string>
+    <string name="label_activity_register">注册</string>
 </resources>
