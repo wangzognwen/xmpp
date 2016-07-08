@@ -26,7 +26,7 @@ public class UserRequest extends RequestParams {
     }
 
 
-    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "/users/addUser")
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "addUser")
     public static class RegisterParams extends RequestParams{
         private String userName;
         private String passWord;

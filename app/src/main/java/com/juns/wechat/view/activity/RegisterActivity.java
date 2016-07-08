@@ -20,6 +20,7 @@ import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.net.BaseCallBack;
 import com.juns.wechat.net.BaseResponse;
 import com.juns.wechat.net.UserRequest;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.XmppManagerUtil;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 
@@ -43,6 +44,9 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
     private EditText etPassword, et_code;
 	private MyCount mc;
     private Handler handler = new Handler();
+
+    private String userName;
+    private String passWord;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,10 +91,10 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 	}
 
 	private void getRegister() {
-		final String name = etInputName.getText().toString();
-		final String pwd = etPassword.getText().toString();
+		userName = etInputName.getText().toString().trim();
+		passWord = etPassword.getText().toString();
 		String code = et_code.getText().toString();
-		if (!Utils.isMobileNO(name)) {
+		if (!Utils.isMobileNO(userName)) {
 			Utils.showLongToast(RegisterActivity.this, "请使用手机号码注册账户！ ");
 			return;
 		}
@@ -98,14 +102,14 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 			Utils.showLongToast(RegisterActivity.this, "请填写手机号码，并获取验证码！");
 			return;
 		}
-		if (TextUtils.isEmpty(pwd) || pwd.length() < 6) {
+		if (TextUtils.isEmpty(passWord) || passWord.length() < 6) {
 			Utils.showLongToast(RegisterActivity.this, "密码不能少于6位！");
 			return;
 		}
 		getLoadingDialog("正在注册...  ").show();
 		btn_register.setEnabled(false);
 		btn_send.setEnabled(false);
-        registerToXmpp(name, pwd);
+        register(userName, passWord);
 	}
 
     private void register(String name, String pwd){
@@ -115,7 +119,8 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
     private BaseCallBack<BaseResponse> registerCallBack = new BaseCallBack<BaseResponse>(){
         @Override
         public void onSuccess(BaseResponse result) {
-
+            LogUtil.i("code: " + result.code);
+            registerToXmpp(userName, passWord);
         }
     };
 
