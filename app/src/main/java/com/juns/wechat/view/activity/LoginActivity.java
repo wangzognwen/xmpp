@@ -27,6 +27,9 @@ import com.juns.wechat.R;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.net.BaseCallBack;
+import com.juns.wechat.net.LoginResponse;
+import com.juns.wechat.net.UserRequest;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ToastUtil;
 import com.juns.wechat.xmpp.event.XmppEvent;
@@ -114,69 +117,36 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	private void startLogin(final String userName, final String password) {
 		if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(password)) {
-            loginToXmpp(userName, password);
-
+            login(userName, password);
 		} else {
 			Utils.showLongToast(LoginActivity.this, "请填写账号或密码！");
 		}
 	}
 
-    private void loginToXmpp(String userName, String password){
-        EventBus.getDefault().register(this);
-        XmppManagerUtil.asyncLogin(userName, password);
+    private void login(String userName, String password){
+        UserRequest.login(userName, password, loginCallBack);
     }
 
-    @Subscriber
-    private void onLoginFinish(XmppEvent event){
-        EventBus.getDefault().unregister(this);
-        LogUtil.i("resultCode: " + event.getResultCode());
-        if(event.getResultCode() == XmppEvent.SUCCESS){
-            onLoginSuccess();
-        }else {
-            onLoginFailed(event.getException());
-        }
-    }
-
-    public void onLoginSuccess() {
-        getLoadingDialog("正在登录...").dismiss();
-        UserManager.getInstance().setLogin(true);
-        UserManager.getInstance().setUserName(userName);
-        UserManager.getInstance().setPassword(password);
-
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        Utils.finish(this);
-    }
-
-    public void onLoginFailed(Exception e) {
-        getLoadingDialog("正在登录...").dismiss();
-        if(e instanceof IOException || e instanceof SmackException){
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtil.showToast("网络可能存在问题，请检查网络设置", Toast.LENGTH_LONG);
-                }
-            });
-
-        }
-        if(e instanceof SASLErrorException){
-            SASLErrorException saslError = (SASLErrorException) e;
-            if(SASLError.not_authorized == saslError.getSASLFailure().getSASLError()){
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtil.showToast("用户名或密码错误，请重试", Toast.LENGTH_LONG);
-                    }
-                });
+    private BaseCallBack<LoginResponse> loginCallBack = new BaseCallBack<LoginResponse>() {
+        @Override
+        public void onSuccess(LoginResponse result) {
+            getLoadingDialog("正在登录...").dismiss();
+            if(result.code == 0){
+                UserManager.getInstance().saveOrUpdateUser(result.userBean);
+                UserManager.getInstance().setToken(result.token);
+                Utils.start_Activity(LoginActivity.this, MainActivity.class);
+                Utils.finish(LoginActivity.this);
+            }else if(result.code == 1){
+                showToast("用户名或密码不正确");
             }
         }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            showToast(R.string.toast_network_error);
+            getLoadingDialog("正在登录...").dismiss();
+        }
+    };
 
     // EditText监听器
 	class TextChange implements TextWatcher {

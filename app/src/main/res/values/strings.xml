@@ -28,6 +28,7 @@
     <string name="countries_and_areas">国家和地区</string>
     <string name="passWord">密码</string>
     <string name="toast_network_unavailable">网络不可用，请打开网络设置</string>
+    <string name="toast_network_error">网络错误，请检查网络设置</string>
 
     <string name="action_settings">Settings</string>
 

@@ -14,13 +14,17 @@ import android.widget.EditText;
 
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.net.BaseCallBack;
 import com.juns.wechat.net.BaseResponse;
+import com.juns.wechat.net.LoginResponse;
+import com.juns.wechat.net.RegisterResponse;
 import com.juns.wechat.net.UserRequest;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.util.NetWorkUtil;
 import com.juns.wechat.xmpp.XmppManagerUtil;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 
@@ -107,50 +111,70 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 			return;
 		}
 		getLoadingDialog("正在注册...  ").show();
-		btn_register.setEnabled(false);
-		btn_send.setEnabled(false);
+		/*btn_register.setEnabled(false);
+		btn_send.setEnabled(false);*/
         register(userName, passWord);
 	}
 
     private void register(String name, String pwd){
+		if(!NetWorkUtil.isNetworkAvailable()){
+			showToast(R.string.toast_network_unavailable);
+			getLoadingDialog("正在注册...").dismiss();
+			return;
+		}
         UserRequest.register(name, pwd, registerCallBack);
     }
 
-    private BaseCallBack<BaseResponse> registerCallBack = new BaseCallBack<BaseResponse>(){
+    private BaseCallBack<RegisterResponse> registerCallBack = new BaseCallBack<RegisterResponse>(){
         @Override
-        public void onSuccess(BaseResponse result) {
-            LogUtil.i("code: " + result.code);
-            registerToXmpp(userName, passWord);
+        public void onSuccess(RegisterResponse result) {
+			if(result.code == 0){
+				login();
+			}else if(result.code == 1){  //参数错误
+				getLoadingDialog("正在注册...").dismiss();
+				if(result.errField.equalsIgnoreCase(UserBean.USERNAME)){
+					showToast("用户名不合法");
+				}else if(result.errField.equalsIgnoreCase(UserBean.PASSWORD)){
+					showToast("密码长度不能小于6位");
+				}
+			}else if(result.code == 2){
+				getLoadingDialog("正在注册...").dismiss();
+				showToast("该用户已注册，可以直接登录");
+			}
+
         }
-    };
 
-    private void registerToXmpp(final String name, final String pwd){
-        XmppManagerUtil.regNewUser(name, pwd, new BaseXmppManagerListener(){
-            @Override
-            public void onRegisterSuccess() {
-                UserManager userManager = UserManager.getInstance();
-                userManager.setLogin(true);
-                userManager.setUserName(name);
-                userManager.setPassword(pwd);
+		@Override
+		public void onError(Throwable ex, boolean isOnCallback) {
+			getLoadingDialog("正在注册...").dismiss();
+			showToast(R.string.toast_network_error);
+		}
+	};
 
-                Utils.start_Activity(RegisterActivity.this, MainActivity.class);
-                Utils.finish(RegisterActivity.this);
-                getLoadingDialog("正在注册...").dismiss();
-            }
-
-            @Override
-            public void onRegisterFailed(Exception e) {
-                getLoadingDialog("正在注册...").dismiss();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        btn_send.setEnabled(true);
-                    }
-                });
-                e.printStackTrace();
-            }
-        });
+    private void login(){
+		UserRequest.login(userName, passWord, loginCallBack);
     }
+
+	private BaseCallBack<LoginResponse> loginCallBack = new BaseCallBack<LoginResponse>() {
+		@Override
+		public void onSuccess(LoginResponse result) {
+			getLoadingDialog("正在注册...").dismiss();
+			if(result.code == 0){
+				UserManager.getInstance().saveOrUpdateUser(result.userBean);
+				UserManager.getInstance().setToken(result.token);
+				Utils.start_Activity(RegisterActivity.this, MainActivity.class);
+				Utils.finish(RegisterActivity.this);
+			}else if(result.code == 1){
+				showToast("用户名或密码不正确");
+			}
+		}
+
+		@Override
+		public void onError(Throwable ex, boolean isOnCallback) {
+			showToast(R.string.toast_network_error);
+			getLoadingDialog("正在注册...").dismiss();
+		}
+	};
 
 	// 手机号 EditText监听器
 	class TelTextChange implements TextWatcher {
@@ -251,10 +275,4 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 		}
 	}
 
-	private void initUserList() {
-		Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
-		finish();
-	}
 }

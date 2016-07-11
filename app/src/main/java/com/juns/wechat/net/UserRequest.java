@@ -17,11 +17,7 @@ import org.xutils.x;
 
 public class UserRequest extends RequestParams {
 
-    public static void register(String userName, String passWord, BaseCallBack<BaseResponse> callBack){
-        if(!NetWorkUtil.isNetworkAvailable()){
-            ToastUtil.showToast(R.string.toast_network_unavailable, Toast.LENGTH_LONG);
-            return;
-        }
+    public static void register(String userName, String passWord, BaseCallBack<RegisterResponse> callBack){
         x.http().post(new RegisterParams(userName, passWord), callBack);
     }
 
@@ -35,6 +31,21 @@ public class UserRequest extends RequestParams {
             this.userName = userName;
             this.passWord = passWord;
         }
+    }
+
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "login")
+    public static class LoginParams extends RequestParams{
+        private String userName;
+        private String passWord;
+
+        public LoginParams(String userName, String passWord){
+            this.userName = userName;
+            this.passWord = passWord;
+        }
+    }
+
+    public static void login(String userName, String passWord, BaseCallBack<LoginResponse> callBack){
+        x.http().post(new LoginParams(userName, passWord), callBack);
     }
 
 }

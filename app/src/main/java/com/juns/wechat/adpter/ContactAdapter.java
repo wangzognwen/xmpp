@@ -35,12 +35,18 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 	@Override
 	public int getCount() {
+        if(userInfos == null){
+            return 0;
+        }
 		return userInfos.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return userInfos.get(position);
+		if(userInfos == null){
+            return null;
+        }
+        return userInfos.get(position);
 	}
 
 	@Override

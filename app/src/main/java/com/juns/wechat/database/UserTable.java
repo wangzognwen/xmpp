@@ -19,7 +19,10 @@ public class UserTable {
     public static final String COLUMN_TYPE ="type";
     public static final String COLUMN_TELEPHONE = "telephone";
     public static final String COLUMN_CREATE_DATE = "createDate";
-    public static final String COLUMN_MOFIDY_DATE = "modifyDate";
+    public static final String COLUMN_MODIFY_DATE = "modifyDate";
+
+    public static final String CREATE_INDEX = "create unique index index_wcuser on " + TABLE_NAME + "(" + COLUMN_USER_NAME + ")";
+    public static final String DELETE_INDEX = "drop index index_wcuser";
 
 
 
@@ -30,10 +33,6 @@ public class UserTable {
             " createDate timestamp default current_timestamp, modifyDate timestamp, telephone TEXT);";
 
 
-
-    public static void onCreate(SQLiteDatabase database) {
-        database.execSQL(CREATE_TABLE);
-    }
 
     public static void onUpgrade(SQLiteDatabase database, int oldVersion,
                                  int newVersion) {

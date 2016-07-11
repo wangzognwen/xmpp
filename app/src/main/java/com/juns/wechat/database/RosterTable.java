@@ -23,11 +23,6 @@ public class RosterTable {
     public static final String DELETE_INDEX = "drop index index_rosters";
 
 
-    public static void onCreate(SQLiteDatabase database) {
-        database.execSQL(CREATE_TABLE);
-        database.execSQL(CREATE_INDEX);
-    }
-
     public static void onUpgrade(SQLiteDatabase database, int oldVersion,
                                  int newVersion) {
         if (oldVersion != newVersion){

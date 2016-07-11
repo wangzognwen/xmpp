@@ -9,7 +9,7 @@ import org.xutils.db.annotation.Table;
 
 import java.util.Date;
 
-@Table(name = UserTable.TABLE_NAME)
+@Table(name = UserTable.TABLE_NAME, onCreated = UserTable.CREATE_INDEX)
 public class UserBean {
 	public static final String ID = "id";
 	public static final String USERNAME = "userName";
@@ -22,6 +22,8 @@ public class UserBean {
 	public static final String BIRTHDAY = "birthday";
 	public static final String TYPE ="type";
 	public static final String TELEPHONE = "telephone";
+    public static final String CREATE_DATE = "createDate";
+    public static final String MODIFY_DATE = "modifyDate";
 
     @Column(name = "id", isId = true)
     public int id;//
