@@ -41,5 +41,4 @@ dependencies {
     compile 'org.simple:androideventbus:1.0.5.1'
     compile 'org.xutils:xutils:3.3.36'
     compile 'com.google.code.gson:gson:2.3.1'
-    compile 'io.jsonwebtoken:jjwt:0.6.0'
 }

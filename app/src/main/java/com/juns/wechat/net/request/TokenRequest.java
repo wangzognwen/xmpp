@@ -17,7 +17,7 @@ import org.xutils.x;
 public class TokenRequest {
     private static final long REFRESH_TIME = 6 * 60 * 60 * 1000;
 
-    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "login")
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "newToken")
     public static class TokenParams extends RequestParams{
         private String token;
 

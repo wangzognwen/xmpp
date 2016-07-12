@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.activity.AddFriendActivity;
 import com.juns.wechat.adpter.MainAdapter;
+import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
@@ -29,6 +30,7 @@ import com.juns.wechat.view.activity.AddGroupChatActivity;
 import com.juns.wechat.view.activity.GetMoneyActivity;
 import com.juns.wechat.zxing.CaptureActivity;
 
+@Content(R.layout.activity_main)
 public class MainActivity extends BaseActivity{
 	private TextView txt_title;
 	private ImageView img_right;
@@ -51,11 +53,10 @@ public class MainActivity extends BaseActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
 		initView();
 		setOnClickListener();
 		initPopWindow();
-        refreshToken();
+        XmppService.login(this);
 	}
 
 	private void initView() {
@@ -188,29 +189,6 @@ public class MainActivity extends BaseActivity{
 				titlePopup.show(findViewById(R.id.layout_bar));
 			}
 		});
-	}
-
-    private void refreshToken(){
-        if(!userManager.isLogin()){
-            userManager.logOut(this);
-            return;
-        }
-        TokenRequest.refreshToken(userManager.getToken(), new RefreshTokenCallBack() {
-            @Override
-            protected void onTokenValid() {
-                loginToXmpp();
-            }
-
-            @Override
-            protected void onTokenInvalid() {
-                userManager.logOut(MainActivity.this);
-            }
-
-        });
-    }
-
-	private void loginToXmpp(){
-		XmppService.login(this);
 	}
 
 	@Override

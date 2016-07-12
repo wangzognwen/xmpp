@@ -30,7 +30,7 @@ public class UserTable {
             + "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "userName TEXT NOT NULL, passWord TEXT NOT NULL,"
             + "headUrl TEXT, signature TEXT, sex TEXT, location TEXT, birthday TEXT, type TEXT DEFAULT 'N', " +
-            " createDate timestamp default current_timestamp, modifyDate timestamp, telephone TEXT);";
+            " createDate timestamp default current_timestamp, modifyDate long, telephone TEXT);";
 
 
 

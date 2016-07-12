@@ -9,6 +9,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.dao.UserDao;
+import com.juns.wechat.service.XmppService;
 import com.juns.wechat.util.SharedPreferencesUtil;
 import com.juns.wechat.view.activity.LoginActivity;
 
@@ -62,6 +63,9 @@ public class UserManager {
         setCurrentLoginUserName(null);
         user = null;
         if(context != null){
+            Intent service = new Intent(context, XmppService.class);
+            context.stopService(service);
+
             Intent intent  = new Intent(context, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
