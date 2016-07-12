@@ -14,7 +14,8 @@ import com.juns.wechat.BuildConfig;
  * *****************************************************
  */
 public class ConfigUtil {
-    public static final String REAL_API_URL = "http://192.168.1.2:8080/wechat_server";
+    public static final String REAL_API_URL = "http://www.wangzongwen.cn:8088/wechat_server";
+
     public static final String DEBUG_API_URL = "http://192.169.1.118/yuncardbak";
 
     public static String REAL_XMPP_SERVER = "123.206.34.158";
@@ -39,13 +40,6 @@ public class ConfigUtil {
             return DEBUG_XMPP_DOMAIN;
         }
         return REAL_XMPP_DOMAIN;
-    }
-
-    public static String getApiUrl(){
-        if (isDebug){
-            return DEBUG_API_URL;
-        }
-        return REAL_API_URL;
     }
 
     public static String getXmppJid(int userId){

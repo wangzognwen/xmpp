@@ -45,7 +45,7 @@ public class BaseDao<T> implements IDao<T> {
     @Override
     public T findByParams(Map<String, Object> params) {
         List<T> results = findAllByParams(params);
-        if(results != null){
+        if(results != null  && results.size() > 0){
             return results.get(0);
         }
         return null;
@@ -92,20 +92,24 @@ public class BaseDao<T> implements IDao<T> {
     }
 
     @Override
-    public void replace(T t) {
+    public boolean replace(T t) {
         try {
             dbManager.replace(t);
+            return true;
         } catch (DbException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     @Override
-    public void replace(List<T> list) {
+    public boolean replace(List<T> list) {
         try {
             dbManager.replace(list);
+            return true;
         } catch (DbException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

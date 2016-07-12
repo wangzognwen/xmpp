@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.juns.wechat.annotation.AnnotationUtil;
 import com.juns.wechat.dialog.FlippingLoadingDialog;
 import com.juns.wechat.util.ToastUtil;
 
@@ -25,7 +26,7 @@ public class BaseActivity extends AppCompatActivity {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        x.view().inject(this);
+        AnnotationUtil.initAnnotation(this);
     }
 
     @Override
@@ -38,6 +39,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         isVisibleToUser = false;
+        if(mLoadingDialog != null && mLoadingDialog.isShowing()){
+            mLoadingDialog.dismiss();
+        }
     }
 
     protected void showToast(int resId){
@@ -53,6 +57,9 @@ public class BaseActivity extends AppCompatActivity {
     public FlippingLoadingDialog getLoadingDialog(String msg) {
         if (mLoadingDialog == null)
             mLoadingDialog = new FlippingLoadingDialog(this, msg);
+        else {
+            mLoadingDialog.setText(msg);
+        }
         return mLoadingDialog;
     }
 

@@ -1,16 +1,8 @@
 package com.juns.wechat;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.apache.http.message.BasicNameValuePair;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -19,20 +11,22 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juns.wechat.activity.AddFriendActivity;
 import com.juns.wechat.adpter.MainAdapter;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dialog.WarnTipDialog;
 import com.juns.wechat.dialog.TitleMenu.ActionItem;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup.OnItemOnClickListener;
+import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.net.callback.RefreshTokenCallBack;
+import com.juns.wechat.net.request.TokenRequest;
 import com.juns.wechat.service.XmppService;
 import com.juns.wechat.view.activity.AddGroupChatActivity;
 import com.juns.wechat.view.activity.GetMoneyActivity;
-import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.zxing.CaptureActivity;
 
 public class MainActivity extends BaseActivity{
@@ -40,18 +34,19 @@ public class MainActivity extends BaseActivity{
 	private ImageView img_right;
 	private WarnTipDialog Tipdialog;
 	protected static final String TAG = "MainActivity";
+    private ViewPager vpMainContent;
 	private TitlePopup titlePopup;
 	private TextView unreaMsgdLabel;// 未读消息textview
 	private TextView unreadAddressLable;// 未读通讯录textview
 	private TextView unreadFindLable;// 发现
 	private ImageView[] imagebuttons;
 	private TextView[] textviews;
-	private String connectMsg = "";;
+	private String connectMsg = "";
 	private int index;
 	private int currentTabIndex;// 当前fragment的index
+    private UserManager userManager = UserManager.getInstance();
 
 	private MainAdapter mainAdapter;
-	private ViewPager vpMainContent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +55,7 @@ public class MainActivity extends BaseActivity{
 		initView();
 		setOnClickListener();
 		initPopWindow();
-		loginToXmpp();
+        refreshToken();
 	}
 
 	private void initView() {
@@ -194,6 +189,25 @@ public class MainActivity extends BaseActivity{
 			}
 		});
 	}
+
+    private void refreshToken(){
+        if(!userManager.isLogin()){
+            userManager.logOut(this);
+            return;
+        }
+        TokenRequest.refreshToken(userManager.getToken(), new RefreshTokenCallBack() {
+            @Override
+            protected void onTokenValid() {
+                loginToXmpp();
+            }
+
+            @Override
+            protected void onTokenInvalid() {
+                userManager.logOut(MainActivity.this);
+            }
+
+        });
+    }
 
 	private void loginToXmpp(){
 		XmppService.login(this);

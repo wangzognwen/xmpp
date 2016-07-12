@@ -50,6 +50,6 @@ public class XmppExceptionHandler {
      */
     private static void reLoginToXmpp(){
         if(!NetWorkUtil.isNetworkAvailable()) return;
-        XmppService.login(App.getInstance());
+       // XmppService.login(App.getInstance());
     }
 }

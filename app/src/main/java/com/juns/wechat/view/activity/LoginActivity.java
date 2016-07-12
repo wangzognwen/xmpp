@@ -1,15 +1,9 @@
 package com.juns.wechat.view.activity;
 
 import org.apache.http.message.BasicNameValuePair;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.sasl.SASLError;
-import org.jivesoftware.smack.sasl.SASLErrorException;
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,71 +11,60 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
-import com.juns.wechat.common.BaseActivity;
+import com.juns.wechat.annotation.Content;
+import com.juns.wechat.annotation.Id;
+import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.BaseCallBack;
-import com.juns.wechat.net.LoginResponse;
 import com.juns.wechat.net.UserRequest;
-import com.juns.wechat.util.LogUtil;
-import com.juns.wechat.util.ToastUtil;
-import com.juns.wechat.xmpp.event.XmppEvent;
-import com.juns.wechat.xmpp.XmppManagerUtil;
+import com.juns.wechat.net.callback.LoginCallBack;
+import com.juns.wechat.util.NetWorkUtil;
 
-import java.io.IOException;
-
-//登陆
-public class LoginActivity extends BaseActivity implements OnClickListener {
-	private TextView txt_title;
-	private ImageView img_back;
-	private Button btn_login, btn_register;
-	private EditText et_usertel, et_password;
+/**
+ * create by 王者 on 2016/7/12
+ */
+@Content(R.layout.activity_login)
+public class LoginActivity extends ToolbarActivity implements OnClickListener {
+    @Id
+	private Button btn_login;
+    @Id
+    private Button btn_register;
+    @Id
+	private EditText etInputName;
+    @Id
+    private EditText etPassWord;
     private String userName, password;
-
-    private Handler handler = new Handler();
+    private UserBean userBean = UserManager.getInstance().getCurrentLoginUser();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         initControl();
         setListener();
     }
 
 	protected void initControl() {
-		txt_title = (TextView) findViewById(R.id.txt_title);
-		txt_title.setText("登陆");
-		img_back = (ImageView) findViewById(R.id.img_back);
-		img_back.setVisibility(View.VISIBLE);
-		btn_login = (Button) findViewById(R.id.btn_login);
-		btn_register = (Button) findViewById(R.id.btn_qtlogin);
-		et_usertel = (EditText) findViewById(R.id.etInputName);
-		et_password = (EditText) findViewById(R.id.etPassWord);
+        findViewById(R.id.ivReturn).setVisibility(View.GONE);
+        if(userBean != null){
+            etInputName.setText(userBean.getUserName());
+            etPassWord.setText(userBean.getPassWord());
+            userName = userBean.getUserName();
+            password = userBean.getPassWord();
+            btn_login.setEnabled(true);
+        }
 	}
 
-
-    protected void initView() {
-
-    }
-
-    protected void initData() {
-
-    }
-
     protected void setListener() {
-		img_back.setOnClickListener(this);
 		btn_login.setOnClickListener(this);
 		btn_register.setOnClickListener(this);
 		findViewById(R.id.tv_wenti).setOnClickListener(this);
-		et_usertel.addTextChangedListener(new TextChange());
-		et_password.addTextChangedListener(new TextChange());
+		etInputName.addTextChangedListener(new TextChange());
+		etPassWord.addTextChangedListener(new TextChange());
 	}
 
 	@Override
@@ -96,7 +79,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					new BasicNameValuePair(Constants.URL,
 							"http://weixin.qq.com/"));
 			break;
-		case R.id.btn_qtlogin:
+		case R.id.btn_register:
 			startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
 			overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
 			break;
@@ -109,41 +92,41 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void startLogin() {
-		userName = et_usertel.getText().toString().trim();
-		password = et_password.getText().toString().trim();
-		getLoadingDialog("正在登录...").show();
-		startLogin(userName, password);
-	}
-
-	private void startLogin(final String userName, final String password) {
-		if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(password)) {
+		userName = etInputName.getText().toString().trim();
+		password = etPassWord.getText().toString().trim();
+        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(password)) {
             login(userName, password);
-		} else {
-			Utils.showLongToast(LoginActivity.this, "请填写账号或密码！");
-		}
+        } else {
+            showToast("请填写账号或密码！");
+        }
 	}
 
     private void login(String userName, String password){
+        if(!NetWorkUtil.isNetworkAvailable()){
+            showToast(R.string.toast_network_unavailable);
+            return;
+        }
+        getLoadingDialog("正在登录...").show();
         UserRequest.login(userName, password, loginCallBack);
     }
 
-    private BaseCallBack<LoginResponse> loginCallBack = new BaseCallBack<LoginResponse>() {
-        @Override
-        public void onSuccess(LoginResponse result) {
-            getLoadingDialog("正在登录...").dismiss();
-            if(result.code == 0){
-                UserManager.getInstance().saveOrUpdateUser(result.userBean);
-                UserManager.getInstance().setToken(result.token);
-                Utils.start_Activity(LoginActivity.this, MainActivity.class);
-                Utils.finish(LoginActivity.this);
-            }else if(result.code == 1){
-                showToast("用户名或密码不正确");
-            }
-        }
+    private LoginCallBack loginCallBack = new LoginCallBack() {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
             showToast(R.string.toast_network_error);
+            getLoadingDialog("正在登录...").dismiss();
+        }
+
+        @Override
+        protected void handleLoginSuccess() {
+            Utils.start_Activity(LoginActivity.this, MainActivity.class);
+            Utils.finish(LoginActivity.this);
+        }
+
+        @Override
+        protected void handleLoginFailed() {
+            showToast("用户名或密码错误");
             getLoadingDialog("正在登录...").dismiss();
         }
     };
@@ -165,8 +148,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		@Override
 		public void onTextChanged(CharSequence cs, int start, int before,
 				int count) {
-			boolean Sign2 = et_usertel.getText().length() > 0;
-			boolean Sign3 = et_password.getText().length() > 4;
+			boolean Sign2 = etInputName.getText().length() > 0;
+			boolean Sign3 = etPassWord.getText().length() > 4;
 			if (Sign2 & Sign3) {
 				btn_login.setBackgroundDrawable(getResources().getDrawable(
 						R.drawable.btn_bg_green));

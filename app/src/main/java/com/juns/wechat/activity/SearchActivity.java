@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
+import com.juns.wechat.annotation.Content;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 /**
  * Created by 王宗文 on 2016/6/20.
  */
+@Content(R.layout.activity_search)
 public class SearchActivity extends BaseActivity {
 
     private EditText etSearch;
@@ -32,7 +34,6 @@ public class SearchActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
         initView();
         setListener();
     }

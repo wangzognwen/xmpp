@@ -461,9 +461,9 @@ public class AddGroupChatActivity extends BaseActivity implements
 						if (user != null) {
 							if (i < 3) {
 								if (i == 0)
-									groupName = user.getUserName();
+									groupName = user.getCurrentLoginUserName();
 								else
-									groupName += "、" + user.getUserName();
+									groupName += "、" + user.getCurrentLoginUserName();
 							} else if (i == 4) {
 								groupName += "...";
 							}

@@ -10,10 +10,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 
 import com.juns.wechat.R;
+import com.juns.wechat.util.LogUtil;
+
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 
 /**
  * ****************************************************
@@ -24,8 +27,48 @@ import java.lang.reflect.Method;
  * *****************************************************
  */
 public class AnnotationUtil {
+    private static final HashSet<Class<?>> IGNORED = new HashSet<Class<?>>();
+    static {
+        IGNORED.add(Object.class);
+        IGNORED.add(Activity.class);
+        IGNORED.add(android.app.Fragment.class);
+        try {
+            IGNORED.add(Class.forName("android.support.v4.app.Fragment"));
+            IGNORED.add(Class.forName("android.support.v4.app.FragmentActivity"));
+        } catch (Throwable ignored) {
+        }
+    }
+
     public static void initAnnotation(FragmentActivity activity){
+        //获取Activity的ContentView的注解
+        Class<?> handlerType = activity.getClass();
+        try {
+            Content contentView = findContentView(handlerType);
+            if (contentView != null) {
+                int viewId = contentView.value();
+                if (viewId > 0) {
+                    Method setContentViewMethod = handlerType.getMethod("setContentView", int.class);
+                    setContentViewMethod.invoke(activity, viewId);
+                }
+            }
+        } catch (Throwable ex) {
+            LogUtil.e(ex.getMessage(), ex);
+        }
         initAnnotation(activity, activity.getWindow().getDecorView());
+    }
+
+    /**
+     * 从父类获取注解View
+     */
+    private static Content findContentView(Class<?> thisCls) {
+        if (thisCls == null || IGNORED.contains(thisCls)) {
+            return null;
+        }
+        Content contentView = thisCls.getAnnotation(Content.class);
+        if (contentView == null) {
+            return findContentView(thisCls.getSuperclass());
+        }
+        return contentView;
     }
 
     public static void initAnnotation(Fragment fragment){

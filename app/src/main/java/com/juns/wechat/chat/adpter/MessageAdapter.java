@@ -357,7 +357,7 @@ public class MessageAdapter extends BaseAdapter {
 				&& message.direct == EMMessage.Direct.RECEIVE) {
 			// juns 好友名字
 			// User user = GloableParams.Users.get(message.getFrom());
-			// holder.tv_userId.setText(user.getUserName());
+			// holder.tv_userId.setText(user.getCurrentLoginUserName());
 		}
 		// 如果是发送的消息并且不是群聊消息，显示已读textview
 		if (message.direct == EMMessage.Direct.SEND

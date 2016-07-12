@@ -29,7 +29,7 @@ public class UserBean {
     public int id;//
     @Column(name = "userName")
     public String userName;// 用户名
-    @Column(name = "userName")
+    @Column(name = "nickName")
     public String nickName; //昵称
     @Column(name = "passWord")
     public String passWord;// 头像保存路径
@@ -50,7 +50,7 @@ public class UserBean {
     @Column(name = "createDate")
     public Date createDate;
     @Column(name = "modifyDate")
-    public Date modifyDate;
+    public long modifyDate;
 
     public UserBean(){
 
@@ -157,11 +157,11 @@ public class UserBean {
 		this.id = id;
 	}
 
-    public Date getModifyDate() {
+    public long getModifyDate() {
         return modifyDate;
     }
 
-    public void setModifyDate(Date modifyDate) {
+    public void setModifyDate(long modifyDate) {
         this.modifyDate = modifyDate;
     }
 

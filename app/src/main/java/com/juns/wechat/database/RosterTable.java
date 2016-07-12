@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by 王宗文 on 2016/6/14.
  */
 public class RosterTable {
-    public static final String TABLE_NAME = "wcroster";
+    public static final String TABLE_NAME = "wcRoster";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_OWNER_NAME = "ownerName";

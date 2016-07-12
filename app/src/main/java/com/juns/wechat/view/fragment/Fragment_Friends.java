@@ -94,7 +94,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	}
 
 	private void initData() {
-        String ownerName = UserManager.getInstance().getUser().getUserName();
+        String ownerName = UserManager.getInstance().getCurrentLoginUser().getUserName();
 	    rosterBeans = rosterDao.queryAllByOwner(ownerName);
         contactAdapter.setData(rosterBeans);
 	}

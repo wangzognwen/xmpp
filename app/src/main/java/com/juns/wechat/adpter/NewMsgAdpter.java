@@ -94,7 +94,7 @@ public class NewMsgAdpter extends BaseAdapter {
 			// 获取与此用户/群组的会话
 		//	final EMConversation conversation = conversationList.get(position);
 			// 获取用户username或者群组groupid
-			//ChatID = conversation.getUserName();
+			//ChatID = conversation.getCurrentLoginUserName();
 			txt_del.setTag(ChatID);
 			/*if (conversation.isGroup()) {
 				img_avar.setImageResource(R.drawable.defult_group);
@@ -107,7 +107,7 @@ public class NewMsgAdpter extends BaseAdapter {
 			} else {
 				User user = GloableParams.Users.get(ChatID);
 				if (user != null) {
-					txt_name.setText(user.getUserName());
+					txt_name.setText(user.getCurrentLoginUserName());
 				} else {
 					txt_name.setText("好友");
 					UserUtils.initUserInfo(context, ChatID, img_avar, txt_name);// 获取用户信息
@@ -163,7 +163,7 @@ public class NewMsgAdpter extends BaseAdapter {
 		public void onClick(DialogInterface dialog, int which) {
 		/*	EMConversation conversation = conversationList.get(deleteID);
 			EMChatManager.getDbManager().deleteConversation(
-					conversation.getUserName());
+					conversation.getCurrentLoginUserName());
 			// Utils.showLongToast((Activity) context, "删除成功");
 			conversationList.remove(deleteID);
 			notifyDataSetChanged();
@@ -187,8 +187,8 @@ public class NewMsgAdpter extends BaseAdapter {
 				String name = message.getFrom();
 				if (GloableParams.UserInfos != null) {
 					User user = GloableParams.Users.get(message.getFrom());
-					if (user != null && null != user.getUserName())
-						name = user.getUserName();
+					if (user != null && null != user.getCurrentLoginUserName())
+						name = user.getCurrentLoginUserName();
 				}
 				digest = String.format(digest, name);
 				return digest;

@@ -5,7 +5,7 @@
     android:background="#ffffff"
     android:orientation="vertical" >
 
-    <include layout="@layout/layout_title"/>
+    <include android:id="@+id/toolbar" layout="@layout/comm_toolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -136,7 +136,7 @@
             android:layout_margin="33dp"
             android:padding="8dp"
             android:background="#F0F0F0"
-            android:id="@+id/btn_qtlogin"
+            android:id="@+id/btn_register"
             android:layout_width="80dp"
             android:layout_height="33dp"
             android:layout_alignParentBottom="true"

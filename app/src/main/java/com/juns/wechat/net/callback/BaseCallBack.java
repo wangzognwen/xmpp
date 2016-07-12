@@ -1,4 +1,6 @@
-package com.juns.wechat.net;
+package com.juns.wechat.net.callback;
+
+import com.juns.wechat.net.HttpEvent;
 
 import org.simple.eventbus.EventBus;
 import org.xutils.common.Callback;
@@ -11,13 +13,6 @@ public abstract class BaseCallBack<T> implements Callback.CommonCallback<T>{
 
     public BaseCallBack(){
         httpEvent = new HttpEvent();
-    }
-
-    @Override
-    public void onError(Throwable ex, boolean isOnCallback) {
-        httpEvent.setResultCode(HttpEvent.ERROR);
-        httpEvent.setException(new Exception(ex));
-        EventBus.getDefault().post(httpEvent);
     }
 
     @Override

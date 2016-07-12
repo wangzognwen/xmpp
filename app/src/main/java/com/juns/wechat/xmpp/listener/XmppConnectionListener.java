@@ -3,8 +3,10 @@ package com.juns.wechat.xmpp.listener;
 
 import android.text.TextUtils;
 
+import com.juns.wechat.App;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.iq.IQUserInfo;
 import com.juns.wechat.xmpp.provider.UserInfoProvider;
@@ -26,9 +28,7 @@ import org.jivesoftware.smack.packet.StreamError;
  *******************************************************/
 public class XmppConnectionListener implements ConnectionListener {
     @Override
-    public void connected(XMPPConnection connection) {
-        LogUtil.i("connected!");
-    }
+    public void connected(XMPPConnection connection) {}
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
@@ -50,7 +50,7 @@ public class XmppConnectionListener implements ConnectionListener {
             StreamError streamError = exception.getStreamError();
             StreamError.Condition condition = streamError.getCondition();
             if(condition.toString().equals("conflict")){
-
+                UserManager.getInstance().logOut(App.getInstance());
             }
         }
     }

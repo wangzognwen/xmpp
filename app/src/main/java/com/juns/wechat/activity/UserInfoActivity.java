@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
+import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.ToolbarActivity;
@@ -20,6 +21,7 @@ import com.juns.wechat.util.ToolBarUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //好友详情
+@Content(R.layout.activity_friendmsg)
 public class UserInfoActivity extends ToolbarActivity implements OnClickListener {
 	private TextView tv_name, tv_accout;
 	private String Name, UserId;
@@ -28,7 +30,6 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friendmsg);
         setToolbarRight(2, R.drawable.icon_more);
         initView();
         initData();

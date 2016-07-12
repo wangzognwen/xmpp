@@ -39,4 +39,5 @@
 
     <string name="label_activity_user_info">详细资料</string>
     <string name="label_activity_register">注册</string>
+    <string name="label_activity_login">登录</string>
 </resources>

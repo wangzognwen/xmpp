@@ -63,7 +63,7 @@ public class XmppService extends Service {
         String action = intent.getAction();
         if(TextUtils.isEmpty(action)) return;
         if(ACTION_LOGIN.equals(action)){
-            UserBean user = UserManager.getInstance().getUser();
+            UserBean user = UserManager.getInstance().getCurrentLoginUser();
             login(user.getUserName(), user.getPassWord());
         }
     }

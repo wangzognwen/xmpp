@@ -1,11 +1,9 @@
 package com.juns.wechat.net;
 
-import android.widget.Toast;
-
-import com.juns.wechat.R;
 import com.juns.wechat.config.ConfigUtil;
-import com.juns.wechat.util.NetWorkUtil;
-import com.juns.wechat.util.ToastUtil;
+import com.juns.wechat.net.callback.BaseCallBack;
+import com.juns.wechat.net.callback.LoginCallBack;
+import com.juns.wechat.net.response.RegisterResponse;
 
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
@@ -16,16 +14,18 @@ import org.xutils.x;
  */
 
 public class UserRequest extends RequestParams {
+    private static final String URL = ConfigUtil.REAL_API_URL;
 
     public static void register(String userName, String passWord, BaseCallBack<RegisterResponse> callBack){
         x.http().post(new RegisterParams(userName, passWord), callBack);
     }
 
 
-    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "addUser")
+    @HttpRequest(host = URL, path = "addUser")
     public static class RegisterParams extends RequestParams{
         private String userName;
         private String passWord;
+
 
         public RegisterParams(String userName, String passWord){
             this.userName = userName;
@@ -44,7 +44,7 @@ public class UserRequest extends RequestParams {
         }
     }
 
-    public static void login(String userName, String passWord, BaseCallBack<LoginResponse> callBack){
+    public static void login(String userName, String passWord, LoginCallBack callBack){
         x.http().post(new LoginParams(userName, passWord), callBack);
     }
 

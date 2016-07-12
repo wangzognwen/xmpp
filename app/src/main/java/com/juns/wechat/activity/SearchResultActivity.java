@@ -7,11 +7,13 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.SearchResultAdapter;
+import com.juns.wechat.annotation.Content;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.xmpp.bean.SearchResult;
 
 import java.util.List;
 
+@Content(R.layout.activity_search_result)
 public class SearchResultActivity extends BaseActivity {
     public static final String ARG_SEARCH_RESULTS = "search_results";
 
@@ -22,7 +24,6 @@ public class SearchResultActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
         init();
     }
 

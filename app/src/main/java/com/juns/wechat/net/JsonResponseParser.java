@@ -21,26 +21,8 @@ import java.util.List;
  * Created by 王宗文 on 15/11/5.
  */
 public class JsonResponseParser implements ResponseParser {
-    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").
-            registerTypeAdapter(UserBean.class, new MyJsonDeserializer()).create();
+    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
-
-
-    class MyJsonDeserializer implements JsonDeserializer<UserBean>{
-
-        @Override
-        public UserBean deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            UserBean userBean = new UserBean();
-            JsonObject jsonObject = json.getAsJsonObject();
-            userBean.setUserName(jsonObject.get(UserBean.USERNAME).getAsString());
-            userBean.setPassWord(jsonObject.get(UserBean.PASSWORD).getAsString());
-            long createTime = jsonObject.get(UserBean.CREATE_DATE).getAsLong();
-            userBean.setCreateDate(new Date(createTime));
-            long modifyTime = jsonObject.get(UserBean.MODIFY_DATE).getAsLong();
-            userBean.setModifyDate(new Date(modifyTime));
-            return userBean;
-        }
-    }
 
     @Override
     public void checkResponse(UriRequest request) throws Throwable {

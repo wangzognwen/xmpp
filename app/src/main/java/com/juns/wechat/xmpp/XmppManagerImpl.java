@@ -78,8 +78,9 @@ public class XmppManagerImpl implements XmppManager {
         if(xmppConnection == null){
             xmppConnection = XmppConnUtil.getXmppConnection();
         }
-        if(xmppConnection.isConnected()) return true;
-
+        if(xmppConnection.isConnected()){
+            return true;
+        }
         xmppConnection.connect();
         registerListener();
         return true;

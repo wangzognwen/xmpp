@@ -1,6 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -14,19 +13,15 @@ import android.widget.EditText;
 
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
+import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.BaseCallBack;
-import com.juns.wechat.net.BaseResponse;
-import com.juns.wechat.net.LoginResponse;
-import com.juns.wechat.net.RegisterResponse;
+import com.juns.wechat.net.callback.BaseCallBack;
+import com.juns.wechat.net.response.RegisterResponse;
 import com.juns.wechat.net.UserRequest;
-import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.net.callback.LoginCallBack;
 import com.juns.wechat.util.NetWorkUtil;
-import com.juns.wechat.xmpp.XmppManagerUtil;
-import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
@@ -36,7 +31,7 @@ import org.xutils.view.annotation.ViewInject;
  * 用户注册
  * create by 王者 on 2061/2/7
  */
-@ContentView(R.layout.activity_register)
+@Content(R.layout.activity_register)
 public class RegisterActivity extends ToolbarActivity implements OnClickListener {
     @ViewInject(R.id.btnRegister)
 	private Button btn_register;
@@ -155,26 +150,26 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 		UserRequest.login(userName, passWord, loginCallBack);
     }
 
-	private BaseCallBack<LoginResponse> loginCallBack = new BaseCallBack<LoginResponse>() {
-		@Override
-		public void onSuccess(LoginResponse result) {
-			getLoadingDialog("正在注册...").dismiss();
-			if(result.code == 0){
-				UserManager.getInstance().saveOrUpdateUser(result.userBean);
-				UserManager.getInstance().setToken(result.token);
-				Utils.start_Activity(RegisterActivity.this, MainActivity.class);
-				Utils.finish(RegisterActivity.this);
-			}else if(result.code == 1){
-				showToast("用户名或密码不正确");
-			}
-		}
+    private LoginCallBack loginCallBack = new LoginCallBack() {
 
-		@Override
-		public void onError(Throwable ex, boolean isOnCallback) {
-			showToast(R.string.toast_network_error);
-			getLoadingDialog("正在注册...").dismiss();
-		}
-	};
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            showToast(R.string.toast_network_error);
+            getLoadingDialog("正在登录...").dismiss();
+        }
+
+        @Override
+        protected void handleLoginSuccess() {
+            Utils.start_Activity(RegisterActivity.this, MainActivity.class);
+            Utils.finish(RegisterActivity.this);
+        }
+
+        @Override
+        protected void handleLoginFailed() {
+            showToast("用户名或密码错误");
+            getLoadingDialog("正在登录...").dismiss();
+        }
+    };
 
 	// 手机号 EditText监听器
 	class TelTextChange implements TextWatcher {

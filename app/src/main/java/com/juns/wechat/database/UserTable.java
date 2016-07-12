@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by Administrator on 2016/6/20.
  */
 public class UserTable {
-    public static final String TABLE_NAME = "users";
+    public static final String TABLE_NAME = "wcUser";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_USER_NAME = "userName";
