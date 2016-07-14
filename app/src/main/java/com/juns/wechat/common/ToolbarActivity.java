@@ -14,6 +14,12 @@ public class ToolbarActivity extends BaseActivity {
     protected Toolbar toolbar;
 
     @Override
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        toolbar = ToolBarUtil.setToolBar(this);
+    }
+
+  /*  @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         toolbar = ToolBarUtil.setToolBar(this);
@@ -29,7 +35,7 @@ public class ToolbarActivity extends BaseActivity {
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
         toolbar = ToolBarUtil.setToolBar(this);
-    }
+    }*/
 
     protected void setToolbarTitle(String text){
         ToolBarUtil.setTitle(this, text);

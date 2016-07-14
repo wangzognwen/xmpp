@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
+import com.juns.wechat.activity.MyProfileActivity;
 import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.activity.MyCodeActivity;
@@ -77,7 +78,7 @@ public class Fragment_Profile extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.view_user:
-			Utils.start_Activity(getActivity(), MyCodeActivity.class);
+			Utils.start_Activity(getActivity(), MyProfileActivity.class);
 			break;
 		case R.id.txt_album:// 相册
 			Utils.start_Activity(getActivity(), PublicActivity.class,

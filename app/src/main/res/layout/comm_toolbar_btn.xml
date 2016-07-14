@@ -34,25 +34,17 @@
 
         <TextView
             android:id="@+id/tvRightText"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="10dip"
+            android:layout_width="48dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
-            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/btn_register_bg"
+            android:gravity="center"
+            android:text="保存"
             android:textColor="@color/white"
             android:textSize="16sp"
             />
-
-        <ImageView
-            android:id="@+id/ivRightBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"
-            android:padding="10dip"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"/>
 
     </RelativeLayout>
 

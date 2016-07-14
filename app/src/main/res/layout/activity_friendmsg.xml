@@ -118,7 +118,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tv_sign"
+                android:id="@+id/tvSignature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

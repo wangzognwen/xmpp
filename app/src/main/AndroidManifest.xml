@@ -41,7 +41,6 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
@@ -56,6 +55,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -65,19 +65,19 @@
         </activity>
         <activity
             android:name=".view.activity.LoginActivity"
-            android:screenOrientation="portrait"
+            android:label="@string/label_activity_login"
             android:launchMode="singleTop"
-            android:label="@string/label_activity_login">
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".view.activity.RegisterActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/label_activity_register">
+            android:label="@string/label_activity_register"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.UserInfoActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/label_activity_user_info">
+            android:label="@string/label_activity_user_info"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".view.activity.PublishUserListActivity"
@@ -291,7 +291,11 @@
 
         <activity android:name=".activity.SearchResultActivity">
         </activity>
-        <activity android:name=".common.ToolbarActivity">
+        <activity android:name=".activity.MyProfileActivity"
+            android:label="@string/label_activity_my_profile">
+        </activity>
+        <activity android:name=".activity.ModifyNameActivity"
+            android:label="@string/label_activity_modify_name">
         </activity>
     </application>
 
