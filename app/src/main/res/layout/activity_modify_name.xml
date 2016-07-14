@@ -16,7 +16,7 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/edittext_login"
         android:singleLine="true"
-
+        android:maxLength="12"
         android:textColor="#353535"
         android:textSize="16sp" />
 

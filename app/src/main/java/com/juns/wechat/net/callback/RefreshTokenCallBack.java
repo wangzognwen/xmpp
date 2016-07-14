@@ -12,7 +12,7 @@ public abstract class RefreshTokenCallBack extends BaseCallBack<TokenResponse>{
         if(result.code == 0){
             resetToken(result.token);
             onTokenValid();
-        }else if(result.code == 1 || result.code == 2){
+        }else{
             resetToken(null);
             onTokenInvalid();
         }

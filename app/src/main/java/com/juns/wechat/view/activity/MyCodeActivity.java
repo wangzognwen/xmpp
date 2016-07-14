@@ -50,8 +50,8 @@ public class MyCodeActivity extends BaseActivity implements OnClickListener {
 		txt_title.setText("我的二维码");
 		img_back = (ImageView) findViewById(R.id.img_back);
 		img_back.setVisibility(View.VISIBLE);
-		tvname = (TextView) findViewById(R.id.tvname);
-		tv_accout = (TextView) findViewById(R.id.tvmsg);
+		tvname = (TextView) findViewById(R.id.tvNickName);
+		tv_accout = (TextView) findViewById(R.id.tvUserName);
 	}
 
 	@Override

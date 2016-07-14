@@ -7,6 +7,7 @@ import com.juns.wechat.database.DbUtil;
 
 import net.tsz.afinal.FinalDb;
 
+import org.simple.eventbus.EventBus;
 import org.xutils.DbManager;
 import org.xutils.db.Selector;
 import org.xutils.db.sqlite.SqlInfo;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class BaseDao<T> implements IDao<T> {
     private DbManager dbManager;
     private Class<T> clazz;
+    private DataEvent<T> dataEvent;
 
     public BaseDao(){
         dbManager = DbUtil.getDbManager();
@@ -95,6 +97,10 @@ public class BaseDao<T> implements IDao<T> {
     public boolean replace(T t) {
         try {
             dbManager.replace(t);
+            dataEvent = new DataEvent();
+            dataEvent.action = DataEvent.REPLACE_ONE;
+            dataEvent.data = t;
+            EventBus.getDefault().post(dataEvent);
             return true;
         } catch (DbException e) {
             e.printStackTrace();

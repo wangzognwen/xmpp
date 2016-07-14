@@ -27,7 +27,7 @@ public class RosterLoadedListenerImpl implements RosterLoadedListener {
         List<RosterBean> rosterBeans = new ArrayList<>();
         for(RosterEntry rosterEntry : rosterEntrySet){
             RosterBean rosterBean = new RosterBean();
-            rosterBean.setOwnerName(UserManager.getInstance().getCurrentLoginUser().getUserName());
+            rosterBean.setOwnerName(UserManager.getInstance().getUser().getUserName());
             rosterBean.setContactName(ConfigUtil.getUserName(rosterEntry.getUser()));
             rosterBean.setSubType(rosterEntry.getType().toString());
             rosterBean.setRemark(rosterEntry.getName());

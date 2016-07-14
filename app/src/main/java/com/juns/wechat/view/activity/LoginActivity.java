@@ -39,7 +39,7 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
     @Id
     private EditText etPassWord;
     private String userName, password;
-    private UserBean userBean = UserManager.getInstance().getCurrentLoginUser();
+    private UserBean userBean = UserManager.getInstance().getUser();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

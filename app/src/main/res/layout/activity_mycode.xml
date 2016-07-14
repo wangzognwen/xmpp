@@ -34,7 +34,7 @@
                 android:src="@drawable/head" />
 
             <TextView
-                android:id="@+id/tvname"
+                android:id="@+id/tvNickName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="17dp"
@@ -43,16 +43,16 @@
                 android:textSize="18.0dip" />
 
             <TextView
-                android:id="@+id/tvmsg"
+                android:id="@+id/tvUserName"
                 style="@style/txt_ContextStyle1"
-                android:layout_below="@+id/tvname"
+                android:layout_below="@+id/tvNickName"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/head"
                 android:text="微信号：dada20150625"
                 android:textSize="14.0dip" />
               <ImageView
                     android:id="@+id/iv_sex"
-                    android:layout_toRightOf="@+id/tvname"
+                    android:layout_toRightOf="@+id/tvNickName"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
 					android:layout_marginTop="22dp"

@@ -16,8 +16,6 @@ import com.juns.wechat.xmpp.XmppManager;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.XmppManagerUtil;
 
-import org.xutils.x;
-
 
 /*******************************************************
  * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>
@@ -36,7 +34,7 @@ public class XmppService extends Service {
     public static final String ACTION_LOGIN = "login";
     public static final String ACTION_DESTROY = "destroy";
 
-    private UserBean user = UserManager.getInstance().getCurrentLoginUser();
+    private UserBean user = UserManager.getInstance().getUser();
 
 
     @Override

@@ -53,7 +53,7 @@ public class UserManager {
         }
     }
 
-    public UserBean getCurrentLoginUser(){
+    public UserBean getUser(){
         return user;
     }
 

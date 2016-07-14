@@ -43,7 +43,7 @@
             android:src="@drawable/user_ba" />
 
             <TextView
-                android:id="@+id/tvname"
+                android:id="@+id/tvNickName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="夏天到了，你还准备去哪呢？ 撒大大四大阿萨飒飒"

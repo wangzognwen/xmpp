@@ -56,19 +56,6 @@ public class UserBean {
 
     }
 
-    public UserBean(Cursor cursor){
-        id = cursor.getInt(cursor.getColumnIndex(UserTable.COLUMN_ID));
-        userName = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_USER_NAME));
-        passWord = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_PASSWORD));
-        telephone = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_TELEPHONE));
-        headUrl = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_HEAD_URL));
-        signature = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_SIGNATURE));
-        sex = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_SEX));
-        location = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_LOCATION));
-        birthday = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_BIRTHDAY));
-        type = cursor.getString(cursor.getColumnIndex(UserTable.COLUMN_TYPE));
-    }
-
 	public String getType() {
 		return type;
 	}

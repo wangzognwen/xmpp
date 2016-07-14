@@ -3,7 +3,10 @@ package com.juns.wechat.net;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.callback.LoginCallBack;
+import com.juns.wechat.net.callback.UpdateUserCallBack;
+import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.response.RegisterResponse;
+import com.juns.wechat.net.response.UpdateUserResponse;
 
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
@@ -46,6 +49,23 @@ public class UserRequest extends RequestParams {
 
     public static void login(String userName, String passWord, LoginCallBack callBack){
         x.http().post(new LoginParams(userName, passWord), callBack);
+    }
+
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "updateUser")
+    public static class UpdateUserParams extends RequestParams{
+        private String userName;
+        private String field;
+        private Object value;
+
+        public UpdateUserParams(String userName, String field, Object value){
+            this.userName = userName;
+            this.field = field;
+            this.value = value;
+        }
+    }
+
+    public static void updateUser(String userName, String field, Object value, UpdateUserCallBack callBack){
+        x.http().post(new UpdateUserParams(userName, field, value), callBack);
     }
 
 }

@@ -13,12 +13,10 @@ public abstract class LoginCallBack extends BaseCallBack<LoginResponse>{
         if(result.code == 0){
            saveUserInfo(result.userBean, result.token);
            handleLoginSuccess();
-        }else if(result.code == 1){
+        }else{
             handleLoginFailed();
         }
     }
-
-
 
     private void saveUserInfo(UserBean userBean, String token){
         UserManager.getInstance().setCurrentLoginUser(userBean);
