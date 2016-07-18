@@ -29,7 +29,7 @@ public class App extends FrontiaApplication {
 	public void onCreate() {
 		super.onCreate();
 		_context = getApplicationContext();
-		initEMChat();
+		//initEMChat();
 		FrontiaApplication.initFrontiaApplication(this);
 		// CrashHandler crashHandler = CrashHandler.getDbManager();// 全局异常捕捉
 		// crashHandler.init(_context);

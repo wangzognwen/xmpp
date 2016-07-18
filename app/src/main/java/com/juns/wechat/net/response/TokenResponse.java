@@ -9,8 +9,6 @@ import org.xutils.http.annotation.HttpResponse;
  */
 @HttpResponse(parser = JsonResponseParser.class)
 public class TokenResponse extends BaseResponse{
-    public static final int TOKEN_EXPIRED = 1;
-    public static final int TOKEN_INVALID = 2;
 
     public String token;
 }

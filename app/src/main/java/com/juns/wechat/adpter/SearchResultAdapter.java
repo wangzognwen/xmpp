@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
+import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.util.ImageUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
 
 import net.tsz.afinal.FinalBitmap;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 public class SearchResultAdapter extends BaseAdapter {
     private Context context;
-    private List<SearchResult> searchResults;
+    private List<UserBean> searchResults;
     private FinalBitmap finalBitmap;
 
     public SearchResultAdapter(Context context){
@@ -28,7 +30,7 @@ public class SearchResultAdapter extends BaseAdapter {
         finalBitmap = FinalBitmap.create(context);
     }
 
-    public void setData(List<SearchResult> searchResults){
+    public void setData(List<UserBean> searchResults){
         this.searchResults = searchResults;
         notifyDataSetChanged();
     }
@@ -52,7 +54,7 @@ public class SearchResultAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.listview_item_search_result, parent, false);
             viewHolder = new ViewHolder();
@@ -63,8 +65,10 @@ public class SearchResultAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        SearchResult searchResult = searchResults.get(position);
-        viewHolder.tvName.setText(searchResult.userName == null ? "" : searchResult.userName);
+        UserBean userBean = searchResults.get(position);
+        viewHolder.tvName.setText(userBean.getUserName());
+        ImageUtil.loadImage(viewHolder.ivIcon, userBean.getHeadUrl());
+        viewHolder.tvDesc.setText(userBean.getSignature() == null ? "" : userBean.getSignature());
         return convertView;
     }
 

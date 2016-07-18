@@ -17,13 +17,14 @@ import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
+import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.net.callback.BaseCallBack;
+import com.juns.wechat.net.response.LoginResponse;
 import com.juns.wechat.net.response.RegisterResponse;
-import com.juns.wechat.net.UserRequest;
+import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.LoginCallBack;
 import com.juns.wechat.util.NetWorkUtil;
 
-import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 
 
@@ -121,28 +122,31 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
     }
 
     private BaseCallBack<RegisterResponse> registerCallBack = new BaseCallBack<RegisterResponse>(){
-        @Override
-        public void onSuccess(RegisterResponse result) {
-			if(result.code == 0){
-				login();
-			}else if(result.code == 1){  //参数错误
-				getLoadingDialog("正在注册...").dismiss();
-				if(result.errField.equalsIgnoreCase(UserBean.USERNAME)){
-					showToast("用户名不合法");
-				}else if(result.errField.equalsIgnoreCase(UserBean.PASSWORD)){
-					showToast("密码长度不能小于6位");
-				}
-			}else if(result.code == 2){
-				getLoadingDialog("正在注册...").dismiss();
-				showToast("该用户已注册，可以直接登录");
-			}
 
+        @Override
+        protected void handleSuccess(RegisterResponse result) {
+            login();
+        }
+
+        @Override
+        protected void handleFailed(RegisterResponse result) {
+            if(result.code == 1){  //参数错误
+                getLoadingDialog("正在注册...").dismiss();
+                if(result.errField.equalsIgnoreCase(UserBean.USERNAME)){
+                    showToast("用户名不合法");
+                }else if(result.errField.equalsIgnoreCase(UserBean.PASSWORD)){
+                    showToast("密码长度不能小于6位");
+                }
+            }else if(result.code == 2){
+                getLoadingDialog("正在注册...").dismiss();
+                showToast("该用户已注册，可以直接登录");
+            }
         }
 
 		@Override
 		public void onError(Throwable ex, boolean isOnCallback) {
+            super.onError(ex, isOnCallback);
 			getLoadingDialog("正在注册...").dismiss();
-			showToast(R.string.toast_network_error);
 		}
 	};
 
@@ -153,21 +157,23 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
     private LoginCallBack loginCallBack = new LoginCallBack() {
 
         @Override
-        public void onError(Throwable ex, boolean isOnCallback) {
-            showToast(R.string.toast_network_error);
-            getLoadingDialog("正在登录...").dismiss();
-        }
-
-        @Override
-        protected void handleLoginSuccess() {
+        protected void handleSuccess(LoginResponse result) {
+            super.handleSuccess(result);
+            UserManager.getInstance().setUserPassWord(passWord);
             Utils.start_Activity(RegisterActivity.this, MainActivity.class);
             Utils.finish(RegisterActivity.this);
         }
 
         @Override
-        protected void handleLoginFailed() {
+        protected void handleFailed(LoginResponse result) {
             showToast("用户名或密码错误");
-            getLoadingDialog("正在登录...").dismiss();
+            getLoadingDialog("正在注册...").dismiss();
+        }
+
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            showToast(R.string.toast_network_error);
+            getLoadingDialog("正在注册...").dismiss();
         }
     };
 

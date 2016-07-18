@@ -6,7 +6,7 @@
     android:layout_height="48dp"
     android:minHeight="48dp"
     app:theme="@style/AppTheme.Toolbar"
-    android:background="@color/black"
+    android:background="@color/bar_color"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp">
 

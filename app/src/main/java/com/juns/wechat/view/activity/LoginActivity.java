@@ -21,8 +21,9 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.UserRequest;
+import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.LoginCallBack;
+import com.juns.wechat.net.response.LoginResponse;
 import com.juns.wechat.util.NetWorkUtil;
 
 /**
@@ -113,20 +114,22 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
     private LoginCallBack loginCallBack = new LoginCallBack() {
 
         @Override
-        public void onError(Throwable ex, boolean isOnCallback) {
-            showToast(R.string.toast_network_error);
-            getLoadingDialog("正在登录...").dismiss();
-        }
-
-        @Override
-        protected void handleLoginSuccess() {
+        protected void handleSuccess(LoginResponse result) {
+            super.handleSuccess(result);
+            UserManager.getInstance().setUserPassWord(password);
             Utils.start_Activity(LoginActivity.this, MainActivity.class);
             Utils.finish(LoginActivity.this);
         }
 
         @Override
-        protected void handleLoginFailed() {
+        protected void handleFailed(LoginResponse result) {
             showToast("用户名或密码错误");
+            getLoadingDialog("正在登录...").dismiss();
+        }
+
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            showToast(R.string.toast_network_error);
             getLoadingDialog("正在登录...").dismiss();
         }
     };

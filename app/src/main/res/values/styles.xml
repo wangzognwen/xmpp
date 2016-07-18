@@ -94,11 +94,16 @@
         <item name="android:windowExitAnimation">@anim/m_down_dialog</item>
          <item name="android:windowIsTranslucent">true</item>
     </style>
-      <style name="Transparent">    
-    <item name="android:windowBackground">@color/transparent2</item>    
-    <item name="android:windowNoTitle">true</item>    
-    <item name="android:windowFullscreen">true</item>  
-    <item name="android:windowIsTranslucent">true</item>       
-    <item name="android:windowAnimationStyle">@+android:style/Animation.Translucent</item>    
-  </style>  
+    <style name="Transparent">
+        <item name="android:windowBackground">@color/transparent2</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+
+    <declare-styleable name="ClipImageLayout">
+        <attr name="horizontal_padding" format="dimension" />
+        <attr name="crop_image" format="integer" />
+    </declare-styleable>
 </resources>

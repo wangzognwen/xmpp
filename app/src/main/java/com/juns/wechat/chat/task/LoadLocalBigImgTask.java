@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 
 import com.juns.wechat.R;
 import com.juns.wechat.chat.utils.ImageCache;
-import com.juns.wechat.widght.TouchImageView.TouchImageView;
+import com.juns.wechat.widget.TouchImageView.TouchImageView;
 
 public class LoadLocalBigImgTask extends AsyncTask<Void, Void, Bitmap> {
 

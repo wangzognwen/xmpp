@@ -214,8 +214,7 @@
         </activity>
         <activity
             android:name=".chat.ShowBigImage"
-            android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide">
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".chat.ShowNormalFileActivity"
@@ -291,11 +290,15 @@
 
         <activity android:name=".activity.SearchResultActivity">
         </activity>
-        <activity android:name=".activity.MyProfileActivity"
+        <activity
+            android:name=".activity.MyProfileActivity"
             android:label="@string/label_activity_my_profile">
         </activity>
-        <activity android:name=".activity.ModifyNameActivity"
+        <activity
+            android:name=".activity.ModifyNameActivity"
             android:label="@string/label_activity_modify_name">
+        </activity>
+        <activity android:name=".activity.CropImageActivity">
         </activity>
     </application>
 

@@ -13,12 +13,18 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseActivity;
+import com.juns.wechat.net.callback.BaseCallBack;
+import com.juns.wechat.net.request.UserRequest;
+import com.juns.wechat.net.response.SearchUserResponse;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.listener.BaseXmppManagerListener;
 import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 王宗文 on 2016/6/20.
@@ -77,27 +83,48 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
+    ProgressDialog progressDialog;
+
     private void showSearchDialog(){
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("正在查找联系人...");
-        dialog.show();
+        progressDialog= new ProgressDialog(this);
+        progressDialog.setMessage("正在查找联系人...");
+        progressDialog.show();
 
+        LogUtil.i("start search");
 
+        UserRequest.searchUser(search, callBack);
     }
 
-    private XmppManagerListener xmppManagerListener = new BaseXmppManagerListener(){
+    private BaseCallBack<SearchUserResponse> callBack = new BaseCallBack<SearchUserResponse>() {
         @Override
-        public void onSearchSuccess(ArrayList<SearchResult> searchResults) {
-            if(searchResults != null && !searchResults.isEmpty()){
-                Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
-                intent.putParcelableArrayListExtra(SearchResultActivity.ARG_SEARCH_RESULTS, searchResults);
-                startActivity(intent);
-            }
+        protected void handleSuccess(SearchUserResponse result) {
+            progressDialog.dismiss();
+            ArrayList<UserBean> userBeans = result.userBeans;
+            showSearchResult(userBeans);
         }
 
         @Override
-        public void onSearchFailed(Exception e) {
-            super.onSearchFailed(e);
+        protected void handleFailed(SearchUserResponse result) {
+            progressDialog.dismiss();
+        }
+
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            super.onError(ex, isOnCallback);
+            ex.printStackTrace();
+            progressDialog.dismiss();
         }
     };
+
+    private void showSearchResult(ArrayList<UserBean> userBeans){
+        if(userBeans != null && !userBeans.isEmpty()){
+            Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
+            Bundle bundle = new Bundle();
+            intent.putParcelableArrayListExtra(SearchResultActivity.ARG_SEARCH_RESULTS, userBeans);
+            startActivity(intent);
+        }else {
+            showToast("没有搜索到用户");
+        }
+    }
+
 }

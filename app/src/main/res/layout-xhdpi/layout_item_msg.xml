@@ -5,7 +5,7 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
 	xmlns:app="http://schemas.android.com/apk/res/com.juns.wechat">
-	<com.juns.wechat.widght.swipe.SwipeLayout
+	<com.juns.wechat.widget.swipe.SwipeLayout
 	    android:id="@+id/swipe"
 		app:drag_edge="right"
 		android:layout_width="match_parent"
@@ -98,7 +98,7 @@
 	</LinearLayout>
 	
 		
-	</com.juns.wechat.widght.swipe.SwipeLayout>
+	</com.juns.wechat.widget.swipe.SwipeLayout>
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"

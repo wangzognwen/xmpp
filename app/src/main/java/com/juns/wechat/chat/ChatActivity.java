@@ -1592,7 +1592,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		// public void onMySuccess(String data) {
 		// User user = JSON.parseObject(data, User.class);
 		// // NetClient.getIconBitmap(img_avar, user.getFace_image());
-		// txt_title.setText(user.getCurrentLoginUserName());
+		// txt_title.setText(user.getUserName());
 		// }
 		//
 		// @Override

@@ -1,9 +1,7 @@
 package com.juns.wechat.dao;
 
-import com.juns.wechat.bean.RosterBean;
-import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.database.RosterTable;
-import com.juns.wechat.database.UserTable;
+import com.juns.wechat.bean.FriendBean;
+import com.juns.wechat.database.FriendTable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.Map;
 /**
  * Created by 王宗文 on 2016/6/20.
  */
-public class RosterDao extends BaseDao<RosterBean>{
+public class RosterDao extends BaseDao<FriendBean>{
     private static RosterDao mInstance;
 
     public static RosterDao getInstance(){
@@ -22,9 +20,9 @@ public class RosterDao extends BaseDao<RosterBean>{
         return mInstance;
     }
 
-    public List<RosterBean> queryAllByOwner(String ownerName){
+    public List<FriendBean> queryAllByOwner(String ownerName){
         Map<String, Object> params = new HashMap<>();
-        params.put(RosterTable.COLUMN_OWNER_NAME, ownerName);
+        params.put(FriendTable.COLUMN_OWNER_NAME, ownerName);
         return findAllByParams(params);
     }
 }

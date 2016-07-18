@@ -43,7 +43,7 @@ import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.view.BaseActivity;
-import com.juns.wechat.widght.SideBar;
+import com.juns.wechat.widget.SideBar;
 
 public class AddGroupChatActivity extends BaseActivity implements
 		OnClickListener, OnItemClickListener {
@@ -461,9 +461,9 @@ public class AddGroupChatActivity extends BaseActivity implements
 						if (user != null) {
 							if (i < 3) {
 								if (i == 0)
-									groupName = user.getCurrentLoginUserName();
+									groupName = user.getUserName();
 								else
-									groupName += "、" + user.getCurrentLoginUserName();
+									groupName += "、" + user.getUserName();
 							} else if (i == 4) {
 								groupName += "...";
 							}

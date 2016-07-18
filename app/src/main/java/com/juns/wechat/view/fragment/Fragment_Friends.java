@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
-import com.juns.wechat.bean.RosterBean;
+import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dao.RosterDao;
@@ -29,7 +29,7 @@ import com.juns.wechat.view.activity.GroupListActivity;
 import com.juns.wechat.view.activity.NewFriendsListActivity;
 import com.juns.wechat.view.activity.PublishUserListActivity;
 import com.juns.wechat.view.activity.SearchActivity;
-import com.juns.wechat.widght.SideBar;
+import com.juns.wechat.widget.SideBar;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	private TextView mDialogText;
 	private WindowManager mWindowManager;
     private RosterDao rosterDao = RosterDao.getInstance();
-    private List<RosterBean> rosterBeans;
+    private List<FriendBean> rosterBeans;
     private ContactAdapter contactAdapter;
 
 	@Override
@@ -130,7 +130,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-		RosterBean rosterBean = rosterBeans.get(position - 1);
+		FriendBean rosterBean = rosterBeans.get(position - 1);
 
         Intent intent = new Intent(getActivity(), UserInfoActivity.class);
         intent.putExtra(Constants.NAME, rosterBean.getContactName());

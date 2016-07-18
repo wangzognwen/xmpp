@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import com.juns.wechat.App;
 import com.juns.wechat.Constants;
-import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.dao.UserDao;
 import com.juns.wechat.service.XmppService;
@@ -39,7 +38,7 @@ public class UserManager {
     }
 
     private void initUser(){
-        String userName = getCurrentLoginUserName();
+        String userName = getUserName();
         Map<String, Object> params = new HashMap<>();
         params.put(UserBean.USERNAME, userName);
         user = userDao.findByParams(params);
@@ -48,7 +47,7 @@ public class UserManager {
     public void setCurrentLoginUser(UserBean userBean){
         if(userDao.replace(userBean)){
             setLogin(true);
-            setCurrentLoginUserName(userBean.getUserName());
+            setUserName(userBean.getUserName());
             user = userBean;
         }
     }
@@ -60,7 +59,8 @@ public class UserManager {
     public void logOut(Context context){
         setLogin(false);
         setToken(null);
-        setCurrentLoginUserName(null);
+        setUserName(null);
+        setUserPassWord(null);
         user = null;
         if(context != null){
             Intent service = new Intent(context, XmppService.class);
@@ -83,12 +83,20 @@ public class UserManager {
         SharedPreferencesUtil.putBooleanValue(context, Constants.LoginState, login);
     }
 
-    public void setCurrentLoginUserName(String userName){
+    public void setUserName(String userName){
         SharedPreferencesUtil.putValue(context, CURRENT_LOGIN_USER, userName);
     }
 
-    public String getCurrentLoginUserName(){
+    public String getUserName(){
         return SharedPreferencesUtil.getValue(context, CURRENT_LOGIN_USER);
+    }
+
+    public void setUserPassWord(String passWord){
+        SharedPreferencesUtil.putValue(context, Constants.PWD, passWord);
+    }
+
+    public String getUserPassWord(){
+        return SharedPreferencesUtil.getValue(context, Constants.PWD);
     }
 
     public void setToken(String token){
@@ -106,6 +114,15 @@ public class UserManager {
 
     public long getTokenRefreshTime(){
         return SharedPreferencesUtil.getLongValue(context, "token_refresh_time", 0);
+    }
+
+    public void setHeadUrl(String headUrl){
+        user.setHeadUrl(headUrl);
+        userDao.replace(user);
+    }
+
+    public String getHeadUrl(){
+        return user.getHeadUrl();
     }
 
 }

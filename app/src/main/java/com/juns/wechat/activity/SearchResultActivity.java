@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.SearchResultAdapter;
 import com.juns.wechat.annotation.Content;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.xmpp.bean.SearchResult;
 
@@ -18,7 +19,7 @@ public class SearchResultActivity extends BaseActivity {
     public static final String ARG_SEARCH_RESULTS = "search_results";
 
     private ListView lvSearchResultList;
-    private List<SearchResult> searchResults;
+    private List<UserBean> searchResults;
     private SearchResultAdapter searchResultAdapter;
 
     @Override

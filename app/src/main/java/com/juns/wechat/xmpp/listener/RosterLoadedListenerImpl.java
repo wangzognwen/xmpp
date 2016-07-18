@@ -1,6 +1,6 @@
 package com.juns.wechat.xmpp.listener;
 
-import com.juns.wechat.bean.RosterBean;
+import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.dao.RosterDao;
 import com.juns.wechat.manager.UserManager;
@@ -24,9 +24,9 @@ public class RosterLoadedListenerImpl implements RosterLoadedListener {
     public void onRosterLoaded(Roster roster) {
         Set<RosterEntry> rosterEntrySet = roster.getEntries();
         if(rosterEntrySet == null || rosterEntrySet.isEmpty()) return;
-        List<RosterBean> rosterBeans = new ArrayList<>();
+        List<FriendBean> rosterBeans = new ArrayList<>();
         for(RosterEntry rosterEntry : rosterEntrySet){
-            RosterBean rosterBean = new RosterBean();
+            FriendBean rosterBean = new FriendBean();
             rosterBean.setOwnerName(UserManager.getInstance().getUser().getUserName());
             rosterBean.setContactName(ConfigUtil.getUserName(rosterEntry.getUser()));
             rosterBean.setSubType(rosterEntry.getType().toString());

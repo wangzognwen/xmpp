@@ -1,7 +1,6 @@
 package com.juns.wechat.adpter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -14,21 +13,19 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
-import com.juns.wechat.bean.RosterBean;
-import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.common.PingYinUtil;
-import com.juns.wechat.common.PinyinComparator;
 import com.juns.wechat.common.ViewHolder;
 
 public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
-	private List<RosterBean> userInfos = new ArrayList<>();// 好友信息
+	private List<FriendBean> userInfos = new ArrayList<>();// 好友信息
 
     public ContactAdapter(Context context) {
         this.mContext = context;
     }
 
-    public void setData(List<RosterBean> userInfos){
+    public void setData(List<FriendBean> userInfos){
         this.userInfos = userInfos;
         notifyDataSetChanged();
     }
@@ -56,7 +53,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		RosterBean rosterBean = userInfos.get(position);
+		FriendBean rosterBean = userInfos.get(position);
 		if (convertView == null) {
 			convertView = LayoutInflater.from(mContext).inflate(
 					R.layout.contact_item, parent, false);
@@ -73,7 +70,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 			tvCatalog.setVisibility(View.VISIBLE);
 			tvCatalog.setText(catalog);
 		} else {
-			RosterBean prevRosterBean = userInfos.get(position - 1);
+			FriendBean prevRosterBean = userInfos.get(position - 1);
 			String lastCatalog = PingYinUtil.converterToFirstSpell(
                     prevRosterBean.getContactName()).substring(0, 1);
 			if (catalog.equals(lastCatalog)) {
@@ -92,7 +89,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	@Override
 	public int getPositionForSection(int section) {
 		for (int i = 0; i < userInfos.size(); i++) {
-			RosterBean rosterBean = userInfos.get(i);
+			FriendBean rosterBean = userInfos.get(i);
 			String l = PingYinUtil.converterToFirstSpell(rosterBean.getContactName())
 					.substring(0, 1);
 			char firstChar = l.toUpperCase().charAt(0);

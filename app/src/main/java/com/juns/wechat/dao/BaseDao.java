@@ -1,5 +1,6 @@
 package com.juns.wechat.dao;
 
+import android.database.Cursor;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -24,7 +25,7 @@ import java.util.Map;
  * Created by 王宗文 on 2016/7/6.
  */
 public class BaseDao<T> implements IDao<T> {
-    private DbManager dbManager;
+    protected DbManager dbManager;
     private Class<T> clazz;
     private DataEvent<T> dataEvent;
 
@@ -125,38 +126,9 @@ public class BaseDao<T> implements IDao<T> {
         return result;
     }
 
-    private void beginTransaction() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && dbManager.getDatabase().isWriteAheadLoggingEnabled()) {
-            dbManager.getDatabase().beginTransactionNonExclusive();
-        } else {
-            dbManager.getDatabase().beginTransaction();
-        }
-    }
-
-    private void setTransactionSuccessful() {
-        dbManager.getDatabase().setTransactionSuccessful();
-    }
-
-    private void endTransaction() {
-        dbManager.getDatabase().endTransaction();
-    }
-
-    private void createTableIfNotExist(TableEntity<?> table) throws DbException {
-        if (!table.tableIsExist()) {
-            synchronized (table.getClass()) {
-                if (!table.tableIsExist()) {
-                    SqlInfo sqlInfo = SqlInfoBuilder.buildCreateTableSqlInfo(table);
-                    dbManager.execNonQuery(sqlInfo);
-                    String execAfterTableCreated = table.getOnCreated();
-                    if (!TextUtils.isEmpty(execAfterTableCreated)) {
-                        dbManager.execNonQuery(execAfterTableCreated);
-                    }
-                    DbManager.TableCreateListener listener = dbManager.getDaoConfig().getTableCreateListener();
-                    if (listener != null) {
-                        listener.onTableCreated(dbManager, table);
-                    }
-                }
-            }
+    protected void closeCursor(Cursor cursor){
+        if(cursor != null){
+            cursor.close();
         }
     }
 }

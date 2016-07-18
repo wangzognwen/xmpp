@@ -11,23 +11,13 @@ import com.juns.wechat.net.response.UpdateUserResponse;
 public abstract class UpdateUserCallBack extends BaseCallBack<UpdateUserResponse>{
 
     @Override
-    public void onSuccess(UpdateUserResponse result) {
-        if(result.code == 0){
-           saveUserInfo(result.userBean);
-           onUpdateSuccess();
-        }else{
-            onUpdateFailed();
-        }
+    protected void handleSuccess(UpdateUserResponse result) {
+        saveUserInfo(result.userBean);
     }
-
-
 
     private void saveUserInfo(UserBean userBean){
         UserManager.getInstance().setCurrentLoginUser(userBean);
     }
 
-    protected abstract void onUpdateSuccess();
-
-    protected abstract void onUpdateFailed();
 
 }

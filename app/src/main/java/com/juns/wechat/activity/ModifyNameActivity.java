@@ -1,6 +1,5 @@
 package com.juns.wechat.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -13,10 +12,9 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.UserRequest;
-import com.juns.wechat.net.callback.BaseCallBack;
+import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.UpdateUserCallBack;
-import com.juns.wechat.net.response.BaseResponse;
+import com.juns.wechat.net.response.UpdateUserResponse;
 import com.juns.wechat.util.NetWorkUtil;
 
 @Content(R.layout.activity_modify_name)
@@ -43,19 +41,20 @@ public class ModifyNameActivity extends ToolbarActivity {
             showToast(R.string.toast_network_unavailable);
             return;
         }
-        String userName = UserManager.getInstance().getCurrentLoginUserName();
+        String userName = UserManager.getInstance().getUserName();
         nickName = etInputNick.getText().toString();
         UserRequest.updateUser(userName, UserBean.NICKNAME, nickName, updateUserCallBack);
     }
 
     private UpdateUserCallBack updateUserCallBack = new UpdateUserCallBack() {
         @Override
-        protected void onUpdateSuccess() {
+        protected void handleSuccess(UpdateUserResponse result) {
+            super.handleSuccess(result);
             Utils.finish(ModifyNameActivity.this);
         }
 
         @Override
-        protected void onUpdateFailed() {
+        protected void handleFailed(UpdateUserResponse result) {
 
         }
 

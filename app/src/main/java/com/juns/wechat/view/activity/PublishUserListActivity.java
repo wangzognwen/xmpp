@@ -15,12 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
-import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.BaseActivity;
-import com.juns.wechat.widght.SideBar;
+import com.juns.wechat.widget.SideBar;
 
 //订阅号列表
 public class PublishUserListActivity extends BaseActivity implements

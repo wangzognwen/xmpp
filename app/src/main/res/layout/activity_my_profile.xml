@@ -7,7 +7,7 @@
     <include android:id="@+id/toolbar" layout="@layout/comm_toolbar" />
 
     <RelativeLayout
-        android:id="@+id/re_avatar"
+        android:id="@+id/rlAvatar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginTop="20dp"
@@ -15,7 +15,7 @@
         android:clickable="true" >
 
         <ImageView
-            android:id="@+id/iv_avatar"
+            android:id="@+id/ivAvatar"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_alignParentRight="true"

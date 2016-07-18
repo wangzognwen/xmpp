@@ -9,6 +9,11 @@ import com.juns.wechat.net.response.LoginResponse;
  */
 public abstract class LoginCallBack extends BaseCallBack<LoginResponse>{
     @Override
+    protected void handleSuccess(LoginResponse result) {
+        saveUserInfo(result.userBean, result.token);
+    }
+
+    /* @Override
     public void onSuccess(LoginResponse result) {
         if(result.code == 0){
            saveUserInfo(result.userBean, result.token);
@@ -16,15 +21,12 @@ public abstract class LoginCallBack extends BaseCallBack<LoginResponse>{
         }else{
             handleLoginFailed();
         }
-    }
+    }*/
 
     private void saveUserInfo(UserBean userBean, String token){
         UserManager.getInstance().setCurrentLoginUser(userBean);
         UserManager.getInstance().setToken(token);
     }
 
-    protected abstract void handleLoginSuccess();
-
-    protected abstract void handleLoginFailed();
 
 }

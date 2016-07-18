@@ -212,7 +212,7 @@ public class GroupSettingActivity extends BaseActivity implements
 						R.layout.item_chatsetting_gridview, null);
 			}
 			ImageView iv_avatar = (ImageView) convertView
-					.findViewById(R.id.iv_avatar);
+					.findViewById(R.id.ivAvatar);
 			TextView tv_username = (TextView) convertView
 					.findViewById(R.id.tv_username);
 			ImageView badge_delete = (ImageView) convertView

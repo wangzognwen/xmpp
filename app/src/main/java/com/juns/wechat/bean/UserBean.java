@@ -1,6 +1,8 @@
 package com.juns.wechat.bean;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.juns.wechat.database.UserTable;
 
@@ -10,7 +12,7 @@ import org.xutils.db.annotation.Table;
 import java.util.Date;
 
 @Table(name = UserTable.TABLE_NAME, onCreated = UserTable.CREATE_INDEX)
-public class UserBean {
+public class UserBean implements Parcelable {
 	public static final String ID = "id";
 	public static final String USERNAME = "userName";
     public static final String NICKNAME = "nickName";
@@ -159,4 +161,55 @@ public class UserBean {
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.userName);
+        dest.writeString(this.nickName);
+        dest.writeString(this.passWord);
+        dest.writeString(this.telephone);
+        dest.writeString(this.headUrl);
+        dest.writeString(this.signature);
+        dest.writeString(this.sex);
+        dest.writeString(this.location);
+        dest.writeString(this.birthday);
+        dest.writeString(this.type);
+        dest.writeLong(this.createDate != null ? this.createDate.getTime() : -1);
+        dest.writeLong(this.modifyDate);
+    }
+
+    protected UserBean(Parcel in) {
+        this.id = in.readInt();
+        this.userName = in.readString();
+        this.nickName = in.readString();
+        this.passWord = in.readString();
+        this.telephone = in.readString();
+        this.headUrl = in.readString();
+        this.signature = in.readString();
+        this.sex = in.readString();
+        this.location = in.readString();
+        this.birthday = in.readString();
+        this.type = in.readString();
+        long tmpCreateDate = in.readLong();
+        this.createDate = tmpCreateDate == -1 ? null : new Date(tmpCreateDate);
+        this.modifyDate = in.readLong();
+    }
+
+    public static final Parcelable.Creator<UserBean> CREATOR = new Parcelable.Creator<UserBean>() {
+        @Override
+        public UserBean createFromParcel(Parcel source) {
+            return new UserBean(source);
+        }
+
+        @Override
+        public UserBean[] newArray(int size) {
+            return new UserBean[size];
+        }
+    };
 }

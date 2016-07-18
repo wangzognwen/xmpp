@@ -18,7 +18,7 @@ import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.dialog.WarnTipDialog;
 import com.juns.wechat.net.NetClient;
-import com.juns.wechat.widght.swipe.SwipeLayout;
+import com.juns.wechat.widget.swipe.SwipeLayout;
 
 public class NewMsgAdpter extends BaseAdapter {
 	protected Context context;
@@ -94,7 +94,7 @@ public class NewMsgAdpter extends BaseAdapter {
 			// 获取与此用户/群组的会话
 		//	final EMConversation conversation = conversationList.get(position);
 			// 获取用户username或者群组groupid
-			//ChatID = conversation.getCurrentLoginUserName();
+			//ChatID = conversation.getUserName();
 			txt_del.setTag(ChatID);
 			/*if (conversation.isGroup()) {
 				img_avar.setImageResource(R.drawable.defult_group);
@@ -107,7 +107,7 @@ public class NewMsgAdpter extends BaseAdapter {
 			} else {
 				User user = GloableParams.Users.get(ChatID);
 				if (user != null) {
-					txt_name.setText(user.getCurrentLoginUserName());
+					txt_name.setText(user.getUserName());
 				} else {
 					txt_name.setText("好友");
 					UserUtils.initUserInfo(context, ChatID, img_avar, txt_name);// 获取用户信息
@@ -163,7 +163,7 @@ public class NewMsgAdpter extends BaseAdapter {
 		public void onClick(DialogInterface dialog, int which) {
 		/*	EMConversation conversation = conversationList.get(deleteID);
 			EMChatManager.getDbManager().deleteConversation(
-					conversation.getCurrentLoginUserName());
+					conversation.getUserName());
 			// Utils.showLongToast((Activity) context, "删除成功");
 			conversationList.remove(deleteID);
 			notifyDataSetChanged();
@@ -187,8 +187,8 @@ public class NewMsgAdpter extends BaseAdapter {
 				String name = message.getFrom();
 				if (GloableParams.UserInfos != null) {
 					User user = GloableParams.Users.get(message.getFrom());
-					if (user != null && null != user.getCurrentLoginUserName())
-						name = user.getCurrentLoginUserName();
+					if (user != null && null != user.getUserName())
+						name = user.getUserName();
 				}
 				digest = String.format(digest, name);
 				return digest;
