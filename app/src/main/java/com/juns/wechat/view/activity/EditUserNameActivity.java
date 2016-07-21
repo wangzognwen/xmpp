@@ -9,12 +9,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.juns.health.net.loopj.android.http.RequestParams;
-import com.juns.wechat.Constants;
-import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.view.BaseActivity;
 
 //注册后填写用户信息
@@ -61,44 +57,12 @@ public class EditUserNameActivity extends BaseActivity implements
 			Utils.finish(EditUserNameActivity.this);
 			break;
 		case R.id.btn_start:
-			setUserMsg();
+
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void setUserMsg() {
-		String telphone = Utils.getValue(EditUserNameActivity.this,
-				Constants.NAME);
-		String name = edit_name.getText().toString();
-		if (TextUtils.isEmpty(name)) {
-			Utils.showLongToast(EditUserNameActivity.this, "请填写您的昵称！ ");
-			return;
-		}
-		RequestParams params = new RequestParams();
-		params.put("username", name);
-		params.put("telphone", telphone);
-		getLoadingDialog("正在加载...  ").show();
-		netClient.post(Constants.UpdateInfoURL, params, new BaseJsonRes() {
-
-			@Override
-			public void onMySuccess(String data) {
-				Utils.putValue(EditUserNameActivity.this, Constants.UserInfo,
-						data);
-				getLoadingDialog("正在加载").dismiss();
-				Intent intent = new Intent(EditUserNameActivity.this,
-						MainActivity.class);
-				startActivity(intent);
-				overridePendingTransition(R.anim.push_up_in, R.anim.push_up_out);
-				finish();
-			}
-
-			@Override
-			public void onMyFailure() {
-				getLoadingDialog("正在登录").dismiss();
-			}
-		});
-	}
 
 }

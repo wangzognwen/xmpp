@@ -17,7 +17,6 @@ import com.juns.wechat.bean.PublicMsgInfo;
 import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.dialog.WarnTipDialog;
-import com.juns.wechat.net.NetClient;
 import com.juns.wechat.widget.swipe.SwipeLayout;
 
 public class NewMsgAdpter extends BaseAdapter {
@@ -26,7 +25,6 @@ public class NewMsgAdpter extends BaseAdapter {
 	private WarnTipDialog Tipdialog;
 	private int deleteID;
 	private String ChatID;
-	private NetClient netClient;
 	private String userid;
 	private Hashtable<String, String> ChatRecord = new Hashtable<String, String>();
 	public PublicMsgInfo PublicMsg = null;
@@ -34,7 +32,6 @@ public class NewMsgAdpter extends BaseAdapter {
 	public NewMsgAdpter(Context ctx, List objects) {
 		context = ctx;
 		conversationList = objects;
-		netClient = new NetClient(ctx);
 		userid = UserUtils.getUserID(context);
 	}
 
@@ -173,8 +170,7 @@ public class NewMsgAdpter extends BaseAdapter {
 
 	/**
 	 * 根据消息内容和消息类型获取消息内容提示
-	 * 
-	 * @param message
+	 *
 	 * @param context
 	 * @return
 	 */

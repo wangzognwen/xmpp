@@ -101,26 +101,22 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 
 	private void setOnListener() {
 		lvContact.setOnItemClickListener(this);
-		layout_head.findViewById(R.id.layout_addfriend)
+		layout_head.findViewById(R.id.re_newfriends)
 				.setOnClickListener(this);
-		layout_head.findViewById(R.id.layout_search).setOnClickListener(this);
-		layout_head.findViewById(R.id.layout_group).setOnClickListener(this);
-		layout_head.findViewById(R.id.layout_public).setOnClickListener(this);
+		layout_head.findViewById(R.id.re_chatroom).setOnClickListener(this);
+		layout_head.findViewById(R.id.re_public).setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.layout_search:// 搜索好友及公众号
-			Utils.start_Activity(getActivity(), SearchActivity.class);
-			break;
-		case R.id.layout_addfriend:// 添加好友
+		case R.id.re_newfriends:// 添加好友
 			Utils.start_Activity(getActivity(), NewFriendsListActivity.class);
 			break;
-		case R.id.layout_group:// 群聊
+		case R.id.re_chatroom:// 群聊
 			Utils.start_Activity(getActivity(), GroupListActivity.class);
 			break;
-		case R.id.layout_public:// 公众号
+		case R.id.re_public:// 公众号
 			Utils.start_Activity(getActivity(), PublishUserListActivity.class);
 			break;
 		default:

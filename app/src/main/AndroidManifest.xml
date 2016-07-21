@@ -300,6 +300,10 @@
         </activity>
         <activity android:name=".activity.CropImageActivity">
         </activity>
+        <activity android:name=".activity.SendInviteMessageActivity">
+        </activity>
+        <activity android:name=".activity.NewFriendsActivity">
+        </activity>
     </application>
 
 </manifest>

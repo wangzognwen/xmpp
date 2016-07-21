@@ -30,7 +30,6 @@ import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-import com.juns.health.net.loopj.android.http.RequestParams;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
@@ -41,7 +40,6 @@ import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.PinyinComparator;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
-import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.view.BaseActivity;
 import com.juns.wechat.widget.SideBar;
 
@@ -517,33 +515,5 @@ public class AddGroupChatActivity extends BaseActivity implements
 		}).start();
 	}
 
-	private void addServieGroup(final String groupId, final String groupName,
-			String manber, String owner_id) {
-		RequestParams params = new RequestParams();
-		params.put("group_id", groupId);
-		params.put("group_name", groupName);
-		params.put("owner_id", owner_id);
-		params.put("members", manber);
-		params.put("description", "");
-		params.put("image_path", "");
-		netClient.post(Constants.newGroupURL, params, new BaseJsonRes() {
 
-			@Override
-			public void onMySuccess(String data) {
-				Intent intent = new Intent(AddGroupChatActivity.this,
-						ChatActivity.class);
-				intent.putExtra(Constants.NAME, groupName);
-				intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_GROUP);
-				intent.putExtra(Constants.GROUP_ID, groupId);
-				startActivity(intent);
-				getLoadingDialog("正在创建群聊...").dismiss();
-				finish();
-			}
-
-			@Override
-			public void onMyFailure() {
-
-			}
-		});
-	}
 }

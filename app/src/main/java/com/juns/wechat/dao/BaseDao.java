@@ -1,23 +1,16 @@
 package com.juns.wechat.dao;
 
 import android.database.Cursor;
-import android.os.Build;
-import android.text.TextUtils;
 
 import com.juns.wechat.database.DbUtil;
 
-import net.tsz.afinal.FinalDb;
 
 import org.simple.eventbus.EventBus;
 import org.xutils.DbManager;
 import org.xutils.db.Selector;
-import org.xutils.db.sqlite.SqlInfo;
-import org.xutils.db.sqlite.SqlInfoBuilder;
-import org.xutils.db.table.TableEntity;
 import org.xutils.ex.DbException;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 

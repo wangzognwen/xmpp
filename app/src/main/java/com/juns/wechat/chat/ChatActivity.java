@@ -21,7 +21,6 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -48,8 +47,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.juns.health.net.loopj.android.http.RequestParams;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.GroupInfo;
@@ -61,12 +58,9 @@ import com.juns.wechat.chat.utils.CommonUtils;
 import com.juns.wechat.chat.utils.SmileUtils;
 import com.juns.wechat.chat.widght.ExpandGridView;
 import com.juns.wechat.chat.widght.PasteEditText;
-import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.net.BaseJsonRes;
-import com.juns.wechat.net.NetClient;
 import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.util.ToolBarUtil;
 import com.juns.wechat.view.activity.GroupSettingActivity;
@@ -152,7 +146,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	private Button btnMore;
 	public String playMsgId;
 	private AnimationDrawable animationDrawable;
-	private NetClient netClient;
 	private Handler micImageHandler = new Handler() {
 		@Override
 		public void handleMessage(android.os.Message msg) {
@@ -184,7 +177,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * initView
 	 */
 	protected void initView() {
-		netClient = new NetClient(this);
 		recordingContainer = findViewById(R.id.view_talk);
 		micImage = (ImageView) findViewById(R.id.mic_image);
 		animationDrawable = (AnimationDrawable) micImage.getBackground();
@@ -1603,23 +1595,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	}
 
 	private void initGroupInfo() {
-		RequestParams params = new RequestParams();
-		String userid = UserUtils.getUserID(this);
-		params.put("user_id", userid);
-		params.put("group_id", toChatUsername);
-		netClient.post(Constants.getUserInfoURL, params, new BaseJsonRes() {
 
-			@Override
-			public void onMySuccess(String data) {
-				GroupInfo group = JSON.parseObject(data, GroupInfo.class);
-				// NetClient.getIconBitmap(img_avar, group.getGroup_name());
-				//txt_title.setText(group.getGroup_name());
-			}
-
-			@Override
-			public void onMyFailure() {
-
-			}
-		});
 	}
 }

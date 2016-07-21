@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
 
-import net.tsz.afinal.db.sqlite.SqlBuilder;
-
 import org.xutils.DbManager;
 import org.xutils.db.sqlite.SqlInfo;
 import org.xutils.db.sqlite.SqlInfoBuilder;

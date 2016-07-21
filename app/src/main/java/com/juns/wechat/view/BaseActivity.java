@@ -7,21 +7,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.juns.wechat.App;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dialog.FlippingLoadingDialog;
-import com.juns.wechat.net.NetClient;
 
 public abstract class BaseActivity extends Activity {
 	protected Activity context;
-	protected NetClient netClient;
 	protected FlippingLoadingDialog mLoadingDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = this;
-		netClient = new NetClient(this);
 		initControl();
 		initView();
 		initData();

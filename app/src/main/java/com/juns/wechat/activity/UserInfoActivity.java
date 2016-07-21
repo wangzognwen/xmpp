@@ -2,26 +2,22 @@ package com.juns.wechat.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.util.ToolBarUtil;
-import com.juns.wechat.view.BaseActivity;
 
-//好友详情
-@Content(R.layout.activity_friendmsg)
+/**
+ * 用户资料
+ */
+@Content(R.layout.activity_user_info)
 public class UserInfoActivity extends ToolbarActivity implements OnClickListener {
 	private TextView tv_name, tv_accout;
 	private String Name, UserId;
@@ -40,7 +36,7 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
         btn_sendmsg = (Button) findViewById(R.id.btn_sendmsg);
         btn_sendmsg.setTag("1");
         tv_name = (TextView) findViewById(R.id.tv_name);
-        tv_accout = (TextView) findViewById(R.id.tv_accout);
+        tv_accout = (TextView) findViewById(R.id.tv_fxid);
 	}
 
 

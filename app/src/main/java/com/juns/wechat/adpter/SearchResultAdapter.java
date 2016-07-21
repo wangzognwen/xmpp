@@ -11,10 +11,6 @@ import android.widget.TextView;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.util.ImageUtil;
-import com.juns.wechat.xmpp.bean.SearchResult;
-
-import net.tsz.afinal.FinalBitmap;
-
 import java.util.List;
 
 /**
@@ -23,11 +19,8 @@ import java.util.List;
 public class SearchResultAdapter extends BaseAdapter {
     private Context context;
     private List<UserBean> searchResults;
-    private FinalBitmap finalBitmap;
-
     public SearchResultAdapter(Context context){
         this.context = context;
-        finalBitmap = FinalBitmap.create(context);
     }
 
     public void setData(List<UserBean> searchResults){

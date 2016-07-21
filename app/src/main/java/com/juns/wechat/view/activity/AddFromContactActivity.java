@@ -9,14 +9,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.juns.health.net.loopj.android.http.RequestParams;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.FromContactAdapter;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.net.BaseJsonRes;
 import com.juns.wechat.view.BaseActivity;
 
 //从通讯录添加好友
@@ -45,26 +42,7 @@ public class AddFromContactActivity extends BaseActivity implements
 	protected void initView() {
 		getLoadingDialog("正在获取联系人").show();
 		String str_contact = Utils.getValue(this, Constants.ContactMsg);
-		RequestParams params = new RequestParams();
-		params.put("userlist", str_contact);
-		netClient.post(Constants.getContactFriendURL, params,
-				new BaseJsonRes() {
 
-					@Override
-					public void onMySuccess(String data) {
-						List<UserBean> UserInfos = JSON
-								.parseArray(data, UserBean.class);
-						mlistview.setAdapter(new FromContactAdapter(
-								AddFromContactActivity.this, UserInfos));
-						getLoadingDialog("正在获取联系人").dismiss();
-					}
-
-					@Override
-					public void onMyFailure() {
-						// TODO Auto-generated method stub
-						getLoadingDialog("正在获取联系人").dismiss();
-					}
-				});
 	}
 
 	@Override

@@ -3,23 +3,13 @@ package com.juns.wechat.xmpp;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
-import com.juns.wechat.xmpp.event.XmppEvent;
 import com.juns.wechat.xmpp.listener.XmppManagerListener;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.simple.eventbus.EventBus;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by 王宗文 on 2016/6/12.

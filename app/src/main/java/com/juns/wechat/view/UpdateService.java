@@ -2,7 +2,6 @@ package com.juns.wechat.view;
 
 import java.util.List;
 
-import net.tsz.afinal.FinalDb;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,18 +10,13 @@ import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.bean.GroupInfo;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.net.BaseJsonRes;
-import com.juns.wechat.net.NetClient;
 
 public class UpdateService extends Service {
-	protected NetClient netClient;
-	protected FinalDb db;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -32,8 +26,6 @@ public class UpdateService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		netClient = new NetClient(this);
-		db = FinalDb.create(this, Constants.DB_NAME, false);
 	}
 
 	@Override
@@ -58,57 +50,15 @@ public class UpdateService extends Service {
 
 	// 获取群组列表
 	private void initGroupList() {
-		GloableParams.ListGroupInfos = db.findAll(GroupInfo.class);
-		netClient.post(Constants.getGroupListURL, null, new BaseJsonRes() {
 
-			@Override
-			public void onMySuccess(String data) {
-				GloableParams.ListGroupInfos = JSON.parseArray(data,
-						GroupInfo.class);
-				for (GroupInfo group : GloableParams.ListGroupInfos) {
-					if (db.findById(group.getId(), GroupInfo.class) != null)
-						db.deleteById(GroupInfo.class, group.getId());
-					db.save(group);
-					GloableParams.GroupInfos.put(group.getGroup_id(), group);
-				}
-				sendBrodcast("GroupList");
-			}
 
-			@Override
-			public void onMyFailure() {
-				// initGroupList();
-			}
-		});
 	}
 
 	// 获取好友列表和订阅号
 	private void initUserList() {
-		GloableParams.UserInfos = db.findAll(UserBean.class);
 
-		netClient.post(Constants.getUserInfoURL, null, new BaseJsonRes() {
 
-			@Override
-			public void onMySuccess(String data) {
-				List<UserBean> new_users = JSON.parseArray(data, UserBean.class);
-				for (UserBean user : new_users) {
-					if (user.getUserName() == null) {
-						user.setUserName("WX" + user.getTelephone());
-						new_users.remove(user);
-						new_users.add(user);
-					}
-					if (db.findById(user.getId(), UserBean.class) != null)
-						db.deleteById(UserBean.class, user.getId());
-					db.save(user);
-					GloableParams.Users.put(user.getTelephone(), user);
-				}
-				sendBrodcast("UserList");
-			}
 
-			@Override
-			public void onMyFailure() {
-				// initUserList();
-			}
-		});
 	}
 
 	public String getContact() {
