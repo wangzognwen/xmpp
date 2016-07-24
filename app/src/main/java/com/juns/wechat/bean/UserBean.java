@@ -3,6 +3,7 @@ package com.juns.wechat.bean;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.juns.wechat.database.UserTable;
 
@@ -160,6 +161,13 @@ public class UserBean implements Parcelable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getName(){
+        if(!TextUtils.isEmpty(nickName)){
+            return nickName;
+        }
+        return userName;
     }
 
     @Override

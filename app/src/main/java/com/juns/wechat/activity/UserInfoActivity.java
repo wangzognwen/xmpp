@@ -35,7 +35,7 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 	protected void initView() {
         btn_sendmsg = (Button) findViewById(R.id.btn_sendmsg);
         btn_sendmsg.setTag("1");
-        tv_name = (TextView) findViewById(R.id.tv_name);
+        tv_name = (TextView) findViewById(R.id.tvName);
         tv_accout = (TextView) findViewById(R.id.tv_fxid);
 	}
 

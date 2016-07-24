@@ -304,6 +304,8 @@
         </activity>
         <activity android:name=".activity.NewFriendsActivity">
         </activity>
+        <activity android:name=".activity.CreateChatRoomActivity">
+        </activity>
     </application>
 
 </manifest>
