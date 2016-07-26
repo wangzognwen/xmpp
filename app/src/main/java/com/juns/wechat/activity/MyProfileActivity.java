@@ -1,8 +1,6 @@
 package com.juns.wechat.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,19 +13,16 @@ import com.juns.wechat.annotation.Click;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.chat.ShowBigImage;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dao.DataEvent;
 import com.juns.wechat.dialog.SelectPhotoDialog;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ImageUtil;
-import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
-import org.xutils.x;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -79,7 +74,7 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     }
 
     private void setData(){
-        userBean = UserManager.getInstance().getUser();
+        userBean = AccountManager.getInstance().getUser();
         tvNickName.setText(userBean.getNickName() == null ? "" : userBean.getNickName());
         ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
     }

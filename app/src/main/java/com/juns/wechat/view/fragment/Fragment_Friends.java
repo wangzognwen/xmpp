@@ -22,13 +22,12 @@ import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.dao.RosterDao;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.dao.FriendDao;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.view.activity.GroupListActivity;
 import com.juns.wechat.view.activity.NewFriendsListActivity;
 import com.juns.wechat.view.activity.PublishUserListActivity;
-import com.juns.wechat.view.activity.SearchActivity;
 import com.juns.wechat.widget.SideBar;
 
 import java.util.List;
@@ -42,7 +41,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	private SideBar indexBar;
 	private TextView mDialogText;
 	private WindowManager mWindowManager;
-    private RosterDao rosterDao = RosterDao.getInstance();
+    private FriendDao rosterDao = FriendDao.getInstance();
     private List<FriendBean> rosterBeans;
     private ContactAdapter contactAdapter;
 
@@ -86,15 +85,8 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 		super.onDestroy();
 	}
 
-	/**
-	 * 刷新页面
-	 */
-	public void refresh() {
-		initData();
-	}
-
 	private void initData() {
-        String ownerName = UserManager.getInstance().getUser().getUserName();
+        String ownerName = AccountManager.getInstance().getUser().getUserName();
 	    rosterBeans = rosterDao.queryAllByOwner(ownerName);
         contactAdapter.setData(rosterBeans);
 	}

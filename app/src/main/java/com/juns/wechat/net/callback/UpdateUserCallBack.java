@@ -1,8 +1,7 @@
 package com.juns.wechat.net.callback;
 
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.dao.UserDao;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.response.UpdateUserResponse;
 
 /**
@@ -16,7 +15,7 @@ public abstract class UpdateUserCallBack extends BaseCallBack<UpdateUserResponse
     }
 
     private void saveUserInfo(UserBean userBean){
-        UserManager.getInstance().setCurrentLoginUser(userBean);
+        AccountManager.getInstance().setUser(userBean);
     }
 
 

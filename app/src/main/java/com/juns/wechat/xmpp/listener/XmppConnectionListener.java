@@ -4,19 +4,13 @@ package com.juns.wechat.xmpp.listener;
 import android.text.TextUtils;
 
 import com.juns.wechat.App;
-import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.config.ConfigUtil;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.LogUtil;
-import com.juns.wechat.xmpp.iq.IQUserInfo;
-import com.juns.wechat.xmpp.provider.UserInfoProvider;
 import com.juns.wechat.xmpp.util.UserInfoManager;
 
 import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamError;
 
 /*******************************************************
@@ -50,7 +44,7 @@ public class XmppConnectionListener implements ConnectionListener {
             StreamError streamError = exception.getStreamError();
             StreamError.Condition condition = streamError.getCondition();
             if(condition.toString().equals("conflict")){
-                UserManager.getInstance().logOut(App.getInstance());
+                AccountManager.getInstance().logOut(App.getInstance());
             }
         }
     }

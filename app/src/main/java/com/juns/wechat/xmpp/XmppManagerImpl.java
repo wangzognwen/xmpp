@@ -1,5 +1,6 @@
 package com.juns.wechat.xmpp;
 
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
@@ -180,40 +181,20 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     @Override
-    public boolean sendMessage(MessageEntity messageEntity) {
+    public boolean sendMessage(MessageBean messageBean) {
         Message message = new Message();
-        String fromJid = ConfigUtil.getXmppJid(messageEntity.getMyselfUserId());
-        message.setFrom(fromJid);
+        message.setFrom(ConfigUtil.getXmppJid(messageBean.getMyselfName()));
         message.setType(Message.Type.chat);
-        String toJid = ConfigUtil.getXmppJid(messageEntity.getOtherUserId());
+        String toJid = ConfigUtil.getXmppJid(messageBean.getOtherName());
         message.setTo(toJid);
-        message.setStanzaId(messageEntity.getPacketId());
-
+        message.setStanzaId(messageBean.getPacketId());
         return sendPacket(message);
     }
 
     @Override
     public boolean isFriends(int OtherUserId) {
-        String otherJid = ConfigUtil.getXmppJid(OtherUserId);
+        String otherJid = ConfigUtil.getXmppJid(OtherUserId + "");
         return mRoster.getEntry(otherJid) == null ? false : true;
-    }
-
-    @Override
-    public boolean addFriend(int otherUserId, String nickName) {
-        String jid = ConfigUtil.getXmppJid(otherUserId);
-
-        try {
-            connect();
-            mRoster.createEntry(jid, nickName, null);
-            return true;
-        }catch (IOException e) {
-            XmppExceptionHandler.handleIOException(e);
-        } catch (XMPPException e) {
-            XmppExceptionHandler.handleXmppExecption(e);
-        } catch (SmackException e) {
-            XmppExceptionHandler.handleSmackException(e);
-        }
-        return false;
     }
 
     @Override

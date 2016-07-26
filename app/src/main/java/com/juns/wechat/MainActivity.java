@@ -15,16 +15,13 @@ import android.widget.TextView;
 import com.juns.wechat.activity.AddFriendActivity;
 import com.juns.wechat.adpter.MainAdapter;
 import com.juns.wechat.annotation.Content;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dialog.WarnTipDialog;
 import com.juns.wechat.dialog.TitleMenu.ActionItem;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup.OnItemOnClickListener;
-import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.callback.RefreshTokenCallBack;
-import com.juns.wechat.net.request.TokenRequest;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.service.XmppService;
 import com.juns.wechat.view.activity.AddGroupChatActivity;
 import com.juns.wechat.view.activity.GetMoneyActivity;
@@ -46,7 +43,7 @@ public class MainActivity extends BaseActivity{
 	private String connectMsg = "";
 	private int index;
 	private int currentTabIndex;// 当前fragment的index
-    private UserManager userManager = UserManager.getInstance();
+    private AccountManager userManager = AccountManager.getInstance();
 
 	private MainAdapter mainAdapter;
 

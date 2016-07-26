@@ -288,7 +288,8 @@
             android:name="api_key"
             android:value="Uvw5AMP15i9v1cUoS5aY7GR1"/>
 
-        <activity android:name=".activity.SearchResultActivity">
+        <activity android:name=".activity.SearchResultActivity"
+            android:label="@string/label_activity_show_search_result">
         </activity>
         <activity
             android:name=".activity.MyProfileActivity"

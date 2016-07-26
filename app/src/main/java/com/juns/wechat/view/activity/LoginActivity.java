@@ -20,10 +20,10 @@ import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.LoginCallBack;
-import com.juns.wechat.net.response.LoginResponse;
+import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.util.NetWorkUtil;
 
 /**
@@ -40,7 +40,7 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
     @Id
     private EditText etPassWord;
     private String userName, password;
-    private UserBean userBean = UserManager.getInstance().getUser();
+    private UserBean userBean = AccountManager.getInstance().getUser();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -114,15 +114,15 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
     private LoginCallBack loginCallBack = new LoginCallBack() {
 
         @Override
-        protected void handleSuccess(LoginResponse result) {
+        protected void handleSuccess(BaseResponse.LoginResponse result) {
             super.handleSuccess(result);
-            UserManager.getInstance().setUserPassWord(password);
+            AccountManager.getInstance().setUserPassWord(password);
             Utils.start_Activity(LoginActivity.this, MainActivity.class);
             Utils.finish(LoginActivity.this);
         }
 
         @Override
-        protected void handleFailed(LoginResponse result) {
+        protected void handleFailed(BaseResponse.LoginResponse result) {
             showToast("用户名或密码错误");
             getLoadingDialog("正在登录...").dismiss();
         }

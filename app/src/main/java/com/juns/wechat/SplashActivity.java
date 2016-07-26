@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 
-import com.juns.wechat.common.Utils;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.view.activity.LoginActivity;
 
 public class SplashActivity extends Activity {
@@ -19,7 +17,7 @@ public class SplashActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start);
 
-		isLogin = UserManager.getInstance().isLogin();
+		isLogin = AccountManager.getInstance().isLogin();
 		if (isLogin) {
 			pageToHome();
 		} else {

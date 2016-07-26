@@ -7,7 +7,9 @@ import com.juns.wechat.database.DbUtil;
 
 import org.simple.eventbus.EventBus;
 import org.xutils.DbManager;
+import org.xutils.common.util.KeyValue;
 import org.xutils.db.Selector;
+import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 
 import java.lang.reflect.ParameterizedType;
@@ -61,6 +63,7 @@ public class BaseDao<T> implements IDao<T> {
                     }
                     index++;
                 }
+                selector.and("flag", "!=", -1);
             }
             return selector.findAll();
         } catch (DbException e) {
@@ -111,6 +114,17 @@ public class BaseDao<T> implements IDao<T> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs) {
+        try {
+            dbManager.update(clazz, whereBuilder, keyValuePairs);
+            return true;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public Class<T> getEntityClass() {

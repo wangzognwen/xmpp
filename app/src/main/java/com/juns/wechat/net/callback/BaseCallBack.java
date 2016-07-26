@@ -4,10 +4,9 @@ import android.widget.Toast;
 
 import com.juns.wechat.App;
 import com.juns.wechat.R;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.HttpEvent;
 import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ToastUtil;
 
 import org.simple.eventbus.EventBus;
@@ -47,7 +46,7 @@ public abstract class BaseCallBack<T> implements Callback.CommonCallback<T>{
 
 
     private void handleTokenError(){
-        UserManager.getInstance().logOut(App.getInstance());
+        AccountManager.getInstance().logOut(App.getInstance());
     }
 
     protected abstract void handleFailed(T result);

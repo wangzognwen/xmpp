@@ -1,15 +1,14 @@
 package com.juns.wechat.net.request;
 
 import com.juns.wechat.config.ConfigUtil;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.callback.LoginCallBack;
+import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.callback.UpdateUserCallBack;
 import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.net.response.RegisterResponse;
 import com.juns.wechat.net.response.SearchUserResponse;
 import com.juns.wechat.net.response.SyncUserResponse;
-import com.juns.wechat.net.response.UpdateUserResponse;
 
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
@@ -22,7 +21,7 @@ import org.xutils.x;
 public class UserRequest extends RequestParams {
     private static final String URL = ConfigUtil.REAL_API_URL;
 
-    public static void register(String userName, String passWord, BaseCallBack<RegisterResponse> callBack){
+    public static void register(String userName, String passWord, BaseCallBack<BaseResponse.RegisterResponse> callBack){
         x.http().post(new RegisterParams(userName, passWord), callBack);
     }
 
@@ -63,7 +62,7 @@ public class UserRequest extends RequestParams {
         public UpdateUserParams(String field, Object value){
             this.field = field;
             this.value = value;
-            token = UserManager.getInstance().getToken();
+            token = AccountManager.getInstance().getToken();
         }
     }
 
@@ -78,7 +77,7 @@ public class UserRequest extends RequestParams {
 
         public SearchUserParams(String search){
             this.search = search;
-            token = UserManager.getInstance().getToken();
+            token = AccountManager.getInstance().getToken();
         }
     }
 
@@ -93,12 +92,29 @@ public class UserRequest extends RequestParams {
 
         public SyncUserParams(long modifyDate){
             this.modifyDate = modifyDate;
-            token = UserManager.getInstance().getToken();
+            token = AccountManager.getInstance().getToken();
         }
     }
 
     public static void syncUserData(long lastModifyDate, BaseCallBack<SyncUserResponse> callBack){
         x.http().post(new SyncUserParams( lastModifyDate), callBack);
+    }
+
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "syncUserData")
+    public static class QueryUserParams extends RequestParams{
+        private String queryName;
+        private long modifyDate;
+        private String token;
+
+        public QueryUserParams(String queryName, long modifyDate){
+            this.queryName = queryName;
+            this.modifyDate = modifyDate;
+            token = AccountManager.getInstance().getToken();
+        }
+    }
+
+    public static void queryUserData(String queryName, long modifyDate, QueryUserCallBack callBack){
+        x.http().post(new QueryUserParams(queryName, modifyDate), callBack);
     }
 
 }

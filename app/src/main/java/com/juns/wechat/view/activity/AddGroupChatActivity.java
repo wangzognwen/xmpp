@@ -13,7 +13,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -33,20 +32,28 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
+import com.juns.wechat.adpter.PickContactAdapter;
+import com.juns.wechat.annotation.Content;
+import com.juns.wechat.annotation.Id;
+import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.chat.utils.Constant;
 import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.PinyinComparator;
+import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
-import com.juns.wechat.view.BaseActivity;
+import com.juns.wechat.dao.FriendDao;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.widget.SideBar;
 
-public class AddGroupChatActivity extends BaseActivity implements
-		OnClickListener, OnItemClickListener {
-	private ImageView iv_search, img_back;
-	private TextView tv_header, txt_title, txt_right;;
+@Content(R.layout.activity_chatroom)
+public class AddGroupChatActivity extends ToolbarActivity{
+    @Id
+    private TextView tvRightText;
+	private ImageView iv_search;
+	private TextView tv_header;
 	private ListView listView;
 	private EditText et_search;
 	private SideBar indexBar;
@@ -56,10 +63,10 @@ public class AddGroupChatActivity extends BaseActivity implements
 	protected boolean isCreatingNewGroup;
 	/** 是否为单选 */
 	private boolean isSignleChecked;
-	private ContactAdapter contactAdapter;
+	private PickContactAdapter contactAdapter;
 	/** group中一开始就有的成员 */
 	private List<String> exitingMembers = new ArrayList<String>();
-	private List<UserBean> alluserList;// 好友列表
+	private List<FriendBean> myFriends;// 好友列表
 	// 可滑动的显示选中用户的View
 	private LinearLayout menuLinerLayout;
 
@@ -71,12 +78,13 @@ public class AddGroupChatActivity extends BaseActivity implements
 	// 添加的列表
 	private List<String> addList = new ArrayList<String>();
 	private String hxid;
-	//private EMGroup group;
+	private UserBean user = AccountManager.getInstance().getUser();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_chatroom);
 		super.onCreate(savedInstanceState);
+        initControl();
+        initData();
 	}
 
 	@Override
@@ -85,15 +93,8 @@ public class AddGroupChatActivity extends BaseActivity implements
 		mWindowManager.removeView(mDialogText);
 	}
 
-	@Override
-	protected void initControl() {
-		txt_title = (TextView) findViewById(R.id.txt_title);
-		txt_title.setText("发起群聊");
-		txt_right = (TextView) this.findViewById(R.id.txt_right);
-		txt_right.setText("确定");
-		txt_right.setTextColor(0xFF45C01A);
-		img_back = (ImageView) findViewById(R.id.img_back);
-		img_back.setVisibility(View.VISIBLE);
+	private void initControl() {
+        tvRightText.setText("确定");
 		menuLinerLayout = (LinearLayout) this
 				.findViewById(R.id.linearLayoutMenu);
 		et_search = (EditText) this.findViewById(R.id.et_search);
@@ -118,70 +119,37 @@ public class AddGroupChatActivity extends BaseActivity implements
 				null);
 		tv_header = (TextView) headerView.findViewById(R.id.tv_header);
 		listView.addHeaderView(headerView);
-		listView.setOnItemClickListener(this);
 	}
 
-	@Override
-	protected void initView() {
-		hxid = Utils.getValue(AddGroupChatActivity.this, Constants.User_ID);
-		groupId = getIntent().getStringExtra(Constants.GROUP_ID);
-		userId = getIntent().getStringExtra(Constants.User_ID);
-		if (groupId != null) {
-		/*	isCreatingNewGroup = false;
-			group = EMGroupManager.getDbManager().getGroup(groupId);
-			if (group != null) {
-				exitingMembers = group.getMembers();
-				groupname = group.getGroupName();
-			}*/
-		} else if (userId != null) {
-			isCreatingNewGroup = true;
-			exitingMembers.add(userId);
-			total = 1;
-			addList.add(userId);
-		} else {
-			isCreatingNewGroup = true;
-		}
-	}
-
-	@Override
 	protected void initData() {
 		// 获取好友列表
-		alluserList = new ArrayList<UserBean>();
-		for (UserBean user : GloableParams.UserInfos) {
-			if (!user.getUserName().equals(Constant.NEW_FRIENDS_USERNAME)
-					& !user.getUserName().equals(Constant.GROUP_USERNAME))
-				alluserList.add(user);
-		}
-		contactAdapter = new ContactAdapter(AddGroupChatActivity.this,
-				alluserList);
+		myFriends = FriendDao.getInstance().queryAllByOwner(user.getUserName());
+		contactAdapter = new PickContactAdapter(AddGroupChatActivity.this,
+                myFriends);
 		listView.setAdapter(contactAdapter);
 	}
 
-	@Override
 	protected void setListener() {
-		img_back.setOnClickListener(this);
-		tv_header.setOnClickListener(this);
-		txt_right.setOnClickListener(this);
 		et_search.addTextChangedListener(new TextWatcher() {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				if (s.length() > 0) {
+				/*if (s.length() > 0) {
 					String str_s = et_search.getText().toString().trim();
-					List<UserBean> users_temp = new ArrayList<UserBean>();
-					for (UserBean user : alluserList) {
+					List<FriendBean> users_temp = new ArrayList<>();
+					for (FriendBean friendBean : myFriends) {
 						String usernick = user.getUserName();
 						if (usernick.contains(str_s)) {
 							users_temp.add(user);
 						}
-						contactAdapter = new ContactAdapter(
+						contactAdapter = new PickContactAdapter(
 								AddGroupChatActivity.this, users_temp);
 						listView.setAdapter(contactAdapter);
 					}
 				} else {
-					contactAdapter = new ContactAdapter(
-							AddGroupChatActivity.this, alluserList);
+					contactAdapter = new PickContactAdapter(
+							AddGroupChatActivity.this, myFriends);
 					listView.setAdapter(contactAdapter);
-				}
+				}*/
 			}
 
 			public void beforeTextChanged(CharSequence s, int start, int count,
@@ -193,22 +161,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		});
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.img_back:
-			Utils.finish(AddGroupChatActivity.this);
-			break;
-		case R.id.tv_header:
-			// TODO 打开群列表
-			break;
-		case R.id.txt_right:// 确定按钮
-			save();
-			break;
-		default:
-			break;
-		}
-	}
+
 
 	/**
 	 * 确认选择的members
@@ -240,156 +193,6 @@ public class AddGroupChatActivity extends BaseActivity implements
 		}
 	}
 
-	class ContactAdapter extends BaseAdapter implements SectionIndexer {
-		private Context mContext;
-		private boolean[] isCheckedArray;
-		private Bitmap[] bitmaps;
-		private List<UserBean> list = new ArrayList<UserBean>();
-
-		@SuppressWarnings("unchecked")
-		public ContactAdapter(Context mContext, List<UserBean> users) {
-			this.mContext = mContext;
-			this.list = users;
-			bitmaps = new Bitmap[list.size()];
-			isCheckedArray = new boolean[list.size()];
-			// 排序(实现了中英文混排)
-			Collections.sort(list, new PinyinComparator());
-		}
-
-		@Override
-		public int getCount() {
-			return list.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return list.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
-			final UserBean user = list.get(position);
-			if (convertView == null) {
-				convertView = LayoutInflater.from(mContext).inflate(
-						R.layout.contact_item, null);
-			}
-			ImageView ivAvatar = ViewHolder.get(convertView,
-					R.id.contactitem_avatar_iv);
-			TextView tvCatalog = ViewHolder.get(convertView,
-					R.id.contactitem_catalog);
-			TextView tvNick = ViewHolder
-					.get(convertView, R.id.contactitem_nick);
-			final CheckBox checkBox = ViewHolder
-					.get(convertView, R.id.checkbox);
-			checkBox.setVisibility(View.VISIBLE);
-			String catalog = PingYinUtil.converterToFirstSpell(
-					user.getUserName()).substring(0, 1);
-			if (position == 0) {
-				tvCatalog.setVisibility(View.VISIBLE);
-				tvCatalog.setText(catalog);
-			} else {
-				UserBean Nextuser = list.get(position - 1);
-				String lastCatalog = PingYinUtil.converterToFirstSpell(
-						Nextuser.getUserName()).substring(0, 1);
-				if (catalog.equals(lastCatalog)) {
-					tvCatalog.setVisibility(View.GONE);
-				} else {
-					tvCatalog.setVisibility(View.VISIBLE);
-					tvCatalog.setText(catalog);
-				}
-			}
-			ivAvatar.setImageResource(R.drawable.head);
-			tvNick.setText(user.getUserName());
-			if (exitingMembers != null
-					&& exitingMembers.contains(user.getTelephone())) {
-				checkBox.setChecked(true);
-			} else {
-				checkBox.setChecked(false);
-			}
-			if (addList != null && addList.contains(user.getTelephone())) {
-				checkBox.setChecked(true);
-				isCheckedArray[position] = true;
-			}
-			if (checkBox != null) {
-				checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						// 群组中原来的成员一直设为选中状态
-						if (exitingMembers.contains(user.getTelephone())) {
-							isChecked = true;
-							checkBox.setChecked(true);
-						}
-						isCheckedArray[position] = isChecked;
-						// 如果是单选模式
-						if (isSignleChecked && isChecked) {
-							for (int i = 0; i < isCheckedArray.length; i++) {
-								if (i != position) {
-									isCheckedArray[i] = false;
-								}
-							}
-							contactAdapter.notifyDataSetChanged();
-						}
-
-						if (isChecked) {
-							// 选中用户显示在滑动栏显示
-							showCheckImage(null, list.get(position));
-						} else {
-							// 用户显示在滑动栏删除
-							deleteImage(list.get(position));
-						}
-					}
-				});
-				// 群组中原来的成员一直设为选中状态
-				if (exitingMembers.contains(user.getTelephone())) {
-					checkBox.setChecked(true);
-					isCheckedArray[position] = true;
-				} else {
-					checkBox.setChecked(isCheckedArray[position]);
-				}
-
-			}
-			return convertView;
-		}
-
-		@Override
-		public int getPositionForSection(int section) {
-			for (int i = 0; i < list.size(); i++) {
-				UserBean user = list.get(i);
-				String l = PingYinUtil
-						.converterToFirstSpell(user.getUserName()).substring(0,
-								1);
-				char firstChar = l.toUpperCase().charAt(0);
-				if (firstChar == section) {
-					return i;
-				}
-			}
-			return 0;
-		}
-
-		@Override
-		public int getSectionForPosition(int position) {
-			return 0;
-		}
-
-		@Override
-		public Object[] getSections() {
-			return null;
-		}
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View view, int arg2, long arg3) {
-		CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-		checkBox.toggle();
-	}
-
 	// 即时显示被选中用户的头像和昵称。
 	private void showCheckImage(Bitmap bitmap, UserBean glufineid) {
 		if (exitingMembers.contains(glufineid.getUserName()) && groupId != null) {
@@ -415,7 +218,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 		}
 
 		menuLinerLayout.addView(imageView);
-		txt_right.setText("确定(" + total + ")");
+		tvRightText.setText("确定(" + total + ")");
 		if (total > 0) {
 			if (iv_search.getVisibility() == View.VISIBLE) {
 				iv_search.setVisibility(View.GONE);
@@ -429,7 +232,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 
 		menuLinerLayout.removeView(view);
 		total--;
-		txt_right.setText("确定(" + total + ")");
+		tvRightText.setText("确定(" + total + ")");
 		addList.remove(glufineid.getTelephone());
 		if (total < 1) {
 			if (iv_search.getVisibility() == View.GONE) {
@@ -447,72 +250,7 @@ public class AddGroupChatActivity extends BaseActivity implements
 	String manber = "";
 
 	private void creatNewGroup(final List<String> members) {
-		// TODO 请求服务器创建群组，服务端实现接口
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// 调用sdk创建群组方法
-				/*try {
-					final String[] strmembers = new String[members.size()];
-					for (int i = 0; i < members.size(); i++) {
-						User user = GloableParams.Users.get(members.get(i));
-						if (user != null) {
-							if (i < 3) {
-								if (i == 0)
-									groupName = user.getUserName();
-								else
-									groupName += "、" + user.getUserName();
-							} else if (i == 4) {
-								groupName += "...";
-							}
-							strmembers[i] = user.getTelephone();
-							if (i == 0) {
-								manber = user.getTelephone();
-							} else {
-								manber += "、" + user.getTelephone();
-							}
-						}
-					}
-					*//*final EMGroup group = EMGroupManager.getDbManager()
-							.createPublicGroup(groupName, "", strmembers, true);
-					runOnUiThread(new Runnable() {
-						public void run() {
-							if (group != null) {
-								// TODO 保存本地数据库
-								GloableParams.GroupInfos = new HashMap<String, GroupInfo>();
-								GroupInfo info = new GroupInfo();
-								info.setGroup_id(group.getGroupId());
-								info.setGroup_name(groupName);
-								info.setMembers(manber);
-								String owner_id = Utils.getValue(
-										AddGroupChatActivity.this,
-										Constants.User_ID);
-								info.setOwner_id(owner_id);
-								GloableParams.GroupInfos.put(
-										group.getGroupId(), info);
-								FinalDb db = FinalDb.create(
-										AddGroupChatActivity.this,
-										Constants.DB_NAME, false);
-								db.save(info);
-								addServieGroup(group.getGroupId(), groupName,
-										manber, owner_id);// 保存服务器
 
-							}
-						}
-
-					});*//*
-				} catch (final EaseMobException e) {
-					runOnUiThread(new Runnable() {
-						public void run() {
-							Utils.showLongToast(AddGroupChatActivity.this,
-									"创建失败");
-							getLoadingDialog("正在创建群聊...").dismiss();
-						}
-					});
-				}*/
-
-			}
-		}).start();
 	}
 
 

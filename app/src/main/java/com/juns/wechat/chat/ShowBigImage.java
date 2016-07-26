@@ -1,9 +1,7 @@
 package com.juns.wechat.chat;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
@@ -13,8 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -23,9 +19,8 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
-import com.juns.wechat.chat.utils.ImageCache;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.request.UploadFileRequest;
 import com.juns.wechat.net.response.UploadFileResponse;
@@ -34,8 +29,6 @@ import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.widget.scalemageview.PhotoView;
 import android.app.AlertDialog;
-
-import org.xutils.x;
 
 /**
  * 下载显示大图
@@ -75,7 +68,7 @@ public class ShowBigImage extends ToolbarActivity {
 		System.err.println("show big image uri:" + uri + " remotepath:"
 				+ remotepath);
 
-        String fileName = UserManager.getInstance().getHeadUrl();
+        String fileName = AccountManager.getInstance().getHeadUrl();
         LogUtil.i("fileName: " + fileName);
         ImageUtil.loadImage(scaleImageView, fileName);
 
@@ -156,7 +149,6 @@ public class ShowBigImage extends ToolbarActivity {
                     Bitmap bitmap = BitmapFactory.decodeFile(PhotoUtil.PHOTO_PATH + "/"
                             + imageName);
                     scaleImageView.setImageBitmap(bitmap);
-                    updateAvatarInServer(imageName);
                     break;
 
             }
@@ -171,22 +163,6 @@ public class ShowBigImage extends ToolbarActivity {
         return dateFormat.format(date);
     }
 
-    private void  updateAvatarInServer(String imageName){
-        String filePath = PhotoUtil.PHOTO_PATH + "/" + imageName;
-        UploadFileRequest.uploadAvatar(filePath, callBack);
-    }
-
-    private BaseCallBack<UploadFileResponse> callBack = new BaseCallBack<UploadFileResponse>() {
-        @Override
-        protected void handleSuccess(UploadFileResponse result) {
-            UserManager.getInstance().setHeadUrl(result.fileName);
-        }
-
-        @Override
-        protected void handleFailed(UploadFileResponse result) {
-
-        }
-    };
 
 	/**
 	 * 通过远程URL，确定下本地下载后的localurl

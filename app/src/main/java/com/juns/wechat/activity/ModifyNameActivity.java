@@ -11,7 +11,7 @@ import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.UpdateUserCallBack;
 import com.juns.wechat.net.response.UpdateUserResponse;
@@ -27,7 +27,7 @@ public class ModifyNameActivity extends ToolbarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nickName = UserManager.getInstance().getUser().getNickName();
+        nickName = AccountManager.getInstance().getUser().getNickName();
         etInputNick.setText(nickName == null ? "" : nickName);
     }
 
@@ -41,7 +41,7 @@ public class ModifyNameActivity extends ToolbarActivity {
             showToast(R.string.toast_network_unavailable);
             return;
         }
-        String userName = UserManager.getInstance().getUserName();
+        String userName = AccountManager.getInstance().getUserName();
         nickName = etInputNick.getText().toString();
         UserRequest.updateUser(userName, UserBean.NICKNAME, nickName, updateUserCallBack);
     }

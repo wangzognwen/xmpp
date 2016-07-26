@@ -1,5 +1,6 @@
 package com.juns.wechat.net.response;
 
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.net.JsonResponseParser;
 
 import org.xutils.http.annotation.HttpResponse;
@@ -18,4 +19,22 @@ public class BaseResponse {
 
     public int code;
     public String msg;
+
+    @HttpResponse(parser = JsonResponseParser.class)
+    public class LoginResponse extends BaseResponse {
+        public static final int FAILED = 1;
+
+        public String token;
+        public UserBean userBean;
+    }
+
+    @HttpResponse(parser = JsonResponseParser.class)
+    public class RegisterResponse extends BaseResponse {
+        public String errField;
+    }
+
+    @HttpResponse(parser = JsonResponseParser.class)
+    public class QueryUserResponse extends BaseResponse{
+        public UserBean userBean;
+    }
 }
