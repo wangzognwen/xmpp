@@ -33,6 +33,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.PickContactAdapter;
+import com.juns.wechat.annotation.Click;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.FriendBean;
@@ -47,6 +48,12 @@ import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.widget.SideBar;
+import com.juns.wechat.xmpp.XmppConnUtil;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 
 @Content(R.layout.activity_chatroom)
 public class AddGroupChatActivity extends ToolbarActivity{
@@ -77,7 +84,6 @@ public class AddGroupChatActivity extends ToolbarActivity{
 	private String groupname;
 	// 添加的列表
 	private List<String> addList = new ArrayList<String>();
-	private String hxid;
 	private UserBean user = AccountManager.getInstance().getUser();
 
 	@Override
@@ -95,8 +101,7 @@ public class AddGroupChatActivity extends ToolbarActivity{
 
 	private void initControl() {
         tvRightText.setText("确定");
-		menuLinerLayout = (LinearLayout) this
-				.findViewById(R.id.linearLayoutMenu);
+		menuLinerLayout = (LinearLayout) this.findViewById(R.id.linearLayoutMenu);
 		et_search = (EditText) this.findViewById(R.id.et_search);
 		listView = (ListView) findViewById(R.id.list);
 		iv_search = (ImageView) this.findViewById(R.id.iv_search);
@@ -167,30 +172,14 @@ public class AddGroupChatActivity extends ToolbarActivity{
 	 * 确认选择的members
 	 *
 	 */
-	public void save() {
-		if (addList.size() == 0) {
-			Utils.showLongToast(AddGroupChatActivity.this, "请选择用户");
-			return;
-		}
-		// 如果只有一个用户说明只是单聊,并且不是从群组加人
-		if (addList.size() == 1 && isCreatingNewGroup) {
-			String userId = addList.get(0);
-			UserBean user = GloableParams.Users.get(userId);
-			Intent intent = new Intent(AddGroupChatActivity.this,
-					ChatActivity.class);
-			intent.putExtra(Constants.NAME, user.getUserName());
-			intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
-			intent.putExtra(Constants.User_ID, user.getTelephone());
-			startActivity(intent);
-			overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-		} else {
-			if (isCreatingNewGroup) {
-				getLoadingDialog("正在创建群聊...").show();
-			} else {
-				getLoadingDialog("正在加人...").show();
-			}
-			creatNewGroup(addList);// 创建群组
-		}
+    @Click(viewId = R.id.tvRightText)
+	private void save(View v) {
+        if (isCreatingNewGroup) {
+            getLoadingDialog("正在创建群聊...").show();
+        } else {
+            getLoadingDialog("正在加人...").show();
+        }
+        createNewGroup();// 创建群组
 	}
 
 	// 即时显示被选中用户的头像和昵称。
@@ -228,7 +217,7 @@ public class AddGroupChatActivity extends ToolbarActivity{
 	}
 
 	private void deleteImage(UserBean glufineid) {
-		View view = (View) menuLinerLayout.findViewWithTag(glufineid);
+		View view =  menuLinerLayout.findViewWithTag(glufineid);
 
 		menuLinerLayout.removeView(view);
 		total--;
@@ -249,8 +238,22 @@ public class AddGroupChatActivity extends ToolbarActivity{
 	String groupName = "";
 	String manber = "";
 
-	private void creatNewGroup(final List<String> members) {
-
+	private void createNewGroup() {
+        List<FriendBean> selectedUsers = contactAdapter.getSelectedUsers();
+        if(selectedUsers != null && !selectedUsers.isEmpty()){
+            MultiUserChatManager multiUserChatManager =
+                    MultiUserChatManager.getInstanceFor(XmppConnUtil.getXmppConnection());
+            MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat("room1@conference.wangzhe");
+            try {
+                for(FriendBean friendBean : selectedUsers){
+                    multiUserChat.createOrJoin(friendBean.getShowName());
+                }
+            } catch (XMPPException.XMPPErrorException e) {
+                e.printStackTrace();
+            } catch (SmackException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 
 

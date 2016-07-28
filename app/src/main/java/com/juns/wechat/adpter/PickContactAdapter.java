@@ -30,15 +30,20 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
     private Context mContext;
     private boolean[] isCheckedArray;
     private List<FriendBean> list = new ArrayList<>();
+    private List<FriendBean> selectedUsers;
 
     public PickContactAdapter(Context mContext, List<FriendBean> friends) {
         this.mContext = mContext;
         this.list = friends;
         if(friends != null){
             isCheckedArray = new boolean[list.size()];
+            for(int i = 0 ; i < isCheckedArray.length; i++){
+                isCheckedArray[i] = false;
+            }
             // 排序(实现了中英文混排)
             Collections.sort(list, new PinyinComparator());
         }
+        selectedUsers = new ArrayList<>();
 
     }
 
@@ -59,6 +64,7 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        if(list == null) return convertView;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.contact_item, null);
@@ -92,56 +98,26 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
         }
         ImageUtil.loadImage(ivAvatar, friendBean.getContactUser().getHeadUrl());
         tvNick.setText(friendBean.getShowName());
-       /* if (exitingMembers != null
-                && exitingMembers.contains(f.getTelephone())) {
-            checkBox.setChecked(true);
-        } else {
-            checkBox.setChecked(false);
-        }
-        if (addList != null && addList.contains(f.getTelephone())) {
-            checkBox.setChecked(true);
-            isCheckedArray[position] = true;
-        }
-        if (checkBox != null) {
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView,
-                                             boolean isChecked) {
-                    // 群组中原来的成员一直设为选中状态
-                    if (exitingMembers.contains(f.getTelephone())) {
-                        isChecked = true;
-                        checkBox.setChecked(true);
-                    }
-                    isCheckedArray[position] = isChecked;
-                    // 如果是单选模式
-                    if (isSignleChecked && isChecked) {
-                        for (int i = 0; i < isCheckedArray.length; i++) {
-                            if (i != position) {
-                                isCheckedArray[i] = false;
-                            }
-                        }
-                        contactAdapter.notifyDataSetChanged();
-                    }
 
-                    if (isChecked) {
-                        // 选中用户显示在滑动栏显示
-                        showCheckImage(null, list.get(position));
-                    } else {
-                        // 用户显示在滑动栏删除
-                        deleteImage(list.get(position));
-                    }
+        checkBox.setChecked(isCheckedArray[position]);
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isCheckedArray[position] = isChecked;
+                if(isChecked){
+                    selectedUsers.add(friendBean);
+                }else {
+                    selectedUsers.remove(friendBean.getContactName());
                 }
-            });
-            // 群组中原来的成员一直设为选中状态
-            if (exitingMembers.contains(f.getTelephone())) {
-                checkBox.setChecked(true);
-                isCheckedArray[position] = true;
-            } else {
-                checkBox.setChecked(isCheckedArray[position]);
             }
+        });
 
-        }*/
         return convertView;
+    }
+
+    public List<FriendBean> getSelectedUsers(){
+        return selectedUsers;
     }
 
     @Override

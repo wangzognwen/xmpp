@@ -22,7 +22,7 @@ import java.util.Map;
 public class BaseDao<T> implements IDao<T> {
     protected DbManager dbManager;
     private Class<T> clazz;
-    private DataEvent<T> dataEvent;
+    private DbDataEvent<T> dataEvent;
 
     public BaseDao(){
         dbManager = DbUtil.getDbManager();
@@ -94,8 +94,8 @@ public class BaseDao<T> implements IDao<T> {
     public boolean replace(T t) {
         try {
             dbManager.replace(t);
-            dataEvent = new DataEvent();
-            dataEvent.action = DataEvent.REPLACE_ONE;
+            dataEvent = new DbDataEvent();
+            dataEvent.action = DbDataEvent.REPLACE_ONE;
             dataEvent.data = t;
             EventBus.getDefault().post(dataEvent);
             return true;

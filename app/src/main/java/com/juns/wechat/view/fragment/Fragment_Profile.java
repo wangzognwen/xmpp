@@ -20,7 +20,7 @@ import com.juns.wechat.R;
 import com.juns.wechat.activity.MyProfileActivity;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.dao.DataEvent;
+import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ImageUtil;
 import com.juns.wechat.view.activity.PublicActivity;
@@ -76,8 +76,8 @@ public class Fragment_Profile extends Fragment implements OnClickListener {
 	}
 
     @Subscriber
-    private void onDbDataChanged(DataEvent<UserBean> event){
-        if(event.action == DataEvent.REPLACE_ONE && event.data != null){
+    private void onDbDataChanged(DbDataEvent<UserBean> event){
+        if(event.action == DbDataEvent.REPLACE_ONE && event.data != null){
             if(event.data.getUserName().equals(userBean.getUserName())){
                 initData();
             }

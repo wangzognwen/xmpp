@@ -115,4 +115,8 @@ public class FriendBean {
             return userBean.getShowName();
         }
     }
+
+    public String getHeadUrl(){
+        return getContactUser().getHeadUrl();
+    }
 }

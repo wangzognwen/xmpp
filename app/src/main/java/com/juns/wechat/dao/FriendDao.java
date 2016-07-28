@@ -37,6 +37,13 @@ public class FriendDao extends BaseDao<FriendBean>{
         return findAllByParams(params);
     }
 
+    public FriendBean findByOwnerAndContactName(String ownerName, String contactName){
+        Map<String, Object> params = new HashMap<>();
+        params.put(FriendBean.OWNER_NAME, ownerName);
+        params.put(FriendBean.CONTACT_NAME, contactName);
+        return findByParams(params);
+    }
+
     public long getLastModifyDate(String userName){
         long lastModifyDate = 0;
 

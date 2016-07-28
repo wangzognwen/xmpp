@@ -15,7 +15,7 @@ import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.dao.DataEvent;
+import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dialog.SelectPhotoDialog;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ImageUtil;
@@ -94,8 +94,8 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     }
 
     @Subscriber
-    private void onDbDataChanged(DataEvent<UserBean> event){
-        if(event.action == DataEvent.REPLACE_ONE && event.data != null){
+    private void onDbDataChanged(DbDataEvent<UserBean> event){
+        if(event.action == DbDataEvent.REPLACE_ONE && event.data != null){
             if(event.data.getUserName().equals(userBean.getUserName())){
                 setData();
             }

@@ -121,8 +121,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 		FriendBean rosterBean = rosterBeans.get(position - 1);
 
         Intent intent = new Intent(getActivity(), UserInfoActivity.class);
-        intent.putExtra(Constants.NAME, rosterBean.getContactName());
-        intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
+        intent.putExtra(UserInfoActivity.ARG_USER_NAME, rosterBean.getContactName());
 
         getActivity().startActivity(intent);
         getActivity().overridePendingTransition(R.anim.push_left_in,
