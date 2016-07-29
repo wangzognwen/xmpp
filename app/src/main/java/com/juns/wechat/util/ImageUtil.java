@@ -16,10 +16,11 @@ import java.io.File;
  * Created by 王宗文 on 2016/7/16.
  */
 public class ImageUtil {
-    private static final String REMOTE_PATH = "http://192.168.1.2:8080/upload/";
+    private static final String REMOTE_PATH = ConfigUtil.REAL_SERVER + "/upload/";
 
     private static final ImageOptions OPTIONS = new ImageOptions.Builder()
             .setFailureDrawableId(R.drawable.default_useravatar)
+            .setLoadingDrawableId(R.drawable.default_useravatar)
             .setImageScaleType(ImageView.ScaleType.CENTER).build();
 
     public static void loadImage(ImageView imageView, String fileName){

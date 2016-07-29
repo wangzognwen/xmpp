@@ -1,10 +1,9 @@
 package com.juns.wechat.net.request;
 
 import android.text.TextUtils;
-import android.view.TextureView;
 
 import com.juns.wechat.config.ConfigUtil;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.RefreshTokenCallBack;
 
 import org.xutils.http.RequestParams;
@@ -27,7 +26,7 @@ public class TokenRequest {
     }
 
     public static void refreshToken(RefreshTokenCallBack callBack){
-        UserManager userManager = UserManager.getInstance();
+        AccountManager userManager = AccountManager.getInstance();
 
         if(!TextUtils.isEmpty(userManager.getToken())){
             if(userManager.getTokenRefreshTime() + REFRESH_TIME < System.currentTimeMillis()){

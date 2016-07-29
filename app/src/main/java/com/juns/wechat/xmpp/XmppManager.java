@@ -1,5 +1,6 @@
 package com.juns.wechat.xmpp;
 
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.xmpp.bean.SearchResult;
 
 import org.jivesoftware.smack.SmackException;
@@ -27,8 +28,7 @@ public interface XmppManager {
     void shutDownConn();
     boolean isConnected();
     boolean sendPacket(Stanza packet);
-    boolean sendMessage(MessageEntity messageEntity);
+    boolean sendMessage(MessageBean messageBean);
     boolean isFriends(int otherUserId);
-    boolean addFriend(int otherUserId, String nickName);
     List<SearchResult> searchUser(String name);
 }

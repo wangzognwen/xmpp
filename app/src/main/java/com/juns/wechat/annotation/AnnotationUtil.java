@@ -2,6 +2,7 @@ package com.juns.wechat.annotation;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -16,7 +17,9 @@ import com.juns.wechat.util.LogUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * ****************************************************
@@ -182,7 +185,9 @@ public class AnnotationUtil {
                         } else {
                             obj = bundle.getBoolean(extra.name(), true);
                         }
-                    }else {
+                    } else if(clazz.equals(List.class)){
+                        obj = bundle.getParcelableArrayList(extra.name());
+                    } else {
                         obj = bundle.getParcelable(extra.name());
                     }
 

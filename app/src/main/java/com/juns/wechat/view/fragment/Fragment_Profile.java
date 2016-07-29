@@ -8,23 +8,21 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.activity.MyProfileActivity;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dao.DataEvent;
-import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.util.ImageUtil;
 import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.view.activity.SettingActivity;
 
@@ -32,6 +30,7 @@ import com.juns.wechat.view.activity.SettingActivity;
 public class Fragment_Profile extends Fragment implements OnClickListener {
 	private Activity ctx;
 	private View layout;
+    private ImageView ivAvatar;
 	private TextView tvNickName, tvUserName;
     private UserBean userBean;
 
@@ -44,23 +43,17 @@ public class Fragment_Profile extends Fragment implements OnClickListener {
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		if (layout == null) {
-			ctx = this.getActivity();
-			layout = ctx.getLayoutInflater().inflate(R.layout.fragment_profile,
-					null);
-			initViews();
-			initData();
-			setOnListener();
-		} else {
-			ViewGroup parent = (ViewGroup) layout.getParent();
-			if (parent != null) {
-				parent.removeView(layout);
-			}
-		}
+        layout = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        initViews();
+        initData();
+        setOnListener();
+
 		return layout;
 	}
 
 	private void initViews() {
+        ivAvatar = (ImageView) layout.findViewById(R.id.ivAvatar);
 		tvNickName = (TextView) layout.findViewById(R.id.tvNickName);
 		tvUserName = (TextView) layout.findViewById(R.id.tvUserName);
 	}
@@ -76,9 +69,10 @@ public class Fragment_Profile extends Fragment implements OnClickListener {
 	}
 
 	private void initData() {
-		userBean = UserManager.getInstance().getUser();
-        tvUserName.setText(userBean.getUserName());
+		userBean = AccountManager.getInstance().getUser();
+        tvUserName.setText("微信号：" + userBean.getUserName());
         tvNickName.setText(userBean.getNickName() == null ? userBean.getUserName() : userBean.getNickName());
+        ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
 	}
 
     @Subscriber

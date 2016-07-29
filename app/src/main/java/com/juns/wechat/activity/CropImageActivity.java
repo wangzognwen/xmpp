@@ -1,12 +1,9 @@
 package com.juns.wechat.activity;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.internal.widget.DrawableUtils;
 import android.view.View;
 
 import com.juns.wechat.R;
@@ -16,10 +13,9 @@ import com.juns.wechat.annotation.Extra;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.callback.BaseCallBack;
+import com.juns.wechat.net.callback.UpdateUserCallBack;
 import com.juns.wechat.net.request.UploadFileRequest;
-import com.juns.wechat.net.response.UploadFileResponse;
+import com.juns.wechat.net.response.UpdateUserResponse;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.view.ClipImageLayout;
 
@@ -67,15 +63,15 @@ public class CropImageActivity extends ToolbarActivity {
         UploadFileRequest.uploadAvatar(filePath, callBack);
     }
 
-    private BaseCallBack<UploadFileResponse> callBack = new BaseCallBack<UploadFileResponse>() {
+    private UpdateUserCallBack callBack = new UpdateUserCallBack() {
         @Override
-        protected void handleSuccess(UploadFileResponse result) {
-            UserManager.getInstance().setHeadUrl(result.fileName);
+        protected void handleSuccess(UpdateUserResponse result) {
+            super.handleSuccess(result);
             Utils.finish(CropImageActivity.this);
         }
 
         @Override
-        protected void handleFailed(UploadFileResponse result) {
+        protected void handleFailed(UpdateUserResponse result) {
 
         }
     };

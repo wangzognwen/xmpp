@@ -163,7 +163,7 @@ public class UserBean implements Parcelable {
         this.createDate = createDate;
     }
 
-    public String getName(){
+    public String getShowName(){
         if(!TextUtils.isEmpty(nickName)){
             return nickName;
         }

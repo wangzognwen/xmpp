@@ -42,4 +42,5 @@
     <string name="label_activity_login">登录</string>
     <string name="label_activity_my_profile">个人信息</string>
     <string name="label_activity_modify_name">更改名字</string>
+    <string name="label_activity_show_search_result">搜索结果</string>
 </resources>

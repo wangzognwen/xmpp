@@ -1,8 +1,6 @@
 package com.juns.wechat.xmpp.listener;
 
 
-import com.juns.wechat.xmpp.MessageEntity;
-
 import org.jivesoftware.smackx.filetransfer.FileTransferListener;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 

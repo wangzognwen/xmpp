@@ -1,11 +1,9 @@
 package com.juns.wechat.dao;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.database.DbUtil;
-import com.juns.wechat.database.UserTable;
+import com.juns.wechat.bean.FriendBean;
+import com.juns.wechat.database.FriendTable;
 
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.SqlInfo;
@@ -19,26 +17,24 @@ import java.util.Map;
 /**
  * Created by 王宗文 on 2016/6/20.
  */
-public class UserDao extends BaseDao<UserBean>{
+public class FriendDao extends BaseDao<FriendBean>{
     private static final String GET_LAST_MODIFY_DATE =
-            "SELECT max(t.modifyDate) as lastModifyDate FROM ( " +
-                    "SELECT t1.* FROM (select u.* from wcUser u, wcFriend r where " +
-                    "(r.ownerName = ? and u.userName = r.contactName) and (r.subType = 'both' or r.subType = 'from')) t1" +
-                    " UNION SELECT u.* from wcUser u WHERE u.userName = ?) t";
+            "SELECT max(f.modifyDate) as lastModifyDate from wcFriend f where f.ownerName = ? and " +
+                    "(f.subType = 'both' or f.subType = 'from')";
 
-    private static UserDao mInstance;
+    private static FriendDao mInstance;
 
-    public static UserDao getInstance(){
+    public static FriendDao getInstance(){
         if(mInstance == null){
-            mInstance = new UserDao();
+            mInstance = new FriendDao();
         }
         return mInstance;
     }
 
-    public UserBean findByName(String userName){
-        Map<String, Object> param = new HashMap<>();
-        param.put(UserBean.USERNAME, userName);
-        return findByParams(param);
+    public List<FriendBean> queryAllByOwner(String ownerName){
+        Map<String, Object> params = new HashMap<>();
+        params.put(FriendBean.OWNER_NAME, ownerName);
+        return findAllByParams(params);
     }
 
     public long getLastModifyDate(String userName){
@@ -47,15 +43,13 @@ public class UserDao extends BaseDao<UserBean>{
         SqlInfo sqlInfo = new SqlInfo(GET_LAST_MODIFY_DATE);
         List<KeyValue> keyValues = new ArrayList<>();
         KeyValue keyValue1 = new KeyValue("key1", userName);
-        KeyValue keyValue2 = new KeyValue("key2", userName);
         keyValues.add(keyValue1);
-        keyValues.add(keyValue2);
         sqlInfo.addBindArgs(keyValues);
 
         try {
             Cursor cursor = dbManager.execQuery(sqlInfo);
             if(cursor != null && cursor.moveToNext()){
-               lastModifyDate =  cursor.getLong(cursor.getColumnIndex("lastModifyDate"));
+                lastModifyDate =  cursor.getLong(cursor.getColumnIndex("lastModifyDate"));
             }
             closeCursor(cursor);
         } catch (DbException e) {
@@ -63,4 +57,5 @@ public class UserDao extends BaseDao<UserBean>{
         }
         return lastModifyDate;
     }
+
 }

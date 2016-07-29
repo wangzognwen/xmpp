@@ -1,11 +1,8 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.App;
-import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.manager.UserManager;
 import com.juns.wechat.service.XmppService;
 import com.juns.wechat.util.NetWorkUtil;
-import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.event.XmppEvent;
 
 import org.jivesoftware.smack.SmackException;
@@ -45,11 +42,18 @@ public class XmppExceptionHandler {
         EventBus.getDefault().post(xmppEvent);
     }
 
+    private static long lastConnTime = 0;
+
     /**
      * 连接超时或者没有连接的情况下，如果在有网络的情况下，应该让其重新连接并登录。因为在抛出异常时，XMPP并不会自动重连
      */
     private static void reLoginToXmpp(){
         if(!NetWorkUtil.isNetworkAvailable()) return;
-       // XmppService.login(App.getInstance());
+        long nowTime = System.currentTimeMillis();
+        if(nowTime - lastConnTime < 20 * 1000){ //XMPP有自动重连功能，防止在这里重复连接
+            return;
+        }
+        lastConnTime = nowTime;
+        XmppService.login(App.getInstance());
     }
 }

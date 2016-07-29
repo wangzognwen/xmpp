@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.dao.UserDao;
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.callback.RefreshTokenCallBack;
 import com.juns.wechat.net.request.TokenRequest;
@@ -18,7 +18,7 @@ import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.SyncUserResponse;
 import com.juns.wechat.net.response.TokenResponse;
 import com.juns.wechat.util.LogUtil;
-import com.juns.wechat.xmpp.XmppManager;
+import com.juns.wechat.util.SyncDataUtil;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.XmppManagerUtil;
 
@@ -41,13 +41,13 @@ public class XmppService extends Service {
     public static final String ACTION_LOGIN = "login";
     public static final String ACTION_DESTROY = "destroy";
 
-    private UserManager userManager;
+    private AccountManager userManager;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        userManager = UserManager.getInstance();
+        userManager = AccountManager.getInstance();
     }
 
     @Nullable
@@ -86,11 +86,11 @@ public class XmppService extends Service {
      * 更多详情请查看{@link XmppManagerImpl#login(String, String)}
      */
     public void login(){
-        if(!UserManager.getInstance().isLogin()){
+        if(!AccountManager.getInstance().isLogin()){
             return;
         }
-        if(!TextUtils.isEmpty(UserManager.getInstance().getToken())){
-            if(UserManager.getInstance().getTokenRefreshTime() + REFRESH_TIME < System.currentTimeMillis()){
+        if(!TextUtils.isEmpty(AccountManager.getInstance().getToken())){
+            if(AccountManager.getInstance().getTokenRefreshTime() + REFRESH_TIME < System.currentTimeMillis()){
                init();
             }else {
                 TokenRequest.refreshToken(callBack);
@@ -100,9 +100,7 @@ public class XmppService extends Service {
 
     private void  init(){
         XmppManagerUtil.asyncLogin(userManager.getUserName(), userManager.getUserPassWord());
-        long lastModifyDate = UserDao.getInstance().getLastModifyDate(userManager.getUserName());
-        LogUtil.i("lastModifyDate: " + lastModifyDate);
-        UserRequest.syncUserData(lastModifyDate, syncUserCallBack);
+        SyncDataUtil.syncData();
     }
 
     private RefreshTokenCallBack callBack = new RefreshTokenCallBack() {
@@ -114,24 +112,6 @@ public class XmppService extends Service {
 
         @Override
         protected void handleFailed(TokenResponse result) {
-
-        }
-    };
-
-    private BaseCallBack<SyncUserResponse> syncUserCallBack = new BaseCallBack<SyncUserResponse>() {
-        @Override
-        protected void handleSuccess(SyncUserResponse result) {
-            List<UserBean> userBeen = result.userBeans;
-            if(userBeen != null && !userBeen.isEmpty()){
-                for(UserBean userBean : userBeen){
-                    LogUtil.i(userBean.getUserName());
-                }
-                UserDao.getInstance().replace(userBeen);
-            }
-        }
-
-        @Override
-        protected void handleFailed(SyncUserResponse result) {
 
         }
     };

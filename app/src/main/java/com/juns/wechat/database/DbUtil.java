@@ -1,6 +1,7 @@
 package com.juns.wechat.database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
@@ -12,12 +13,15 @@ import org.xutils.db.table.TableEntity;
 import org.xutils.ex.DbException;
 import org.xutils.x;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * Created by 王宗文 on 2016/5/25
  */
 public class DbUtil {
     private static final String DATABASE_NAME = "weixin.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 1;
 
     public static DbManager getDbManager() {
        return x.getDb(dbConfig);
@@ -28,21 +32,7 @@ public class DbUtil {
             .setDbOpenListener(new DbManager.DbOpenListener() {
                 @Override
                 public void onDbOpened(DbManager db) {
-                    try {
-                        TableEntity<UserBean> userBeanTableEntity = db.getTable(UserBean.class);
-                        if(!userBeanTableEntity.tableIsExist()){
-                            SqlInfo sqlInfo = SqlInfoBuilder.buildCreateTableSqlInfo(userBeanTableEntity);
-                            db.execNonQuery(sqlInfo);
-                        }
-
-                        TableEntity<FriendBean> friendBeanTableEntity = db.getTable(FriendBean.class);
-                        if(!friendBeanTableEntity.tableIsExist()){
-                            SqlInfo sqlInfo = SqlInfoBuilder.buildCreateTableSqlInfo(friendBeanTableEntity);
-                            db.execNonQuery(sqlInfo);
-                        }
-                    } catch (DbException e) {
-                        e.printStackTrace();
-                    }
+                   createTableIfNotExist(db);
                 }
             })
             .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
@@ -54,4 +44,23 @@ public class DbUtil {
                 }
             });
 
+    private static void createTableIfNotExist(DbManager db){
+        try {
+            createTableIfNotExist(db, db.getTable(UserBean.class));
+            createTableIfNotExist(db, db.getTable(FriendBean.class));
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createTableIfNotExist(DbManager db, TableEntity<?> table) throws DbException{
+        if (!table.tableIsExist()) {
+            synchronized (table.getClass()) {
+                if (!table.tableIsExist()) {
+                    SqlInfo sqlInfo = SqlInfoBuilder.buildCreateTableSqlInfo(table);
+                    db.execNonQuery(sqlInfo);
+                }
+            }
+        }
+    }
 }

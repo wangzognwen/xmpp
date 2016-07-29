@@ -1,6 +1,6 @@
 package com.juns.wechat.net.callback;
 
-import com.juns.wechat.manager.UserManager;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.response.TokenResponse;
 
 /**
@@ -14,7 +14,7 @@ public abstract class RefreshTokenCallBack extends BaseCallBack<TokenResponse>{
     }
 
     private void resetToken(String token){
-        UserManager.getInstance().setToken(token);
+        AccountManager.getInstance().setToken(token);
     }
 
 }

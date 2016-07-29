@@ -1,31 +1,21 @@
 package com.juns.wechat.net.callback;
 
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.response.LoginResponse;
+import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.net.response.BaseResponse;
 
 /**
  * Created by 王宗文 on 2016/7/11.
  */
-public abstract class LoginCallBack extends BaseCallBack<LoginResponse>{
+public abstract class LoginCallBack extends BaseCallBack<BaseResponse.LoginResponse>{
     @Override
-    protected void handleSuccess(LoginResponse result) {
+    protected void handleSuccess(BaseResponse.LoginResponse result) {
         saveUserInfo(result.userBean, result.token);
     }
 
-    /* @Override
-    public void onSuccess(LoginResponse result) {
-        if(result.code == 0){
-           saveUserInfo(result.userBean, result.token);
-           handleLoginSuccess();
-        }else{
-            handleLoginFailed();
-        }
-    }*/
-
     private void saveUserInfo(UserBean userBean, String token){
-        UserManager.getInstance().setCurrentLoginUser(userBean);
-        UserManager.getInstance().setToken(token);
+        AccountManager.getInstance().setUser(userBean);
+        AccountManager.getInstance().setToken(token);
     }
 
 

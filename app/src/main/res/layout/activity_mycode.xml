@@ -51,7 +51,7 @@
                 android:text="微信号：dada20150625"
                 android:textSize="14.0dip" />
               <ImageView
-                    android:id="@+id/iv_sex"
+                    android:id="@+id/ivSex"
                     android:layout_toRightOf="@+id/tvNickName"
                     android:layout_width="20dp"
                     android:layout_height="20dp"

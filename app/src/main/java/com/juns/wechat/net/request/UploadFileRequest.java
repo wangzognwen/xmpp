@@ -1,24 +1,16 @@
 package com.juns.wechat.net.request;
 
-import android.text.TextUtils;
-
 import com.juns.wechat.config.ConfigUtil;
-import com.juns.wechat.manager.UserManager;
-import com.juns.wechat.net.callback.BaseCallBack;
-import com.juns.wechat.net.callback.RefreshTokenCallBack;
-import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.net.response.UploadFileResponse;
-import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.net.callback.UpdateUserCallBack;
 
 import org.xutils.common.util.KeyValue;
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
-import org.xutils.http.body.FileBody;
 import org.xutils.http.body.MultipartBody;
 import org.xutils.x;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +24,7 @@ public class UploadFileRequest {
         private String token;
 
         public FileParams(File file){
-                token = UserManager.getInstance().getToken();
+                token = AccountManager.getInstance().getToken();
                 List<KeyValue> params = new ArrayList<>();
                 params.add(new KeyValue("avatar", file));
                 MultipartBody multipartBody = new MultipartBody(params, null);
@@ -44,7 +36,7 @@ public class UploadFileRequest {
         }
     }
 
-    public static void uploadAvatar(String filePath, BaseCallBack<UploadFileResponse> callBack){
+    public static void uploadAvatar(String filePath, UpdateUserCallBack callBack){
         x.http().post(new FileParams(new File(filePath)), callBack);
     }
 }
