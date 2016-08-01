@@ -14,14 +14,14 @@ import com.juns.wechat.BuildConfig;
  * *****************************************************
  */
 public class ConfigUtil {
-    public static final String REAL_SERVER = "http://192.168.1.2:8080";
+    public static final String REAL_SERVER = "http://192.168.199.62:8088";
 
-    public static final String REAL_API_URL = "http://192.168.1.2:8080/wechat_server";
+    public static final String REAL_API_URL = "http://192.168.199.62:8088/wechat_server";
 
     public static final String DEBUG_API_URL = "http://192.168.1.2:8080/wechat_server";
 
     public static String REAL_XMPP_SERVER = "123.206.34.158";
-    private static String DEBUG_XMPP_SERVER = "192.168.1.2";
+    private static String DEBUG_XMPP_SERVER = "123.206.34.158";
 
     private final static String  DEBUG_XMPP_DOMAIN = "wangzhe";//"@yycube.com";
     public final static String  REAL_XMPP_DOMAIN = "wangzhe";

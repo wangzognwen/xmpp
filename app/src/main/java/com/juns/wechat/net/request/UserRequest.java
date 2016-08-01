@@ -100,21 +100,19 @@ public class UserRequest extends RequestParams {
         x.http().post(new SyncUserParams( lastModifyDate), callBack);
     }
 
-    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "syncUserData")
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "queryUser")
     public static class QueryUserParams extends RequestParams{
         private String queryName;
-        private long modifyDate;
         private String token;
 
-        public QueryUserParams(String queryName, long modifyDate){
+        public QueryUserParams(String queryName){
             this.queryName = queryName;
-            this.modifyDate = modifyDate;
             token = AccountManager.getInstance().getToken();
         }
     }
 
-    public static void queryUserData(String queryName, long modifyDate, QueryUserCallBack callBack){
-        x.http().post(new QueryUserParams(queryName, modifyDate), callBack);
+    public static void queryUserData(String queryName, QueryUserCallBack callBack){
+        x.http().post(new QueryUserParams(queryName), callBack);
     }
 
 }

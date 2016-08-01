@@ -32,7 +32,5 @@ public interface XmppManager {
     boolean sendPacket(Stanza packet);
     boolean sendMessage(MessageBean messageBean);
     boolean isFriends(int otherUserId);
-    MultiUserChat createChatRoom(String roomName, String nickName) throws SmackException, XMPPException.XMPPErrorException;
-    MultiUserChat joinChatRoom(String roomName, String nickName) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
     List<SearchResult> searchUser(String name);
 }

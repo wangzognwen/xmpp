@@ -4,6 +4,7 @@ package com.juns.wechat.xmpp.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.juns.wechat.bean.MessageBean;
+import com.juns.wechat.bean.chat.InviteMsg;
 import com.juns.wechat.bean.chat.TextMsg;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
@@ -56,20 +57,20 @@ public class SendMessage {
     }
 
     /**
-     * 发送普通的文字消息
-     * @param content
+     * 发送添加好友消息
+     * @param reason
      */
-    public static void sendInviteMsg(final String otherName, final String content){
+    public static void sendInviteMsg(final String otherName, final String reason){
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
                 MessageBean messageBean = new MessageBean();
-                TextMsg textMsg = new TextMsg();
-                textMsg.content = content;
+                InviteMsg inviteMsg = new InviteMsg();
+                inviteMsg.reason = reason;
                 try {
-                    messageBean.setMsg(gson.toJson(textMsg));
+                    messageBean.setMsg(gson.toJson(inviteMsg));
                     messageBean.setOtherName(otherName);
-                    messageBean.setType(MsgType.MSG_TYPE_TEXT);
+                    messageBean.setType(MsgType.MSG_TYPE_SEND_INVITE);
                     sendMsg(messageBean);
                 } catch (Exception e) {
                     e.printStackTrace();

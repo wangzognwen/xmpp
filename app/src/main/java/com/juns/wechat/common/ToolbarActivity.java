@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.juns.wechat.util.ToolBarUtil;
 
+import org.simple.eventbus.EventBus;
 import org.xutils.x;
 
 public class ToolbarActivity extends BaseActivity {
@@ -17,25 +18,10 @@ public class ToolbarActivity extends BaseActivity {
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         toolbar = ToolBarUtil.setToolBar(this);
+        if(registerEventBus()){
+            EventBus.getDefault().register(this);
+        }
     }
-
-  /*  @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-        toolbar = ToolBarUtil.setToolBar(this);
-    }
-
-    @Override
-    public void setContentView(View view) {
-        super.setContentView(view);
-        toolbar = ToolBarUtil.setToolBar(this);
-    }
-
-    @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        super.setContentView(view, params);
-        toolbar = ToolBarUtil.setToolBar(this);
-    }*/
 
     protected void setToolbarTitle(String text){
         ToolBarUtil.setTitle(this, text);
@@ -43,6 +29,18 @@ public class ToolbarActivity extends BaseActivity {
 
     protected void setToolbarRight(int type, int resId){
         ToolBarUtil.setToolbarRight(this, type, resId);
+    }
+
+    protected boolean registerEventBus(){
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(registerEventBus()){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override

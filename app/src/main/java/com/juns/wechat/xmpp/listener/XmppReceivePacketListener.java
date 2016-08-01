@@ -10,6 +10,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 /*******************************************************
  * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>
@@ -27,12 +28,14 @@ public class XmppReceivePacketListener implements StanzaListener {
      */
     @Override
     public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
+        LogUtil.i("from: " + packet.getFrom());
         if(packet instanceof Message){
             Message message = (Message) packet;
             handleMessage(message);
         }else if(packet instanceof Presence){
+            LogUtil.i("from: " + packet.getFrom());
             Presence presence = (Presence) packet;
-            handlePresence(presence);
+           handlePresence(presence);
         }else if(packet instanceof  IQ){
             IQ iq = (IQ) packet;
             handleIQ(iq);

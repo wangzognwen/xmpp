@@ -280,12 +280,11 @@
         </receiver>
         <receiver android:name=".receiver.WeChatBroadCastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.CONFIGURATION_CHANGED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
-
 
         <service
             android:name=".service.XmppService"
@@ -296,7 +295,8 @@
             android:name="api_key"
             android:value="Uvw5AMP15i9v1cUoS5aY7GR1"/>
 
-        <activity android:name=".activity.SearchResultActivity"
+        <activity
+            android:name=".activity.SearchResultActivity"
             android:label="@string/label_activity_show_search_result">
         </activity>
         <activity
@@ -312,6 +312,8 @@
         <activity android:name=".activity.SendInviteMessageActivity">
         </activity>
         <activity android:name=".activity.NewFriendsActivity">
+        </activity>
+        <activity android:name=".activity.AddFriendFinalActivity">
         </activity>
     </application>
 

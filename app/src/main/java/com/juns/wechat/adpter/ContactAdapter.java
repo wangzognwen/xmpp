@@ -16,34 +16,35 @@ import com.juns.wechat.R;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.ViewHolder;
+import com.juns.wechat.util.ImageUtil;
 
 public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
-	private List<FriendBean> userInfos = new ArrayList<>();// 好友信息
+	private List<FriendBean> friendBeen = new ArrayList<>();// 好友信息
 
     public ContactAdapter(Context context) {
         this.mContext = context;
     }
 
-    public void setData(List<FriendBean> userInfos){
-        this.userInfos = userInfos;
+    public void setData(List<FriendBean> friendBeen){
+        this.friendBeen = friendBeen;
         notifyDataSetChanged();
     }
 
 	@Override
 	public int getCount() {
-        if(userInfos == null){
+        if(friendBeen == null){
             return 0;
         }
-		return userInfos.size();
+		return friendBeen.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		if(userInfos == null){
+		if(friendBeen == null){
             return null;
         }
-        return userInfos.get(position);
+        return friendBeen.get(position);
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		FriendBean rosterBean = userInfos.get(position);
+		FriendBean friendBean = friendBeen.get(position);
 		if (convertView == null) {
 			convertView = LayoutInflater.from(mContext).inflate(
 					R.layout.contact_item, parent, false);
@@ -64,13 +65,13 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 		TextView tvCatalog = ViewHolder.get(convertView,
 				R.id.contactitem_catalog);
 		TextView tvNick = ViewHolder.get(convertView, R.id.contactitem_nick);
-		String catalog = PingYinUtil.converterToFirstSpell(rosterBean.getContactName())
+		String catalog = PingYinUtil.converterToFirstSpell(friendBean.getContactName())
 				.substring(0, 1);
 		if (position == 0) {
 			tvCatalog.setVisibility(View.VISIBLE);
 			tvCatalog.setText(catalog);
 		} else {
-			FriendBean prevRosterBean = userInfos.get(position - 1);
+			FriendBean prevRosterBean = friendBeen.get(position - 1);
 			String lastCatalog = PingYinUtil.converterToFirstSpell(
                     prevRosterBean.getContactName()).substring(0, 1);
 			if (catalog.equals(lastCatalog)) {
@@ -81,15 +82,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 			}
 		}
 
-		ivAvatar.setImageResource(R.drawable.head);
-		tvNick.setText(rosterBean.getContactName());
+        ImageUtil.loadImage(ivAvatar, friendBean.getHeadUrl());
+		tvNick.setText(friendBean.getContactName());
 		return convertView;
 	}
 
 	@Override
 	public int getPositionForSection(int section) {
-		for (int i = 0; i < userInfos.size(); i++) {
-			FriendBean rosterBean = userInfos.get(i);
+		for (int i = 0; i < friendBeen.size(); i++) {
+			FriendBean rosterBean = friendBeen.get(i);
 			String l = PingYinUtil.converterToFirstSpell(rosterBean.getContactName())
 					.substring(0, 1);
 			char firstChar = l.toUpperCase().charAt(0);

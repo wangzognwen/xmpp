@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.juns.wechat.bean.FriendBean;
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 
 import org.xutils.DbManager;
@@ -21,7 +22,7 @@ import java.lang.reflect.Method;
  */
 public class DbUtil {
     private static final String DATABASE_NAME = "weixin.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static DbManager getDbManager() {
        return x.getDb(dbConfig);
@@ -41,6 +42,7 @@ public class DbUtil {
                     SQLiteDatabase database = db.getDatabase();
                     FriendTable.onUpgrade(database, oldVersion, newVersion);
                     UserTable.onUpgrade(database, oldVersion, newVersion);
+                    ChatTable.onUpgrade(database, oldVersion, newVersion);
                 }
             });
 
@@ -48,6 +50,7 @@ public class DbUtil {
         try {
             createTableIfNotExist(db, db.getTable(UserBean.class));
             createTableIfNotExist(db, db.getTable(FriendBean.class));
+            createTableIfNotExist(db, db.getTable(MessageBean.class));
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -59,6 +62,9 @@ public class DbUtil {
                 if (!table.tableIsExist()) {
                     SqlInfo sqlInfo = SqlInfoBuilder.buildCreateTableSqlInfo(table);
                     db.execNonQuery(sqlInfo);
+                    if(!TextUtils.isEmpty(table.getOnCreated())){
+                        db.execNonQuery(table.getOnCreated());
+                    }
                 }
             }
         }

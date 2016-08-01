@@ -46,15 +46,8 @@ public class XmppGroupImpl implements XmppGroup {
         MultiUserChat multiUserChat = getMultiUserChat(roomName);
         try {
             multiUserChat.create(nickName);
-            Form form = multiUserChat.getConfigurationForm();
 
-            Form answerForm = form.createAnswerForm();
-            answerForm.setAnswer("muc#roomconfig_roomdesc", "村长助理专用房间");
-            List<String> maxNum = new ArrayList<>();
-            maxNum.add("50");
-            answerForm.setAnswer("muc#roomconfig_maxusers", maxNum);
-            answerForm.setAnswer("muc#roomconfig_persistentroom", true);
-            multiUserChat.sendConfigurationForm(answerForm);
+            configRoom(roomName);
 
             XmppEvent xmppEvent = new XmppEvent(XmppEvent.CREATE_GROUP_SUCCESS, null);
             EventBus.getDefault().post(xmppEvent);
@@ -102,6 +95,7 @@ public class XmppGroupImpl implements XmppGroup {
 
             for(MUCUser.Status status : mucUser.getStatus()){
                 if(status.getCode() == MUCUser.Status.ROOM_CREATED_201.getCode()){
+                    configRoom(roomName);
                     XmppEvent xmppEvent = new XmppEvent(XmppEvent.CREATE_GROUP_SUCCESS, null);
                     EventBus.getDefault().post(xmppEvent);
                     return true;
@@ -133,5 +127,18 @@ public class XmppGroupImpl implements XmppGroup {
     @Override
     public MultiUserChat getMultiUserChat(String roomName) {
         return multiUserChatManager.getMultiUserChat(roomName + "@conference.wangzhe");
+    }
+
+    private void configRoom(String roomName) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
+        MultiUserChat multiUserChat = getMultiUserChat(roomName);
+        Form form = multiUserChat.getConfigurationForm();
+
+        Form answerForm = form.createAnswerForm();
+        answerForm.setAnswer("muc#roomconfig_roomdesc", "村长助理专用房间");
+        List<String> maxNum = new ArrayList<>();
+        maxNum.add("50");
+        answerForm.setAnswer("muc#roomconfig_maxusers", maxNum);
+        answerForm.setAnswer("muc#roomconfig_persistentroom", true);
+        multiUserChat.sendConfigurationForm(answerForm);
     }
 }

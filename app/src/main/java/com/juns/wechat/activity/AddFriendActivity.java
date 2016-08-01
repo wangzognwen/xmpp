@@ -2,7 +2,6 @@ package com.juns.wechat.activity;
 
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 
 import com.juns.wechat.R;

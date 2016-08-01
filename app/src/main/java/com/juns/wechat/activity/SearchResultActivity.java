@@ -3,6 +3,8 @@ package com.juns.wechat.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,5 +43,14 @@ public class SearchResultActivity extends ToolbarActivity {
         lvSearchResultList = (ListView) findViewById(R.id.lvSearchResultList);
         lvSearchResultList.setAdapter(searchResultAdapter);
 
+        lvSearchResultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UserBean userBean = searchResults.get(position);
+                Intent intent = new Intent(SearchResultActivity.this, UserInfoActivity.class);
+                intent.putExtra(UserInfoActivity.ARG_USER_NAME, userBean.getUserName());
+                startActivity(intent);
+            }
+        });
     }
 }

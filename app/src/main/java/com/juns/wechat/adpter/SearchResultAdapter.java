@@ -52,7 +52,7 @@ public class SearchResultAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.listview_item_search_result, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.ivIcon = (ImageView) convertView.findViewById(R.id.ivIcon);
-            viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+            viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvNickName);
             viewHolder.tvDesc = (TextView) convertView.findViewById(R.id.tvDesc);
             convertView.setTag(viewHolder);
         }else {

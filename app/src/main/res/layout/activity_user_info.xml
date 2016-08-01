@@ -35,7 +35,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/tvName"
+                    android:id="@+id/tvNickName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="黄方意"
@@ -43,7 +43,7 @@
                     android:textSize="16sp" />
 
                 <ImageView
-                    android:id="@+id/iv_sex"
+                    android:id="@+id/ivSex"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginLeft="8dp"
@@ -51,7 +51,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_fxid"
+                android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -82,7 +82,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tv_region"
+                android:id="@+id/tvRegion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -117,7 +117,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tv_sign"
+                android:id="@+id/tvSign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -178,7 +178,7 @@
         </RelativeLayout>
 
         <Button
-            android:id="@+id/btn_sendmsg"
+            android:id="@+id/btnSendMsg"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginLeft="12dp"

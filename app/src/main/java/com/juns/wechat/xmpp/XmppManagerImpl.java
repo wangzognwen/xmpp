@@ -210,39 +210,6 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     @Override
-    public MultiUserChat createChatRoom(String roomName, String nickName)
-            throws XMPPException.XMPPErrorException, SmackException {
-        MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat(roomName + "@conference.wangzhe");
-        try {
-            RoomInfo roomInfo = multiUserChatManager.getRoomInfo(roomName + "@conference.wangzhe");
-            if(roomInfo != null){
-                return joinChatRoom(roomName, nickName);
-            }
-        } catch (SmackException | XMPPException.XMPPErrorException e) {
-            e.printStackTrace();
-        }
-        multiUserChat.create(nickName);
-        Form form = multiUserChat.getConfigurationForm();
-        Form answerForm = form.createAnswerForm();
-        answerForm.setAnswer("muc#roomconfig_roomdesc", "村长助理专用房间");
-        List<String> maxNum = new ArrayList<>();
-        maxNum.add("50");
-        answerForm.setAnswer("muc#roomconfig_maxusers", maxNum);
-        answerForm.setAnswer("muc#roomconfig_persistentroom", true);
-        multiUserChat.sendConfigurationForm(answerForm);
-        return multiUserChat;
-    }
-
-    @Override
-    public MultiUserChat joinChatRoom(String roomName, String nickName)
-            throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
-        MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat(roomName + "@conference.wangzhe");
-        multiUserChat.join(nickName);
-
-        return multiUserChat;
-    }
-
-    @Override
     public List<SearchResult> searchUser(String search){
         try {
             connect();

@@ -9,7 +9,7 @@ package com.juns.wechat.bean.chat;
  * Created by 王宗文 on 2015/11/24
  *******************************************************/
 public class InviteMsg {
-    public static final String CONTENT = "content";
+    public static final String REASON = "reason";
 
-    public String content;
+    public String reason;
 }

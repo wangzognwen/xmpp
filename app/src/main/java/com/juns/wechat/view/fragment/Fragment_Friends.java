@@ -16,11 +16,9 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.FriendBean;
-import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.manager.AccountManager;
@@ -39,8 +37,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	private View layout, layout_head;
 	private ListView lvContact;
 	private SideBar indexBar;
-	private TextView mDialogText;
-	private WindowManager mWindowManager;
+	private TextView tvDialog;
     private FriendDao rosterDao = FriendDao.getInstance();
     private List<FriendBean> rosterBeans;
     private ContactAdapter contactAdapter;
@@ -49,7 +46,6 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_friends, container, false);
-        mWindowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         initViews();
         initData();
         setOnListener();
@@ -61,28 +57,14 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
         contactAdapter = new ContactAdapter(getActivity());
         lvContact.setAdapter(contactAdapter);
 
-		mDialogText = (TextView) LayoutInflater.from(getActivity()).inflate(
-				R.layout.list_position, null);
-		mDialogText.setVisibility(View.INVISIBLE);
+		tvDialog = (TextView) layout.findViewById(R.id.tvDialog);
 		indexBar = (SideBar) layout.findViewById(R.id.sideBar);
 		indexBar.setListView(lvContact);
-		WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.TYPE_APPLICATION,
-				WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-						| WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-				PixelFormat.TRANSLUCENT);
-		mWindowManager.addView(mDialogText, lp);
-		indexBar.setTextView(mDialogText);
+		indexBar.setTextView(tvDialog);
+
 		layout_head = getActivity().getLayoutInflater().inflate(
 				R.layout.layout_head_friend, null);
 		lvContact.addHeaderView(layout_head);
-	}
-
-	@Override
-	public void onDestroy() {
-		mWindowManager.removeView(mDialogText);
-		super.onDestroy();
 	}
 
 	private void initData() {
