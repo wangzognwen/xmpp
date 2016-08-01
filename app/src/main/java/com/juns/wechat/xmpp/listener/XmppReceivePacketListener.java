@@ -1,6 +1,7 @@
 package com.juns.wechat.xmpp.listener;
 
 
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.process.IQRouter;
 
 import org.jivesoftware.smack.SmackException;
@@ -59,7 +60,7 @@ public class XmppReceivePacketListener implements StanzaListener {
      * @param presence
      */
     private void handlePresence(Presence presence){
-
+        LogUtil.i(presence.toString());
     }
 
     private void handleIQ(IQ iq){

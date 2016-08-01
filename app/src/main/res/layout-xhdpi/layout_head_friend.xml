@@ -13,7 +13,7 @@
         android:clickable="true" >
 
         <ImageView
-            android:id="@+id/iv_avatar"
+            android:id="@+id/ivAvatar"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_alignParentLeft="true"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
-            android:layout_toRightOf="@id/iv_avatar"
+            android:layout_toRightOf="@id/ivAvatar"
             android:text="新的朋友"
             android:textColor="#353535"
             android:textSize="16sp" />

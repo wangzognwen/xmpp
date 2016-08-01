@@ -22,9 +22,14 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterLoadedListener;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.search.UserSearchManager;
 import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.simple.eventbus.EventBus;
 
 import java.io.IOException;
@@ -49,6 +54,7 @@ public class XmppManagerImpl implements XmppManager {
 
     private static XmppManagerImpl mInstance;
     private Roster mRoster;
+    private MultiUserChatManager multiUserChatManager;
 
     private XmppManagerImpl() {
         init();
@@ -57,6 +63,7 @@ public class XmppManagerImpl implements XmppManager {
     private void init(){
         xmppConnection = XmppConnUtil.getXmppConnection();
         mRoster = Roster.getInstanceFor(xmppConnection);
+        multiUserChatManager = MultiUserChatManager.getInstanceFor(xmppConnection);
 
         connectionListener = new XmppConnectionListener();
         packetListener = new XmppReceivePacketListener();
@@ -165,6 +172,11 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     @Override
+    public boolean isAuthenticated() {
+        return xmppConnection == null ? false : xmppConnection.isAuthenticated();
+    }
+
+    @Override
     public boolean sendPacket(Stanza packet){
         try {
             connect();
@@ -195,6 +207,39 @@ public class XmppManagerImpl implements XmppManager {
     public boolean isFriends(int OtherUserId) {
         String otherJid = ConfigUtil.getXmppJid(OtherUserId + "");
         return mRoster.getEntry(otherJid) == null ? false : true;
+    }
+
+    @Override
+    public MultiUserChat createChatRoom(String roomName, String nickName)
+            throws XMPPException.XMPPErrorException, SmackException {
+        MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat(roomName + "@conference.wangzhe");
+        try {
+            RoomInfo roomInfo = multiUserChatManager.getRoomInfo(roomName + "@conference.wangzhe");
+            if(roomInfo != null){
+                return joinChatRoom(roomName, nickName);
+            }
+        } catch (SmackException | XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        }
+        multiUserChat.create(nickName);
+        Form form = multiUserChat.getConfigurationForm();
+        Form answerForm = form.createAnswerForm();
+        answerForm.setAnswer("muc#roomconfig_roomdesc", "村长助理专用房间");
+        List<String> maxNum = new ArrayList<>();
+        maxNum.add("50");
+        answerForm.setAnswer("muc#roomconfig_maxusers", maxNum);
+        answerForm.setAnswer("muc#roomconfig_persistentroom", true);
+        multiUserChat.sendConfigurationForm(answerForm);
+        return multiUserChat;
+    }
+
+    @Override
+    public MultiUserChat joinChatRoom(String roomName, String nickName)
+            throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
+        MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat(roomName + "@conference.wangzhe");
+        multiUserChat.join(nickName);
+
+        return multiUserChat;
     }
 
     @Override

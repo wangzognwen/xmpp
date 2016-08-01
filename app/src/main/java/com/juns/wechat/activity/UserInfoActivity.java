@@ -5,80 +5,45 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
-import com.juns.wechat.annotation.Extra;
-import com.juns.wechat.annotation.Id;
-import com.juns.wechat.bean.FriendBean;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.Utils;
-import com.juns.wechat.dao.DbDataEvent;
-import com.juns.wechat.dao.FriendDao;
-import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.util.ImageUtil;
-
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 /**
  * 用户资料
  */
 @Content(R.layout.activity_user_info)
 public class UserInfoActivity extends ToolbarActivity implements OnClickListener {
-    public static final String ARG_USER_NAME = "user_name";
-    @Id
-	private TextView tvNickName;
-    @Id
-    private TextView tvUserName;
-    @Extra(name = ARG_USER_NAME)
-	private String userName; //好友或者陌生人的userName
-    @Id
+	private TextView tv_name, tv_accout;
+	private String Name, UserId;
 	private Button btn_sendmsg;
-    @Id
-    private ImageView ivAvatar;
-
-    private UserBean ownerUser = AccountManager.getInstance().getUser();
-    private FriendBean friendBean;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setToolbarRight(2, R.drawable.icon_more);
+        initView();
         initData();
         setListener();
-        EventBus.getDefault().register(this);
 	}
+
+	protected void initView() {
+        btn_sendmsg = (Button) findViewById(R.id.btn_sendmsg);
+        btn_sendmsg.setTag("1");
+        tv_name = (TextView) findViewById(R.id.tvName);
+        tv_accout = (TextView) findViewById(R.id.tv_fxid);
+	}
+
 
 	protected void initData() {
-		friendBean = FriendDao.getInstance().findByOwnerAndContactName(ownerUser.getUserName(), userName);
-        tvUserName.setText(userName);
-        if(friendBean != null){
-            if(friendBean.getSubType().equals("from") || friendBean.getSubType().equals("both")){
-                tvNickName.setText(friendBean.getShowName());
-                ImageUtil.loadImage(ivAvatar, friendBean.getHeadUrl());
-            }else {
-                throw new RuntimeException("该好友存在，但两人关系异常");
-            }
-        }
+		Name = getIntent().getStringExtra(Constants.NAME);
+        tv_name.setText(Name);
 	}
-
-    /**
-     * 好友信息改变
-     * @param event
-     */
-    @Subscriber
-    private void onUserDbDataChanged(DbDataEvent<UserBean> event){
-        UserBean userBean = event.data;
-        if(userBean.getUserName().equals(userName)){  //如果好友的信息更新了
-            initData();
-        }
-    }
 
 	protected void setListener() {
 		btn_sendmsg.setOnClickListener(this);
@@ -96,8 +61,9 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 		case R.id.btn_sendmsg:
 			if ("1".equals(v.getTag().toString())) {
 				Intent intent = new Intent(this, ChatActivity.class);
-				intent.putExtra(Constants.NAME, userName);
+				intent.putExtra(Constants.NAME, Name);
 				intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
+				intent.putExtra(Constants.User_ID, UserId);
 				startActivity(intent);
 				overridePendingTransition(R.anim.push_left_in,
 						R.anim.push_left_out);
@@ -110,9 +76,4 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 		}
 	}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
 }
