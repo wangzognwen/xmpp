@@ -88,7 +88,6 @@ public class XmppConnUtil {
        ProviderManager.addExtensionProvider(DelayInformation.ELEMENT, DelayInformation.NAMESPACE,
                DelayInformationProvider.INSTANCE);
 
-       ProviderManager.addIQProvider(IQUserInfo.ELEMENT, IQUserInfo.NAME_SPACE, UserInfoProvider.INSTANCE);
     }
 
     private static void initIQProcessor(){

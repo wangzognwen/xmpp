@@ -278,6 +278,14 @@
                 <action android:name="com.baidu.android.pushservice.action.notification.CLICK"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.WeChatBroadCastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
 
         <service
             android:name=".service.XmppService"
@@ -304,8 +312,6 @@
         <activity android:name=".activity.SendInviteMessageActivity">
         </activity>
         <activity android:name=".activity.NewFriendsActivity">
-        </activity>
-        <activity android:name=".activity.CreateChatRoomActivity">
         </activity>
     </application>
 

@@ -15,22 +15,13 @@
         android:id="@+id/contactitem_layout"
         style="@style/MMListItem"
         android:layout_height="65.0dip"
-        android:background="@color/white"
-        android:paddingLeft="15dip" >
-
-          <CheckBox
-                android:id="@+id/checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" 
-                android:visibility="gone"
-				android:button="@drawable/jy_checkbox_selector" 
-                android:focusable="false" />
+        android:background="@color/white">
         
         <ImageView
             android:id="@+id/contactitem_avatar_iv"
             android:layout_width="40.0dip"
             android:layout_height="40.0dip"  
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="15dp"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -44,7 +35,18 @@
                 style="@style/MMFontTitleInList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true" />
+                android:singleLine="true"/>
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:button="@drawable/jy_checkbox_selector"
+                android:focusable="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"/>
               
         </RelativeLayout>
     </LinearLayout>

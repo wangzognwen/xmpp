@@ -13,5 +13,5 @@ import java.util.List;
  */
 @HttpResponse(parser = JsonResponseParser.class)
 public class SyncFriendResponse extends BaseResponse {
-    public List<FriendBean> friendBeen;
+    public List<FriendBean> friendBeans;
 }

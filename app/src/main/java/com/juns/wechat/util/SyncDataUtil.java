@@ -52,7 +52,7 @@ public class SyncDataUtil {
         FriendRequest.syncFriendData(lastModifyDate, new BaseCallBack<SyncFriendResponse>() {
             @Override
             protected void handleSuccess(SyncFriendResponse result) {
-                List<FriendBean> friendBeen = result.friendBeen;
+                List<FriendBean> friendBeen = result.friendBeans;
                 if(friendBeen != null && !friendBeen.isEmpty()){
                     FriendDao.getInstance().replace(friendBeen);
                 }

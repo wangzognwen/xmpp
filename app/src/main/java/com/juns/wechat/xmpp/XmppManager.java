@@ -7,6 +7,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,8 +28,11 @@ public interface XmppManager {
     void disConnect();
     void shutDownConn();
     boolean isConnected();
+    boolean isAuthenticated();
     boolean sendPacket(Stanza packet);
     boolean sendMessage(MessageBean messageBean);
     boolean isFriends(int otherUserId);
+    MultiUserChat createChatRoom(String roomName, String nickName) throws SmackException, XMPPException.XMPPErrorException;
+    MultiUserChat joinChatRoom(String roomName, String nickName) throws SmackException.NotConnectedException, XMPPException.XMPPErrorException, SmackException.NoResponseException;
     List<SearchResult> searchUser(String name);
 }

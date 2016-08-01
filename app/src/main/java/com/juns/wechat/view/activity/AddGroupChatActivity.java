@@ -15,38 +15,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.SectionIndexer;
 import android.widget.TextView;
-
-import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.PickContactAdapter;
+import com.juns.wechat.annotation.Click;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.chat.ChatActivity;
-import com.juns.wechat.chat.utils.Constant;
-import com.juns.wechat.common.PingYinUtil;
-import com.juns.wechat.common.PinyinComparator;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
-import com.juns.wechat.common.ViewHolder;
+import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.widget.SideBar;
+import com.juns.wechat.xmpp.XmppConnUtil;
+import com.juns.wechat.xmpp.XmppGroup;
+import com.juns.wechat.xmpp.XmppGroupImpl;
+import com.juns.wechat.xmpp.XmppManagerImpl;
+import com.juns.wechat.xmpp.event.XmppEvent;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.Affiliate;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 @Content(R.layout.activity_chatroom)
 public class AddGroupChatActivity extends ToolbarActivity{
@@ -85,11 +86,13 @@ public class AddGroupChatActivity extends ToolbarActivity{
 		super.onCreate(savedInstanceState);
         initControl();
         initData();
+        EventBus.getDefault().register(this);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+        EventBus.getDefault().unregister(this);
 		mWindowManager.removeView(mDialogText);
 	}
 
@@ -167,79 +170,23 @@ public class AddGroupChatActivity extends ToolbarActivity{
 	 * 确认选择的members
 	 *
 	 */
-	public void save() {
-		if (addList.size() == 0) {
-			Utils.showLongToast(AddGroupChatActivity.this, "请选择用户");
-			return;
-		}
-		// 如果只有一个用户说明只是单聊,并且不是从群组加人
-		if (addList.size() == 1 && isCreatingNewGroup) {
-			String userId = addList.get(0);
-			UserBean user = GloableParams.Users.get(userId);
-			Intent intent = new Intent(AddGroupChatActivity.this,
-					ChatActivity.class);
-			intent.putExtra(Constants.NAME, user.getUserName());
-			intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
-			intent.putExtra(Constants.User_ID, user.getTelephone());
-			startActivity(intent);
-			overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-		} else {
-			if (isCreatingNewGroup) {
-				getLoadingDialog("正在创建群聊...").show();
-			} else {
-				getLoadingDialog("正在加人...").show();
-			}
-			creatNewGroup(addList);// 创建群组
-		}
+    @Click(viewId = R.id.tvRightText)
+	public void save(View v) {
+        if (isCreatingNewGroup) {
+            getLoadingDialog("正在创建群聊...").show();
+        } else {
+            getLoadingDialog("正在加人...").show();
+        }
+        creatNewGroup();// 创建群组
+
 	}
 
-	// 即时显示被选中用户的头像和昵称。
-	private void showCheckImage(Bitmap bitmap, UserBean glufineid) {
-		if (exitingMembers.contains(glufineid.getUserName()) && groupId != null) {
-			return;
-		}
-		if (addList.contains(glufineid.getTelephone())) {
-			return;
-		}
-		total++;
-
-		final ImageView imageView = new ImageView(this);
-//		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//				DensityUtil.dip2px(this, 40), DensityUtil.dip2px(this, 40));
-//		lp.setMargins(0, 0, DensityUtil.dip2px(this, 5), 0);
-		//imageView.setLayoutParams(lp);
-
-		// 设置id，方便后面删除
-		imageView.setTag(glufineid);
-		if (bitmap == null) {
-			imageView.setImageResource(R.drawable.head);
-		} else {
-			imageView.setImageBitmap(bitmap);
-		}
-
-		menuLinerLayout.addView(imageView);
-		tvRightText.setText("确定(" + total + ")");
-		if (total > 0) {
-			if (iv_search.getVisibility() == View.VISIBLE) {
-				iv_search.setVisibility(View.GONE);
-			}
-		}
-		addList.add(glufineid.getTelephone());
-	}
-
-	private void deleteImage(UserBean glufineid) {
-		View view = (View) menuLinerLayout.findViewWithTag(glufineid);
-
-		menuLinerLayout.removeView(view);
-		total--;
-		tvRightText.setText("确定(" + total + ")");
-		addList.remove(glufineid.getTelephone());
-		if (total < 1) {
-			if (iv_search.getVisibility() == View.GONE) {
-				iv_search.setVisibility(View.VISIBLE);
-			}
-		}
-	}
+    @Subscriber
+    private void onCreateGroupFinish(XmppEvent event){
+        if(event.getResultCode() == XmppEvent.CREATE_GROUP_SUCCESS || event.getResultCode() == XmppEvent.CREATE_GROUP_FAILED){
+            getLoadingDialog("正在加人...").dismiss();
+        }
+    }
 
 	/**
 	 * 创建新群组
@@ -249,9 +196,38 @@ public class AddGroupChatActivity extends ToolbarActivity{
 	String groupName = "";
 	String manber = "";
 
-	private void creatNewGroup(final List<String> members) {
+    XmppGroup xmppGroup = XmppGroupImpl.getInstance();
 
-	}
+	private void creatNewGroup() {
+        final List<FriendBean> selectedFriends = contactAdapter.getSelectedFriends();
+
+        ThreadPoolUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean create = xmppGroup.createOrJoinGroup("room1", user.getShowName());
+                if(create){
+                    String jid = selectedFriends.get(0).getContactName() + "@wangzhe";
+                    xmppGroup.inviteUser("room1", jid, "邀请你加入群聊");
+                    MultiUserChat multiUserChat = xmppGroup.getMultiUserChat("room1");
+                    List<Affiliate> affiliates = null;
+                    try {
+                        affiliates = multiUserChat.getMembers();
+                        for(Affiliate affiliate : affiliates){
+                            LogUtil.i("role: " + affiliate.getRole());
+                            LogUtil.i("affilation: " + affiliate.getAffiliation());
+                        }
+                    } catch (SmackException.NoResponseException e) {
+                        e.printStackTrace();
+                    } catch (XMPPException.XMPPErrorException e) {
+                        e.printStackTrace();
+                    } catch (SmackException.NotConnectedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+    }
 
 
 }

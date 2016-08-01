@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.bean.FriendBean;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.PinyinComparator;
 import com.juns.wechat.common.ViewHolder;
@@ -29,27 +28,28 @@ import java.util.List;
 public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
     private Context mContext;
     private boolean[] isCheckedArray;
-    private List<FriendBean> list = new ArrayList<>();
+    private List<FriendBean> friendBeen = new ArrayList<>();
+    private List<FriendBean> selectedFriends = new ArrayList<>();
 
     public PickContactAdapter(Context mContext, List<FriendBean> friends) {
         this.mContext = mContext;
-        this.list = friends;
+        this.friendBeen = friends;
         if(friends != null){
-            isCheckedArray = new boolean[list.size()];
+            isCheckedArray = new boolean[friendBeen.size()];
             // 排序(实现了中英文混排)
-            Collections.sort(list, new PinyinComparator());
+            Collections.sort(friendBeen, new PinyinComparator());
         }
 
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return friendBeen.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return list.get(position);
+        return friendBeen.get(position);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
             convertView = LayoutInflater.from(mContext).inflate(R.layout.contact_item, null);
         }
 
-        final FriendBean friendBean = list.get(position);
+        final FriendBean friendBean = friendBeen.get(position);
         ImageView ivAvatar = ViewHolder.get(convertView,
                 R.id.contactitem_avatar_iv);
         TextView tvCatalog = ViewHolder.get(convertView,
@@ -80,7 +80,7 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
             tvCatalog.setVisibility(View.VISIBLE);
             tvCatalog.setText(catalog);
         } else {
-            FriendBean nextFriend = list.get(position - 1);
+            FriendBean nextFriend = friendBeen.get(position - 1);
             String lastCatalog = PingYinUtil.converterToFirstSpell(
                     nextFriend.getShowName()).substring(0, 1);
             if (catalog.equals(lastCatalog)) {
@@ -92,62 +92,34 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
         }
         ImageUtil.loadImage(ivAvatar, friendBean.getContactUser().getHeadUrl());
         tvNick.setText(friendBean.getShowName());
-       /* if (exitingMembers != null
-                && exitingMembers.contains(f.getTelephone())) {
-            checkBox.setChecked(true);
-        } else {
-            checkBox.setChecked(false);
-        }
-        if (addList != null && addList.contains(f.getTelephone())) {
-            checkBox.setChecked(true);
-            isCheckedArray[position] = true;
-        }
+
+        checkBox.setChecked(isCheckedArray[position]);
         if (checkBox != null) {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView,
                                              boolean isChecked) {
                     // 群组中原来的成员一直设为选中状态
-                    if (exitingMembers.contains(f.getTelephone())) {
-                        isChecked = true;
-                        checkBox.setChecked(true);
-                    }
-                    isCheckedArray[position] = isChecked;
-                    // 如果是单选模式
-                    if (isSignleChecked && isChecked) {
-                        for (int i = 0; i < isCheckedArray.length; i++) {
-                            if (i != position) {
-                                isCheckedArray[i] = false;
-                            }
-                        }
-                        contactAdapter.notifyDataSetChanged();
-                    }
-
-                    if (isChecked) {
-                        // 选中用户显示在滑动栏显示
-                        showCheckImage(null, list.get(position));
-                    } else {
-                        // 用户显示在滑动栏删除
-                        deleteImage(list.get(position));
-                    }
+                       if(isChecked){
+                           selectedFriends.add(friendBean);
+                       }else {
+                           selectedFriends.remove(friendBean);
+                       }
+                     isCheckedArray[position] = isChecked;
                 }
             });
-            // 群组中原来的成员一直设为选中状态
-            if (exitingMembers.contains(f.getTelephone())) {
-                checkBox.setChecked(true);
-                isCheckedArray[position] = true;
-            } else {
-                checkBox.setChecked(isCheckedArray[position]);
-            }
-
-        }*/
+        }
         return convertView;
+    }
+
+    public List<FriendBean> getSelectedFriends(){
+        return selectedFriends;
     }
 
     @Override
     public int getPositionForSection(int section) {
-        for (int i = 0; i < list.size(); i++) {
-            FriendBean friendBean = list.get(i);
+        for (int i = 0; i < friendBeen.size(); i++) {
+            FriendBean friendBean = friendBeen.get(i);
             String l = PingYinUtil
                     .converterToFirstSpell(friendBean.getShowName()).substring(0,
                             1);
