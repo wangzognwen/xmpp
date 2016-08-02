@@ -1,6 +1,7 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.xmpp.extensionelement.TimeElement;
 import com.juns.wechat.xmpp.iq.IQUserInfo;
 import com.juns.wechat.xmpp.process.IQRouter;
 import com.juns.wechat.xmpp.process.IQUserInfoProcessor;
@@ -88,6 +89,8 @@ public class XmppConnUtil {
        ProviderManager.addExtensionProvider(DelayInformation.ELEMENT, DelayInformation.NAMESPACE,
                DelayInformationProvider.INSTANCE);
 
+       ProviderManager.addExtensionProvider(TimeElement.ELEMENT, TimeElement.NAME_SPACE,
+               TimeElement.INSTANCE);
     }
 
     private static void initIQProcessor(){

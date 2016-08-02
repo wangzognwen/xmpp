@@ -99,7 +99,9 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 	@Click(viewId = R.id.btnSendMsg)
 	public void onClick(View v) {
 	    if(subType == null){
-            Utils.start_Activity(this, AddFriendFinalActivity.class);
+            Intent intent = new Intent(UserInfoActivity.this, AddFriendFinalActivity.class);
+            intent.putExtra(AddFriendFinalActivity.ARG_USER_NAME, userName);
+            startActivity(intent);
         }else {
             Utils.start_Activity(this, ChatActivity.class);
         }

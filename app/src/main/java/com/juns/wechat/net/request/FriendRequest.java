@@ -14,7 +14,7 @@ import org.xutils.x;
  */
 public class FriendRequest {
 
-    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "getMyFriends")
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "syncFriendData")
     public static class SyncFriendParams extends RequestParams {
         private long modifyDate;
         private String token;

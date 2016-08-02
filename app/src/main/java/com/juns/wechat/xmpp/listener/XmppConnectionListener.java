@@ -26,7 +26,6 @@ public class XmppConnectionListener implements ConnectionListener {
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
-        initInfo();
     }
 
     @Override
@@ -62,9 +61,5 @@ public class XmppConnectionListener implements ConnectionListener {
     @Override
     public void reconnectionFailed(Exception e) {
 
-    }
-
-    private void initInfo(){
-        UserInfoManager.queryUserInfo(null); //拉取个人信息mk
     }
 }

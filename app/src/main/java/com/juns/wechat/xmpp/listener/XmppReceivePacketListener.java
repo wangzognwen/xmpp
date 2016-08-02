@@ -1,8 +1,10 @@
 package com.juns.wechat.xmpp.listener;
 
 
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.process.IQRouter;
+import com.juns.wechat.xmpp.util.ConvertUtil;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
@@ -28,14 +30,12 @@ public class XmppReceivePacketListener implements StanzaListener {
      */
     @Override
     public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
-        LogUtil.i("from: " + packet.getFrom());
         if(packet instanceof Message){
             Message message = (Message) packet;
             handleMessage(message);
         }else if(packet instanceof Presence){
-            LogUtil.i("from: " + packet.getFrom());
             Presence presence = (Presence) packet;
-           handlePresence(presence);
+            handlePresence(presence);
         }else if(packet instanceof  IQ){
             IQ iq = (IQ) packet;
             handleIQ(iq);
@@ -88,8 +88,8 @@ public class XmppReceivePacketListener implements StanzaListener {
      * @param message
      */
     private void handleChatMessageByType(Message message){
-      /*  MessageEntity messageEntity = MessageEntity.convertToEntity(message);
-        int type = messageEntity.getType();
+        MessageBean messageBean = ConvertUtil.convertToMessageBean(message);
+        int type = messageBean.getType();
         MessageProcess messageProcess = processMap.get(type);
         if(messageProcess == null){
             synchronized (lock){

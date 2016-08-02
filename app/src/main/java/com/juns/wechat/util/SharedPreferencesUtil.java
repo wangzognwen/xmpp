@@ -23,6 +23,10 @@ public class SharedPreferencesUtil {
         return getSharedPreference(context).getBoolean(key, false);
     }
 
+    public static final Boolean getBooleanValue(Context context, String key, boolean defValue) {
+        return getSharedPreference(context).getBoolean(key, defValue);
+    }
+
     public static final void putBooleanValue(Context context, String key,
                                              boolean bl) {
         SharedPreferences.Editor edit = getSharedPreference(context).edit();

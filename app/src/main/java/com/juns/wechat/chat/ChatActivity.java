@@ -67,6 +67,7 @@ import com.juns.wechat.view.activity.GroupSettingActivity;
 
 //聊天页面
 public class ChatActivity extends ToolbarActivity implements OnClickListener {
+    public static final String ARG_USER_NAME = "user_name";
 
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
 	private static final int REQUEST_CODE_MAP = 4;

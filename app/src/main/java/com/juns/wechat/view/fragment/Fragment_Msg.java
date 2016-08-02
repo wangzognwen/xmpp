@@ -83,7 +83,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 			// if (GloableParams.isHasPulicMsg) {
 			/*EMConversation nee = new EMConversation("100000");
 			conversationList.insertOrUpdate(0, nee);*/
-			String time = Utils.getValue(getActivity(), "Time");
+			String time = Utils.getValue(getActivity(), "TimeElement");
 			String content = Utils.getValue(getActivity(), "Content");
 			time = "下午 02:45";
 			content = "[腾讯娱乐] 赵薇炒股日赚74亿";

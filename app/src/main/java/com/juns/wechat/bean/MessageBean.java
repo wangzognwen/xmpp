@@ -33,7 +33,8 @@ public class MessageBean{
     public static final String STATE = "state";
     public static final String FLAG = "flag";
 
-   ;
+    public static final int INCOMING = 1;
+    public static final int OUTGOING = 2;
 
     @Column(name = ID, isId = true)
     private int id; //主键，子增长
@@ -57,6 +58,7 @@ public class MessageBean{
     private int state; //判断消息是否已发送或者已读
     @Column(name = FLAG)
     private int flag; //判断消息是否有效
+    private Object obj; //msg字段对应的字段
 
     public MessageBean() { }
 
@@ -66,7 +68,6 @@ public class MessageBean{
             jsonObject.put(MSG, msg);
             jsonObject.put(TYPE, type);
             jsonObject.put(TYPE_DESC, typeDesc);
-            jsonObject.put(DATE, date.getTime());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -159,5 +160,13 @@ public class MessageBean{
 
     public void setFlag(int flag) {
         this.flag = flag;
+    }
+
+    public Object getObj() {
+        return obj;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
     }
 }

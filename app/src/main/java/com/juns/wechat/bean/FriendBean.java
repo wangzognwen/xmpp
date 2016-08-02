@@ -117,10 +117,6 @@ public class FriendBean {
     }
 
     public String getHeadUrl(){
-        UserBean userBean = getContactUser();
-        if(userBean != null){
-            return userBean.getHeadUrl();
-        }
-        return null;
+        return getContactUser().getHeadUrl();
     }
 }

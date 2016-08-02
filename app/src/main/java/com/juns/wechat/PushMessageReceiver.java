@@ -243,7 +243,7 @@ public class PushMessageReceiver extends FrontiaPushMessageReceiver {
 		}
 		Long tsLong = System.currentTimeMillis() / 1000;
 		String ts = tsLong.toString();
-		Utils.putValue(context, "Time", ts);
+		Utils.putValue(context, "TimeElement", ts);
 
 		Utils.putValue(context, "Content", content);
 
