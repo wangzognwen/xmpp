@@ -200,6 +200,7 @@ public class XmppManagerImpl implements XmppManager {
         String toJid = ConfigUtil.getXmppJid(messageBean.getOtherName());
         message.setTo(toJid);
         message.setStanzaId(messageBean.getPacketId());
+        message.setBody(messageBean.toSendJson());
         return sendPacket(message);
     }
 

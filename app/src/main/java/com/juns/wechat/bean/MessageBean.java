@@ -2,6 +2,7 @@ package com.juns.wechat.bean;
 
 import android.text.TextUtils;
 
+import com.google.gson.JsonObject;
 import com.juns.wechat.database.ChatTable;
 
 import org.jivesoftware.smack.packet.Message;
@@ -57,9 +58,20 @@ public class MessageBean{
     @Column(name = FLAG)
     private int flag; //判断消息是否有效
 
-
-
     public MessageBean() { }
+
+    public String toSendJson(){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(MSG, msg);
+            jsonObject.put(TYPE, type);
+            jsonObject.put(TYPE_DESC, typeDesc);
+            jsonObject.put(DATE, date.getTime());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
 
     public int getId() {
         return id;
