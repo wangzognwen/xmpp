@@ -27,7 +27,7 @@ public class SyncDataUtil {
     public static void syncUserData(){
         long lastModifyDate = UserDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
         LogUtil.i("lastModifyDate: " + lastModifyDate);
-        UserRequest.syncUserData(lastModifyDate, new BaseCallBack<SyncUserResponse>() {
+        UserRequest.syncUserData(0, new BaseCallBack<SyncUserResponse>() {
             @Override
             protected void handleSuccess(SyncUserResponse result) {
                 List<UserBean> userBeen = result.userBeans;

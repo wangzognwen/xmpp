@@ -8,8 +8,9 @@ package com.juns.wechat.bean.chat;
  * @since 1.6
  * Created by 王宗文 on 2015/11/24
  *******************************************************/
-public class TextMsg {
+public class TextMsg extends Msg{
     public static final String CONTENT = "content";
 
     public String content;
+
 }

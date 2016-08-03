@@ -5,6 +5,7 @@ import com.juns.wechat.xmpp.extensionelement.TimeElement;
 import com.juns.wechat.xmpp.iq.IQUserInfo;
 import com.juns.wechat.xmpp.process.IQRouter;
 import com.juns.wechat.xmpp.process.IQUserInfoProcessor;
+import com.juns.wechat.xmpp.provider.TimeProvider;
 import com.juns.wechat.xmpp.provider.UserInfoProvider;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -19,6 +20,7 @@ import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.ping.android.ServerPingWithAlarmManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
+import org.jivesoftware.smackx.time.packet.Time;
 
 
 /*******************************************************
@@ -90,7 +92,7 @@ public class XmppConnUtil {
                DelayInformationProvider.INSTANCE);
 
        ProviderManager.addExtensionProvider(TimeElement.ELEMENT, TimeElement.NAME_SPACE,
-               TimeElement.INSTANCE);
+               TimeProvider.INSTANCE);
     }
 
     private static void initIQProcessor(){

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.juns.wechat.R;
 import com.juns.wechat.bean.MessageBean;
+import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.xmpp.prompt.NoticePrompt;
 import com.juns.wechat.xmpp.prompt.SoundPrompt;
@@ -15,10 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /*******************************************************
- * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>
- * description ：不同类型消息处理的抽象基类
- *
- * @since 1.6
  * Created by 王宗文 on 2015/11/27
  *******************************************************/
 public abstract class MessageProcess {
@@ -46,24 +43,24 @@ public abstract class MessageProcess {
      * 2：将消息存入数据库
      * 3：发出提示音和显示通知
      * 特定类型的消息需要重写此方法
-     * @param entity
+     * @param messageBean
      * @return
      */
-    public void processedMessage(MessageBean entity){
-        if(isMsgExist(entity.getPacketId())){
+    public void processMessage(MessageBean messageBean){
+        if(isMsgExist(messageBean.getPacketId())){
             return;
         }
-        saveMessageToDB(entity);
+        saveMessageToDB(messageBean);
         ringDone();
-        noticeShow(entity);
+        noticeShow(messageBean);
     }
 
-    protected boolean isMsgExist(String packetId){
-        return messageDao.isMsgExist(packetId);
+    protected final boolean isMsgExist(String packetId){
+        return messageDao.findByPacketId(packetId) == null;
     }
 
-    protected void saveMessageToDB(MessageEntity entity){
-        messageDao.addMessageEntity(entity);
+    protected void saveMessageToDB(MessageBean messageBean){
+        messageDao.save(messageBean);
     }
 
     public void ringDone(){
@@ -71,44 +68,23 @@ public abstract class MessageProcess {
     }
 
     public void ringDone(int resId){
-        Context context = YunPianApplication.getApplication().getBaseContext();
-        mSoundPrompt = new SoundPrompt(context);
+        mSoundPrompt = new SoundPrompt(mContext);
         mSoundPrompt.setRingRes(resId);
         mSoundPrompt.ringDone();
     }
 
-    public void noticeShow(MessageEntity entity){
+    public void noticeShow(MessageBean entity){
         noticeShow(entity, null);
     }
 
-    public void noticeShow(MessageEntity entity, String notice){
-        Context context = YunPianApplication.getApplication().getBaseContext();
-        mNoticePrompt = new NoticePrompt(context);
-        String userId = entity.getOtherUserId() + "";
-        Card card = Card.getOneCardByOwnerId(userId);
-        if (null == card ) {
-            return;
-        }
+    public void noticeShow(MessageBean entity, String notice){
+        mNoticePrompt = new NoticePrompt(mContext);
 
         if (TextUtils.isEmpty(notice)){
-            notice = getContentOfMsg(entity.getMsg());
+            notice = entity.getTypeDesc();
         }
 
-        Intent noticeIntent = new Intent(mContext, ChatDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(ChatDetailsActivity.PEER_USER_ID, Integer.valueOf(userId));
-        noticeIntent.putExtras(bundle);
-        mNoticePrompt.notifyClient(userId, card.getName(), notice, noticeIntent);
+        Intent noticeIntent = new Intent(mContext, ChatActivity.class);
+        mNoticePrompt.notifyClient(entity.getOtherName(), notice, noticeIntent);
     }
-
-    private String getContentOfMsg(String msg){
-        try {
-            JSONObject object = new JSONObject(msg);
-            return object.getString("content");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }

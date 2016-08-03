@@ -2,8 +2,6 @@ package com.juns.wechat.xmpp.process;
 
 import android.content.Context;
 
-import com.coco.yunpian.app.entity.chat.MessageEntity;
-import com.coco.yunpian.app.util.LogUtil;
 
 /*******************************************************
  * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>

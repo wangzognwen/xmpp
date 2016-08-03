@@ -1,9 +1,17 @@
 package com.juns.wechat.xmpp.listener;
 
 
+import com.juns.wechat.App;
 import com.juns.wechat.bean.MessageBean;
+import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.config.MsgType;
+import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.process.IQRouter;
+import com.juns.wechat.xmpp.process.InviteMessageProcess;
+import com.juns.wechat.xmpp.process.MessageProcess;
+import com.juns.wechat.xmpp.process.TextMessageProcess;
+import com.juns.wechat.xmpp.process.UnknownTypeMessageProcess;
 import com.juns.wechat.xmpp.util.ConvertUtil;
 
 import org.jivesoftware.smack.SmackException;
@@ -12,7 +20,9 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smackx.muc.packet.MUCUser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /*******************************************************
  * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>
@@ -22,6 +32,7 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
  * Created by 王宗文 on 2015/11/19
  *******************************************************/
 public class XmppReceivePacketListener implements StanzaListener {
+    private Map<Integer, MessageProcess> processMap = new HashMap<>();
 
     /**
      * 处理包：stanaza有3种子类型：Message(消息），Presence(状态),IQ（信息查询）
@@ -49,7 +60,7 @@ public class XmppReceivePacketListener implements StanzaListener {
      */
     private void handleMessage(Message message) {
         if(Message.Type.normal == message.getType()){
-            //updateExistMessage(message, ChatTable.STATE_SEND_SUCC);
+            updateExistMessage(message);
         }else if(Message.Type.chat == message.getType()){
             handleChatMessageByType(message);
         }else if(Message.Type.error == message.getType()){
@@ -74,11 +85,11 @@ public class XmppReceivePacketListener implements StanzaListener {
      * 更新数据库已存在的消息数据的状态
      * @param message
      */
-    private void updateExistMessage(Message message, int state){
-        //MessageEntity messageEntity = new MessageEntity();
-        //messageEntity.setPacketId(message.getStanzaId());
-        //messageEntity.setState(state);
-        //messageDao.updateMessageEntity(messageEntity);
+    private void updateExistMessage(Message message){
+        if(("receipt." + ConfigUtil.getXmppDomain()).equals(message.getFrom())){
+            MessageDao.getInstance().updateMessageState(message.getStanzaId(),
+                    MessageBean.State.SEND_SUCCESS.value);
+        }
     }
 
     /**
@@ -92,30 +103,20 @@ public class XmppReceivePacketListener implements StanzaListener {
         int type = messageBean.getType();
         MessageProcess messageProcess = processMap.get(type);
         if(messageProcess == null){
-            synchronized (lock){
                 switch (type){
-                    case MsgType.CHAT_MSG_TYPE_TEXT:
                     case MsgType.MSG_TYPE_TEXT:
-                        messageProcess = new TextMessageProcess(mContext);
+                        messageProcess = new TextMessageProcess(App.getInstance());
                         break;
-                    case MsgType.CHAT_MSG_TYPE_VOICE:
-                    case MsgType.MSG_TYPE_VOICE:
-                        messageProcess = new VoiceMessageProcess(mContext);
+                    case MsgType.MSG_TYPE_SEND_INVITE:
+                        messageProcess = new InviteMessageProcess(App.getInstance());
                         break;
-                    case MsgType.MSG_TYPE_PICTURE:
-                        messageProcess = new PictureMessageProcess(mContext);
-                        break;
-                    case MsgType.MSG_TYPE_ACTIVE_INTRODUCE:
-                    case MsgType.MSG_TYPE_RESP_ACTIVE_INTRODUCE:
-                        messageProcess = new ActiveIntroMessageProcess(mContext);
-                        break;
-                    //不支持的消息类型就应该丢弃而不去处理
                     default:
-                        return;
+                        messageProcess = new UnknownTypeMessageProcess(App.getInstance());
+                        break;
                 }
-            }
         }
+
         processMap.put(type, messageProcess);
-        messageProcess.processedMessage(messageEntity);*/
+        messageProcess.processMessage(messageBean);
     }
 }

@@ -1,13 +1,8 @@
 package com.juns.wechat.bean;
 
-import android.text.TextUtils;
-
-import com.google.gson.JsonObject;
+import com.juns.wechat.bean.chat.Msg;
 import com.juns.wechat.database.ChatTable;
 
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.delay.DelayInformationManager;
-import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.db.annotation.Column;
@@ -33,9 +28,6 @@ public class MessageBean{
     public static final String STATE = "state";
     public static final String FLAG = "flag";
 
-    public static final int INCOMING = 1;
-    public static final int OUTGOING = 2;
-
     @Column(name = ID, isId = true)
     private int id; //主键，子增长
     @Column(name = MYSELF_NAME)
@@ -58,7 +50,7 @@ public class MessageBean{
     private int state; //判断消息是否已发送或者已读
     @Column(name = FLAG)
     private int flag; //判断消息是否有效
-    private Object obj; //msg字段对应的字段
+    private Msg msgObj; //msg字段对应的对象
 
     public MessageBean() { }
 
@@ -73,6 +65,24 @@ public class MessageBean{
         }
         return jsonObject.toString();
     }
+
+    public enum State{
+        NEW(0), SEND_SUCCESS(1), SEND_FAILED(2), READ(3);
+
+        public int value;
+        State(int value){
+            this.value = value;
+        }
+    }
+
+    public enum Direction{
+        INCOMING(0), OUTGOING(1);
+        public int value;
+        Direction(int value){
+            this.value = value;
+        }
+    }
+
 
     public int getId() {
         return id;
@@ -162,11 +172,11 @@ public class MessageBean{
         this.flag = flag;
     }
 
-    public Object getObj() {
-        return obj;
+    public Msg getMsgObj() {
+        return msgObj;
     }
 
-    public void setObj(Object obj) {
-        this.obj = obj;
+    public void setMsgObj(Msg msgObj) {
+        this.msgObj = msgObj;
     }
 }

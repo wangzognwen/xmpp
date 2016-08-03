@@ -99,7 +99,6 @@ public class NoticePrompt extends Prompt implements ISwitch {
             notifyId = mLastNotificationId;
             mNotificationId.put(fromUserName, Integer.valueOf(notifyId));
         }
-
         // If vibration is set to true, add the vibration flag to
         // the notification and let the system decide.
         boolean vibraNotify = SharedPreferencesUtil.getBooleanValue(App.getInstance(), VIBRATIONNOTIFY, true);

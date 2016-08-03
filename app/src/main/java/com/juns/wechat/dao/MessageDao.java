@@ -35,4 +35,10 @@ public class MessageDao extends BaseDao<MessageBean>{
         return update(whereBuilder, keyValue);
     }
 
+    public MessageBean findByPacketId(String packetId){
+        Map<String, Object> params = new HashMap<>();
+        params.put(MessageBean.PACKET_ID, packetId);
+        return findByParams(params);
+    }
+
 }

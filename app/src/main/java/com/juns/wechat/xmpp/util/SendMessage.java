@@ -30,8 +30,6 @@ import java.util.Date;
 public class SendMessage {
     private static MessageDao messageDao = MessageDao.getInstance();
 
-    private static final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-
     /**
      * 发送普通的文字消息
      * @param content
@@ -44,7 +42,7 @@ public class SendMessage {
                 TextMsg textMsg = new TextMsg();
                 textMsg.content = content;
                 try {
-                    messageBean.setMsg(gson.toJson(textMsg));
+                    messageBean.setMsg(textMsg.toSendJson());
                     messageBean.setOtherName(otherName);
                     messageBean.setType(MsgType.MSG_TYPE_TEXT);
                     sendMsg(messageBean);
@@ -66,9 +64,10 @@ public class SendMessage {
             public void run() {
                 MessageBean messageBean = new MessageBean();
                 InviteMsg inviteMsg = new InviteMsg();
+                inviteMsg.name = AccountManager.getInstance().getUser().getShowName();
                 inviteMsg.reason = reason;
                 try {
-                    messageBean.setMsg(gson.toJson(inviteMsg));
+                    messageBean.setMsg(inviteMsg.toSendJson());
                     messageBean.setOtherName(otherName);
                     messageBean.setType(MsgType.MSG_TYPE_SEND_INVITE);
                     sendMsg(messageBean);
@@ -86,8 +85,8 @@ public class SendMessage {
         String packetId = StanzaIdUtil.newStanzaId();
         message.setPacketId(packetId);
         message.setDate(new Date());
-        message.setState(ChatTable.State.NEW.value());
-        message.setDirection(ChatTable.OUTGOING);
+        message.setState(MessageBean.State.NEW.value);
+        message.setDirection(MessageBean.Direction.OUTGOING.value);
     }
 
     /**
@@ -100,8 +99,8 @@ public class SendMessage {
         addMessageToDB(message);
 
         boolean send = XmppManagerImpl.getInstance().sendMessage(message);
-        if(!send){  //如果未成功发送
-            updateMessageState(message.getPacketId(), ChatTable.STATE_SEND_FAIL);
+        if(!send){  //如果未成功发送,
+            updateMessageState(message.getPacketId(), MessageBean.State.SEND_FAILED.value);
         }
     }
 
