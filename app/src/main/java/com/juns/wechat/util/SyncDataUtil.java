@@ -10,7 +10,7 @@ import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.request.FriendRequest;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.SyncFriendResponse;
-import com.juns.wechat.net.response.SyncUserResponse;
+import com.juns.wechat.net.response.UserListResponse;
 
 import java.util.List;
 
@@ -21,34 +21,48 @@ public class SyncDataUtil {
 
     public static void syncData(){
         syncUserData();
-        syncFriendData();
     }
 
     public static void syncUserData(){
         long lastModifyDate = UserDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
-        LogUtil.i("lastModifyDate: " + lastModifyDate);
-        UserRequest.syncUserData(0, new BaseCallBack<SyncUserResponse>() {
+        UserRequest.syncUserData(lastModifyDate, new BaseCallBack<UserListResponse>() {
             @Override
-            protected void handleSuccess(SyncUserResponse result) {
+            protected void handleSuccess(UserListResponse result) {
                 List<UserBean> userBeen = result.userBeans;
                 if(userBeen != null && !userBeen.isEmpty()){
-                    for(UserBean userBean : userBeen){
-                        LogUtil.i(userBean.getUserName());
-                    }
                     UserDao.getInstance().replace(userBeen);
                 }
+                syncUsersNotExistInFriend();
             }
 
             @Override
-            protected void handleFailed(SyncUserResponse result) {
-
+            protected void handleFailed(UserListResponse result) {
+                syncUsersNotExistInFriend();
             }
         });
     }
 
-    public static void syncFriendData(){
+    private static void syncUsersNotExistInFriend(){
+        String[] userNames = FriendDao.getInstance().getNotExistUsersInFriend(AccountManager.getInstance().getUserName());
+        UserRequest.getUsersByNames(userNames, new BaseCallBack<UserListResponse>() {
+            @Override
+            protected void handleSuccess(UserListResponse result) {
+                List<UserBean> userBeen = result.userBeans;
+                if(userBeen != null && !userBeen.isEmpty()){
+                    UserDao.getInstance().replace(userBeen);
+                }
+                syncFriendData();
+            }
+
+            @Override
+            protected void handleFailed(UserListResponse result) {
+                syncFriendData();
+            }
+        });
+    }
+
+    private static void syncFriendData(){
         long lastModifyDate = FriendDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
-        LogUtil.i("lastModifyDate: " + lastModifyDate);
         FriendRequest.syncFriendData(lastModifyDate, new BaseCallBack<SyncFriendResponse>() {
             @Override
             protected void handleSuccess(SyncFriendResponse result) {

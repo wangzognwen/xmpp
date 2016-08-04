@@ -8,7 +8,7 @@ import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.callback.UpdateUserCallBack;
 import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.response.SearchUserResponse;
-import com.juns.wechat.net.response.SyncUserResponse;
+import com.juns.wechat.net.response.UserListResponse;
 
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
@@ -96,7 +96,7 @@ public class UserRequest extends RequestParams {
         }
     }
 
-    public static void syncUserData(long lastModifyDate, BaseCallBack<SyncUserResponse> callBack){
+    public static void syncUserData(long lastModifyDate, BaseCallBack<UserListResponse> callBack){
         x.http().post(new SyncUserParams( lastModifyDate), callBack);
     }
 
@@ -114,5 +114,22 @@ public class UserRequest extends RequestParams {
     public static void queryUserData(String queryName, QueryUserCallBack callBack){
         x.http().post(new QueryUserParams(queryName), callBack);
     }
+
+    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "getUsersByNames")
+    public static class GetUsersParams extends RequestParams{
+        private String[] userNames;
+        private String token;
+
+        public GetUsersParams(String[] userNames){
+            this.userNames = userNames;
+            token = AccountManager.getInstance().getToken();
+        }
+    }
+
+    public static void getUsersByNames(String[] userNames, BaseCallBack<UserListResponse> callBack){
+        x.http().post(new GetUsersParams(userNames), callBack);
+    }
+
+
 
 }

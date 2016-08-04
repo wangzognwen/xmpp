@@ -9,20 +9,13 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.dao.UserDao;
 import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.callback.RefreshTokenCallBack;
 import com.juns.wechat.net.request.TokenRequest;
-import com.juns.wechat.net.request.UserRequest;
-import com.juns.wechat.net.response.SyncUserResponse;
 import com.juns.wechat.net.response.TokenResponse;
-import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.SyncDataUtil;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.XmppManagerUtil;
-
-import java.util.List;
 
 
 /*******************************************************

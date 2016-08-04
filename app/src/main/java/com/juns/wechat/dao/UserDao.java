@@ -26,6 +26,8 @@ public class UserDao extends BaseDao<UserBean>{
                     "(r.ownerName = ? and u.userName = r.contactName) and (r.subType = 'both' or r.subType = 'from')) t1" +
                     " UNION SELECT u.* from wcUser u WHERE u.userName = ?) t";
 
+
+
     private static UserDao mInstance;
 
     public static UserDao getInstance(){
@@ -63,4 +65,5 @@ public class UserDao extends BaseDao<UserBean>{
         }
         return lastModifyDate;
     }
+
 }

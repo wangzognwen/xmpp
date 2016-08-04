@@ -22,6 +22,9 @@ public class FriendDao extends BaseDao<FriendBean>{
             "SELECT max(f.modifyDate) as lastModifyDate from wcFriend f where f.ownerName = ? and " +
                     "(f.subType = 'both' or f.subType = 'from')";
 
+    private static final String SELECT_NOT_EXIST_USER_IN_FRIEND =
+            "select contactName from wcFriend where ownerName = ? and contactName not in (select userName from wcUser)";
+
     private static FriendDao mInstance;
 
     public static FriendDao getInstance(){
@@ -63,6 +66,32 @@ public class FriendDao extends BaseDao<FriendBean>{
             e.printStackTrace();
         }
         return lastModifyDate;
+    }
+
+    public String[] getNotExistUsersInFriend(String ownerName){
+        SqlInfo sqlInfo = new SqlInfo(SELECT_NOT_EXIST_USER_IN_FRIEND);
+        List<KeyValue> keyValues = new ArrayList<>();
+        KeyValue keyValue1 = new KeyValue("key1", ownerName);
+        keyValues.add(keyValue1);
+        sqlInfo.addBindArgs(keyValues);
+
+        List<String> userNames = new ArrayList<>();
+        try {
+            Cursor cursor = dbManager.execQuery(sqlInfo);
+            while (cursor.moveToNext()){
+                String contactName = cursor.getString(cursor.getColumnIndex("contactName"));
+                userNames.add(contactName);
+            }
+            closeCursor(cursor);
+            if(userNames != null && userNames.isEmpty()){
+                String[] userNameArray = new String[1];
+                return userNames.toArray(userNameArray);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }

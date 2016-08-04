@@ -11,6 +11,7 @@ import com.juns.wechat.dao.UserDao;
 import com.juns.wechat.service.XmppService;
 import com.juns.wechat.util.SharedPreferencesUtil;
 import com.juns.wechat.view.activity.LoginActivity;
+import com.juns.wechat.xmpp.XmppManagerImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,9 @@ public class AccountManager {
         setUserName(null);
         setUserPassWord(null);
         user = null;
+
+        XmppManagerImpl.getInstance().shutDownConn();
+
         if(context != null){
             Intent service = new Intent(context, XmppService.class);
             context.stopService(service);
