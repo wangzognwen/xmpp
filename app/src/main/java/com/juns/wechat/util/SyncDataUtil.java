@@ -44,21 +44,25 @@ public class SyncDataUtil {
 
     private static void syncUsersNotExistInFriend(){
         String[] userNames = FriendDao.getInstance().getNotExistUsersInFriend(AccountManager.getInstance().getUserName());
-        UserRequest.getUsersByNames(userNames, new BaseCallBack<UserListResponse>() {
-            @Override
-            protected void handleSuccess(UserListResponse result) {
-                List<UserBean> userBeen = result.userBeans;
-                if(userBeen != null && !userBeen.isEmpty()){
-                    UserDao.getInstance().replace(userBeen);
+        if(userNames == null || userNames.length == 0){
+            syncFriendData();
+        }else {
+            UserRequest.getUsersByNames(userNames, new BaseCallBack<UserListResponse>() {
+                @Override
+                protected void handleSuccess(UserListResponse result) {
+                    List<UserBean> userBeen = result.userBeans;
+                    if(userBeen != null && !userBeen.isEmpty()){
+                        UserDao.getInstance().replace(userBeen);
+                    }
+                    syncFriendData();
                 }
-                syncFriendData();
-            }
 
-            @Override
-            protected void handleFailed(UserListResponse result) {
-                syncFriendData();
-            }
-        });
+                @Override
+                protected void handleFailed(UserListResponse result) {
+                    syncFriendData();
+                }
+            });
+        }
     }
 
     private static void syncFriendData(){

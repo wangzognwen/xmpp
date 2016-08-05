@@ -49,7 +49,7 @@ public class FromContactAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(
 					R.layout.layout_item_newfriend, parent, false);
 		}
-		ImageView img_avar = ViewHolder.get(convertView, R.id.img_photo);
+		ImageView img_avar = ViewHolder.get(convertView, R.id.ivAvatar);
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
 		TextView txt_msg = ViewHolder.get(convertView, R.id.txt_msg);
 		final TextView txt_add = ViewHolder.get(convertView, R.id.txt_add);

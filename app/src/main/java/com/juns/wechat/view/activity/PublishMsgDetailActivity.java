@@ -44,7 +44,7 @@ public class PublishMsgDetailActivity extends BaseActivity implements
 		img_talk = (ImageView) findViewById(R.id.img_right);
 		img_talk.setVisibility(View.VISIBLE);
 		img_talk.setImageResource(R.drawable.icon_chat_user);
-		mlistview = (ListView) findViewById(R.id.listview);
+		mlistview = (ListView) findViewById(R.id.lvNewFriends);
 		mlistview.setAdapter(new PublishMsgDetailAdpter(this));
 		mlistview.setSelection(2);
 	}

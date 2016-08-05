@@ -1,19 +1,15 @@
 package com.juns.wechat.view.activity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,23 +25,19 @@ import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.widget.SideBar;
-import com.juns.wechat.xmpp.XmppConnUtil;
 import com.juns.wechat.xmpp.XmppGroup;
 import com.juns.wechat.xmpp.XmppGroupImpl;
-import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.event.XmppEvent;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.Affiliate;
 import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 

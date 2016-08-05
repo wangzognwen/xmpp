@@ -36,7 +36,7 @@ public class PublishMsgListActivity extends BaseActivity implements
 		txt_title.setText("订阅号");
 		img_back = (ImageView) findViewById(R.id.img_back);
 		img_back.setVisibility(View.VISIBLE);
-		mlistview = (ListView) findViewById(R.id.listview);
+		mlistview = (ListView) findViewById(R.id.lvNewFriends);
 		mlistview.setAdapter(new PublishMsgAdpter(this));
 	}
 

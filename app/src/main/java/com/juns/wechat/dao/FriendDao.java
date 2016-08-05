@@ -83,7 +83,7 @@ public class FriendDao extends BaseDao<FriendBean>{
                 userNames.add(contactName);
             }
             closeCursor(cursor);
-            if(userNames != null && userNames.isEmpty()){
+            if(!userNames.isEmpty()){
                 String[] userNameArray = new String[1];
                 return userNames.toArray(userNameArray);
             }

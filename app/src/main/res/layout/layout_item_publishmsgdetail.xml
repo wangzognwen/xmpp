@@ -44,7 +44,7 @@
             android:textSize="12dip" />
 
         <ImageView
-            android:id="@+id/img_photo"
+            android:id="@+id/ivAvatar"
             android:layout_width="match_parent"
             android:layout_height="170dp"
             android:layout_gravity="center"

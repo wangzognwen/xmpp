@@ -1,7 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import java.util.List;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,8 +9,6 @@ import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.adpter.FromContactAdapter;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.BaseActivity;
 
@@ -35,7 +31,7 @@ public class AddFromContactActivity extends BaseActivity implements
 		txt_title.setText("通讯录朋友");
 		img_back = (ImageView) findViewById(R.id.img_back);
 		img_back.setVisibility(View.VISIBLE);
-		mlistview = (ListView) findViewById(R.id.listview);
+		mlistview = (ListView) findViewById(R.id.lvNewFriends);
 	}
 
 	@Override

@@ -13,27 +13,38 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.activity.UserInfoActivity;
 
+import java.util.List;
+
 public class NewFriendsAdapter extends BaseAdapter {
 	protected Context context;
+    private List<MessageBean> inviteMessages;
 
-	public NewFriendsAdapter(Context ctx) {
+	public NewFriendsAdapter(Context ctx, List<MessageBean> inviteMessages) {
 		context = ctx;
+        this.inviteMessages = inviteMessages;
 	}
 
 	@Override
 	public int getCount() {
-		return GloableParams.UserInfos.size();
+		if(inviteMessages == null){
+            return 0;
+        }
+        return inviteMessages.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return null;
+		if(inviteMessages == null){
+            return null;
+        }
+        return inviteMessages.get(position);
 	}
 
 	@Override
@@ -47,7 +58,7 @@ public class NewFriendsAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(
 					R.layout.layout_item_newfriend, parent, false);
 		}
-		ImageView img_avar = ViewHolder.get(convertView, R.id.img_photo);
+		ImageView img_avar = ViewHolder.get(convertView, R.id.ivAvatar);
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
 		final TextView txt_add = ViewHolder.get(convertView, R.id.txt_add);
 		final UserBean user = GloableParams.UserInfos.get(position);

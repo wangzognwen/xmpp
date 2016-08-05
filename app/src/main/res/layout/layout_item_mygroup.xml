@@ -11,7 +11,7 @@
 		android:background="@drawable/setting_item_selector"
 		android:paddingLeft="10dip">
 		<ImageView
-		    android:id="@+id/img_photo"
+		    android:id="@+id/ivAvatar"
 			android:layout_width="45dip"
 			android:layout_height="45dip"
 			android:layout_centerVertical="true"
@@ -23,7 +23,7 @@
 			android:text="车友群"
 			android:textSize="18sp" 
 			android:layout_centerVertical="true"
-			android:layout_toRightOf="@+id/img_photo"
+			android:layout_toRightOf="@+id/ivAvatar"
 			android:layout_marginLeft="13dp"
 			android:singleLine="true" />
 		 

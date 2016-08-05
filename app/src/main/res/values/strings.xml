@@ -36,6 +36,7 @@
     <string name="menu_addfriend">添加朋友</string>
     <string name="menu_qrcode">扫一扫</string>
     <string name="menu_money">微信支付</string>
+    <string name="menu_add_friend">添加朋友</string>
 
     <string name="label_activity_user_info">详细资料</string>
     <string name="label_activity_register">注册</string>

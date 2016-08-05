@@ -44,7 +44,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 			parentActivity = (MainActivity) getActivity();
 			layout = ctx.getLayoutInflater().inflate(R.layout.fragment_msg,
 					null);
-			lvContact = (ListView) layout.findViewById(R.id.listview);
+			lvContact = (ListView) layout.findViewById(R.id.lvNewFriends);
 			errorItem = (RelativeLayout) layout
 					.findViewById(R.id.rl_error_item);
 			errorText = (TextView) errorItem

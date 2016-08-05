@@ -11,7 +11,7 @@
         layout="@layout/layout_chat_neterror_item" />
     
 	<ListView
-		android:id="@+id/listview"
+		android:id="@+id/lvNewFriends"
 		android:layout_below="@+id/rl_error_item"
 		android:scrollbars="none"
 		android:dividerHeight="0dp"

@@ -44,7 +44,7 @@ public class AlbumActivity extends BaseActivity implements OnClickListener {
 		img_talk = (ImageView) findViewById(R.id.img_right);
 		img_talk.setVisibility(View.VISIBLE);
 		img_talk.setImageResource(R.drawable.icon_talk);
-		mlistview = (ListView) findViewById(R.id.listview);
+		mlistview = (ListView) findViewById(R.id.lvNewFriends);
 
 		layout_head = getLayoutInflater().inflate(R.layout.layout_album_header,
 				null);

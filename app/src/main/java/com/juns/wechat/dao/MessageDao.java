@@ -4,6 +4,8 @@ import android.database.Cursor;
 
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.bean.chat.Msg;
+import com.juns.wechat.config.MsgType;
 
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.SqlInfo;
@@ -39,6 +41,21 @@ public class MessageDao extends BaseDao<MessageBean>{
         Map<String, Object> params = new HashMap<>();
         params.put(MessageBean.PACKET_ID, packetId);
         return findByParams(params);
+    }
+
+    public List<MessageBean> getMyReceivedInviteMessages(String myselfName){
+        Map<String, Object> params = new HashMap<>();
+        params.put(MessageBean.MYSELF_NAME, myselfName);
+        params.put(MessageBean.DIRECTION, MessageBean.Direction.INCOMING.value);
+        params.put(MessageBean.TYPE, MsgType.MSG_TYPE_SEND_INVITE);
+        List<MessageBean> messageBeen =  findAllByParams(params);
+
+        if(messageBeen != null && !messageBeen.isEmpty()){
+            for(MessageBean messageBean : messageBeen){
+                messageBean.setMsgObj(Msg.fromJson(messageBean.getMsg(),  MsgType.MSG_TYPE_SEND_INVITE));
+            }
+        }
+        return messageBeen;
     }
 
 }

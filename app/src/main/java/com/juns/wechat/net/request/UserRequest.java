@@ -117,11 +117,12 @@ public class UserRequest extends RequestParams {
 
     @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "getUsersByNames")
     public static class GetUsersParams extends RequestParams{
-        private String[] userNames;
         private String token;
 
         public GetUsersParams(String[] userNames){
-            this.userNames = userNames;
+            for(String userName : userNames){
+                addBodyParameter("userNames[]", userName);
+            }
             token = AccountManager.getInstance().getToken();
         }
     }

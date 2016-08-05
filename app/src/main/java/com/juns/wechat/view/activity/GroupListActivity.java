@@ -35,7 +35,7 @@ public class GroupListActivity extends BaseActivity implements OnClickListener {
 		img_right = (ImageView) findViewById(R.id.img_right);
 		img_right.setImageResource(R.drawable.icon_add);
 		img_right.setVisibility(View.VISIBLE);
-		mlistview = (ListView) findViewById(R.id.listview);
+		mlistview = (ListView) findViewById(R.id.lvNewFriends);
 		View layout_head = getLayoutInflater().inflate(
 				R.layout.layout_head_search, null);
 		mlistview.addHeaderView(layout_head);

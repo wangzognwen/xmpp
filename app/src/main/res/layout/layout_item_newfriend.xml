@@ -11,7 +11,7 @@
 		android:background="@drawable/setting_item_selector"
 		android:paddingLeft="10dip">
 		<ImageView
-		    android:id="@+id/img_photo"
+		    android:id="@+id/ivAvatar"
 			android:layout_width="45dip"
 			android:layout_height="45dip"
 			android:layout_centerVertical="true"
@@ -22,14 +22,14 @@
 			android:text="悠悠"
 			android:textSize="18sp"  
 			android:layout_marginTop="10dp"
-			android:layout_toRightOf="@+id/img_photo"
+			android:layout_toRightOf="@+id/ivAvatar"
 			android:layout_marginLeft="10dp"
 			android:singleLine="true" />
 		 
 		 <TextView
 		     android:id="@+id/txt_msg"
 		     android:layout_below="@id/txt_name"
-			android:layout_toRightOf="@+id/img_photo"
+			android:layout_toRightOf="@+id/ivAvatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
