@@ -117,6 +117,9 @@ public class FriendBean {
     }
 
     public String getHeadUrl(){
+        if(getContactUser() == null){
+            return null;
+        }
         return getContactUser().getHeadUrl();
     }
 }

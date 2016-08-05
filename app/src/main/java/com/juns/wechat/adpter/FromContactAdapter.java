@@ -52,7 +52,7 @@ public class FromContactAdapter extends BaseAdapter {
 		ImageView img_avar = ViewHolder.get(convertView, R.id.ivAvatar);
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
 		TextView txt_msg = ViewHolder.get(convertView, R.id.txt_msg);
-		final TextView txt_add = ViewHolder.get(convertView, R.id.txt_add);
+		final TextView txt_add = ViewHolder.get(convertView, R.id.tvAdd);
 		final UserBean user = UserInfos.get(position);
 		txt_name.setText(user.getUserName());
 		txt_add.setText("添加");

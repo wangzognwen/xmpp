@@ -17,11 +17,12 @@ public class ConvertUtil {
 
     public static MessageBean convertToMessageBean(Message message){
         MessageBean messageBean = new MessageBean();
-        messageBean.setMyselfName(ConfigUtil.getUserName(message.getFrom()));
-        messageBean.setOtherName(ConfigUtil.getUserName(message.getTo()));
+        messageBean.setMyselfName(ConfigUtil.getUserName(message.getTo()));
+        messageBean.setOtherName(ConfigUtil.getUserName(message.getFrom()));
         TimeElement time = TimeElement.from(message);
         messageBean.setDate(time.getTime());
         messageBean.setDirection(MessageBean.Direction.INCOMING.value);
+        messageBean.setPacketId(message.getStanzaId());
 
         try {
             JSONObject jsonObject = new JSONObject(message.getBody());

@@ -22,7 +22,7 @@ public abstract class Msg {
     public static Msg fromJson(String json, int type){
         Msg msg = null;
         switch (type){
-            case MsgType.MSG_TYPE_SEND_INVITE:
+            case MsgType.MSG_TYPE_INVITE:
                 msg = gson.fromJson(json, InviteMsg.class);
                 break;
             default:

@@ -1,23 +1,17 @@
 package com.juns.wechat.xmpp.util;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.InviteMsg;
 import com.juns.wechat.bean.chat.TextMsg;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
-import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ThreadPoolUtil;
-import com.juns.wechat.xmpp.XmppManager;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
-import org.xutils.db.sqlite.WhereBuilder;
 
-import java.io.File;
 import java.util.Date;
 
 /*******************************************************
@@ -69,7 +63,30 @@ public class SendMessage {
                 try {
                     messageBean.setMsg(inviteMsg.toSendJson());
                     messageBean.setOtherName(otherName);
-                    messageBean.setType(MsgType.MSG_TYPE_SEND_INVITE);
+                    messageBean.setType(MsgType.MSG_TYPE_INVITE);
+                    sendMsg(messageBean);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 发送添加好友消息
+     */
+    public static void sendReplyInviteMsg(final String otherName, final int reply){
+        ThreadPoolUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                MessageBean messageBean = new MessageBean();
+                InviteMsg inviteMsg = new InviteMsg();
+                inviteMsg.reply = reply;
+                try {
+                    messageBean.setMsg(inviteMsg.toSendJson());
+                    messageBean.setOtherName(otherName);
+                    messageBean.setType(MsgType.MSG_TYPE_INVITE);
                     sendMsg(messageBean);
                 } catch (Exception e) {
                     e.printStackTrace();

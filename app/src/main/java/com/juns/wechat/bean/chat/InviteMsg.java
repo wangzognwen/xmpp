@@ -37,7 +37,7 @@ public class InviteMsg extends Msg{
 
     public enum Reply{
         ACCEPT(1), REJECT(2);
-        private int value;
+        public int value;
 
         Reply(int value){
             this.value = value;

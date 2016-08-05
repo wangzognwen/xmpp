@@ -9,6 +9,7 @@ import com.juns.wechat.R;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.dao.MessageDao;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.prompt.NoticePrompt;
 import com.juns.wechat.xmpp.prompt.SoundPrompt;
 
@@ -56,7 +57,9 @@ public abstract class MessageProcess {
     }
 
     protected final boolean isMsgExist(String packetId){
-        return messageDao.findByPacketId(packetId) == null;
+        boolean isMsgExist = messageDao.findByPacketId(packetId) != null;
+        LogUtil.i("isMsgExist:"  + isMsgExist);
+        return isMsgExist;
     }
 
     protected void saveMessageToDB(MessageBean messageBean){

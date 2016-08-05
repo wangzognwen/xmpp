@@ -10,8 +10,10 @@ import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.response.SearchUserResponse;
 import com.juns.wechat.net.response.UserListResponse;
 
+import org.json.JSONArray;
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
+import org.xutils.http.body.StringBody;
 import org.xutils.x;
 
 /**
@@ -90,14 +92,20 @@ public class UserRequest extends RequestParams {
         private long modifyDate;
         private String token;
 
-        public SyncUserParams(long modifyDate){
+        public SyncUserParams(String[] userNames, long modifyDate){
             this.modifyDate = modifyDate;
+            if(userNames != null && userNames.length != 0){
+                for(String userName : userNames){
+                    addBodyParameter("userNames[]", userName);
+                }
+            }
             token = AccountManager.getInstance().getToken();
         }
     }
 
-    public static void syncUserData(long lastModifyDate, BaseCallBack<UserListResponse> callBack){
-        x.http().post(new SyncUserParams( lastModifyDate), callBack);
+    public static void syncUserData(String[] userNames,
+                                    long lastModifyDate, BaseCallBack<UserListResponse> callBack){
+        x.http().post(new SyncUserParams(userNames, lastModifyDate), callBack);
     }
 
     @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "queryUser")

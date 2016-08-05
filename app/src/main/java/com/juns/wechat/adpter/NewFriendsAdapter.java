@@ -15,16 +15,24 @@ import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.bean.chat.InviteMsg;
 import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.activity.UserInfoActivity;
+import com.juns.wechat.dao.UserDao;
+import com.juns.wechat.net.callback.QueryUserCallBack;
+import com.juns.wechat.net.request.UserRequest;
+import com.juns.wechat.net.response.BaseResponse;
+import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.xmpp.util.SendMessage;
 
 import java.util.List;
 
 public class NewFriendsAdapter extends BaseAdapter {
 	protected Context context;
     private List<MessageBean> inviteMessages;
+    private UserDao userDao = UserDao.getInstance();
 
 	public NewFriendsAdapter(Context ctx, List<MessageBean> inviteMessages) {
 		context = ctx;
@@ -58,39 +66,65 @@ public class NewFriendsAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(
 					R.layout.layout_item_newfriend, parent, false);
 		}
-		ImageView img_avar = ViewHolder.get(convertView, R.id.ivAvatar);
+		ImageView ivAvatar = ViewHolder.get(convertView, R.id.ivAvatar);
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
-		final TextView txt_add = ViewHolder.get(convertView, R.id.txt_add);
-		final UserBean user = GloableParams.UserInfos.get(position);
-		txt_name.setText(user.getUserName());
-		txt_add.setOnClickListener(new OnClickListener() {
+		final TextView txt_add = ViewHolder.get(convertView, R.id.tvAdd);
 
-			@Override
-			public void onClick(View v) {
-				txt_add.setTextColor(context.getResources().getColor(
-						R.color.black1));
-				txt_add.setBackgroundResource(R.drawable.btn_bg_gray1);
-				txt_add.setText("已添加");
-				Utils.showLongToast(context, "添加好友成功，等待对方同意");
-			/*	try {
-					EMContactManager.getDbManager().addContact(
-							user.getTelephone(), "请求添加你为朋友");
-				} catch (EaseMobException e) {
-					e.printStackTrace();
-				}*/
-			}
-		});
+        MessageBean messageBean = inviteMessages.get(position);
+        final UserBean userBean = userDao.findByName(messageBean.getOtherName());
+        if(userBean == null){
+            UserRequest.queryUserData(messageBean.getOtherName(), queryUserCallBack);
+            return convertView;
+        }else {
+            ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
+            txt_name.setText(userBean.getShowName());
+        }
+
+        final InviteMsg inviteMsg = (InviteMsg) messageBean.getMsgObj();
+        if(inviteMsg.reply == 0){
+            txt_add.setText("添加");
+            txt_add.setTextColor(context.getResources().getColor(R.color.white));
+            txt_add.setBackgroundResource(R.drawable.btn_bg_green);
+        }else if(inviteMsg.reply == InviteMsg.Reply.ACCEPT.value){
+            txt_add.setText("已同意");
+            txt_add.setTextColor(context.getResources().getColor(R.color.gray_black));
+            txt_add.setBackgroundResource(R.color.white);
+        }else if(inviteMsg.reply == InviteMsg.Reply.REJECT.value){
+            txt_add.setText("已拒绝");
+            txt_add.setTextColor(context.getResources().getColor(R.color.gray_black));
+            txt_add.setBackgroundResource(R.color.white);
+        }
+
+        txt_add.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(inviteMsg.reply == 0){
+
+                }
+            }
+        });
+
 		convertView.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(context, UserInfoActivity.class);
-				intent.putExtra(Constants.NAME, user.getUserName());
-				intent.putExtra(Constants.TYPE, ChatActivity.CHATTYPE_SINGLE);
-				intent.putExtra(Constants.User_ID, user.getTelephone());
+				intent.putExtra(UserInfoActivity.ARG_USER_NAME, userBean.getUserName());
 				context.startActivity(intent);
 			}
 		});
 		return convertView;
 	}
+
+    private QueryUserCallBack queryUserCallBack = new QueryUserCallBack() {
+        @Override
+        protected void handleSuccess(BaseResponse.QueryUserResponse result) {
+            super.handleSuccess(result);  //在本地数据库保存起来
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected void handleFailed(BaseResponse.QueryUserResponse result) {
+
+        }
+    };
 }

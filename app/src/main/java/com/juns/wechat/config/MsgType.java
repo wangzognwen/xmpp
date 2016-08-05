@@ -17,6 +17,6 @@ public class MsgType {
     public final static int MSG_TYPE_MEETING   = MSG_TYPE_PAY+1;     //会议室请求
     public final static int MSG_TYPE_FACE      = MSG_TYPE_MEETING+1;     //表情
     public final static int MSG_TYPE_TRANSFER  = MSG_TYPE_FACE+1;     //转让消息
-    public final static int MSG_TYPE_SEND_INVITE = MSG_TYPE_TRANSFER + 1; //发送邀请消息成为好友。
+    public final static int MSG_TYPE_INVITE = MSG_TYPE_TRANSFER + 1; //发送邀请消息成为好友。
 
 }

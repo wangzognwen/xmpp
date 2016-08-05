@@ -1,18 +1,12 @@
 package com.juns.wechat.dao;
 
-import android.database.Cursor;
-
 import com.juns.wechat.bean.MessageBean;
-import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.Msg;
 import com.juns.wechat.config.MsgType;
 
 import org.xutils.common.util.KeyValue;
-import org.xutils.db.sqlite.SqlInfo;
 import org.xutils.db.sqlite.WhereBuilder;
-import org.xutils.ex.DbException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +41,12 @@ public class MessageDao extends BaseDao<MessageBean>{
         Map<String, Object> params = new HashMap<>();
         params.put(MessageBean.MYSELF_NAME, myselfName);
         params.put(MessageBean.DIRECTION, MessageBean.Direction.INCOMING.value);
-        params.put(MessageBean.TYPE, MsgType.MSG_TYPE_SEND_INVITE);
+        params.put(MessageBean.TYPE, MsgType.MSG_TYPE_INVITE);
         List<MessageBean> messageBeen =  findAllByParams(params);
 
         if(messageBeen != null && !messageBeen.isEmpty()){
             for(MessageBean messageBean : messageBeen){
-                messageBean.setMsgObj(Msg.fromJson(messageBean.getMsg(),  MsgType.MSG_TYPE_SEND_INVITE));
+                messageBean.setMsgObj(Msg.fromJson(messageBean.getMsg(),  MsgType.MSG_TYPE_INVITE));
             }
         }
         return messageBeen;

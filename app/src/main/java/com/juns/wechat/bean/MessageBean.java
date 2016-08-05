@@ -114,6 +114,7 @@ public class MessageBean{
 
     public void setMsg(String msg) {
         this.msg = msg;
+        msgObj = Msg.fromJson(msg, type);
     }
 
     public int getType() {

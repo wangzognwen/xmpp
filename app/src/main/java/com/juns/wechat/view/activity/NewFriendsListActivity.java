@@ -39,7 +39,7 @@ public class NewFriendsListActivity extends ToolbarActivity implements OnClickLi
         List<MessageBean> myReceivedInviteMessages =
                 MessageDao.getInstance().getMyReceivedInviteMessages(myselfName);
 
-		lvNewFriends.setAdapter(new NewFriendsAdapter(this));
+		lvNewFriends.setAdapter(new NewFriendsAdapter(this, myReceivedInviteMessages));
 	}
 
 

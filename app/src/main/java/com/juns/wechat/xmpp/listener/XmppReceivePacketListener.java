@@ -107,7 +107,7 @@ public class XmppReceivePacketListener implements StanzaListener {
                     case MsgType.MSG_TYPE_TEXT:
                         messageProcess = new TextMessageProcess(App.getInstance());
                         break;
-                    case MsgType.MSG_TYPE_SEND_INVITE:
+                    case MsgType.MSG_TYPE_INVITE:
                         messageProcess = new InviteMessageProcess(App.getInstance());
                         break;
                     default:

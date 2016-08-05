@@ -20,49 +20,7 @@ import java.util.List;
 public class SyncDataUtil {
 
     public static void syncData(){
-        syncUserData();
-    }
-
-    public static void syncUserData(){
-        long lastModifyDate = UserDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
-        UserRequest.syncUserData(lastModifyDate, new BaseCallBack<UserListResponse>() {
-            @Override
-            protected void handleSuccess(UserListResponse result) {
-                List<UserBean> userBeen = result.userBeans;
-                if(userBeen != null && !userBeen.isEmpty()){
-                    UserDao.getInstance().replace(userBeen);
-                }
-                syncUsersNotExistInFriend();
-            }
-
-            @Override
-            protected void handleFailed(UserListResponse result) {
-                syncUsersNotExistInFriend();
-            }
-        });
-    }
-
-    private static void syncUsersNotExistInFriend(){
-        String[] userNames = FriendDao.getInstance().getNotExistUsersInFriend(AccountManager.getInstance().getUserName());
-        if(userNames == null || userNames.length == 0){
-            syncFriendData();
-        }else {
-            UserRequest.getUsersByNames(userNames, new BaseCallBack<UserListResponse>() {
-                @Override
-                protected void handleSuccess(UserListResponse result) {
-                    List<UserBean> userBeen = result.userBeans;
-                    if(userBeen != null && !userBeen.isEmpty()){
-                        UserDao.getInstance().replace(userBeen);
-                    }
-                    syncFriendData();
-                }
-
-                @Override
-                protected void handleFailed(UserListResponse result) {
-                    syncFriendData();
-                }
-            });
-        }
+        syncFriendData();
     }
 
     private static void syncFriendData(){
@@ -74,6 +32,7 @@ public class SyncDataUtil {
                 if(friendBeen != null && !friendBeen.isEmpty()){
                     FriendDao.getInstance().replace(friendBeen);
                 }
+                syncUserData();
             }
 
             @Override
@@ -82,4 +41,24 @@ public class SyncDataUtil {
             }
         });
     }
+
+    public static void syncUserData(){
+        String[] userNames = FriendDao.getInstance().getNotExistUsersInFriend(AccountManager.getInstance().getUserName());
+        long lastModifyDate = UserDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
+        UserRequest.syncUserData(userNames, lastModifyDate, new BaseCallBack<UserListResponse>() {
+            @Override
+            protected void handleSuccess(UserListResponse result) {
+                List<UserBean> userBeen = result.userBeans;
+                if(userBeen != null && !userBeen.isEmpty()){
+                    UserDao.getInstance().replace(userBeen);
+                }
+            }
+
+            @Override
+            protected void handleFailed(UserListResponse result) {
+
+            }
+        });
+    }
+
 }
