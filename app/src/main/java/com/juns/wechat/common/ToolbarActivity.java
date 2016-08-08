@@ -2,14 +2,11 @@ package com.juns.wechat.common;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
 
 
 import com.juns.wechat.util.ToolBarUtil;
 
 import org.simple.eventbus.EventBus;
-import org.xutils.x;
 
 public class ToolbarActivity extends BaseActivity {
     protected Toolbar toolbar;
@@ -45,6 +42,6 @@ public class ToolbarActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Utils.finish(this);
+        CommonUtil.finish(this);
     }
 }

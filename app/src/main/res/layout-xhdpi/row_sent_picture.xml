@@ -7,7 +7,7 @@
     android:paddingTop="13dp" >
 
     <TextView
-        android:id="@+id/timestamp"
+        android:id="@+id/tv_date"
         style="@style/chat_text_date_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -18,7 +18,7 @@
         android:layout_marginTop="@dimen/margin_chat_activity" >
 
         <ImageView
-            android:id="@+id/iv_userhead"
+            android:id="@+id/iv_avatar"
             android:layout_width="@dimen/size_avatar"
             android:layout_height="@dimen/size_avatar"
             android:layout_alignParentRight="true"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_chat_activity"
-            android:layout_toLeftOf="@id/iv_userhead" >
+            android:layout_toLeftOf="@id/iv_avatar" >
 
             <ImageView
                 android:id="@+id/iv_sendPicture"
@@ -100,7 +100,7 @@
             android:layout_centerVertical="true"
             android:text="@string/text_delivered_msg"
             android:textSize="12sp"
-            android:layout_toLeftOf="@id/tv_chatcontent"
+            android:layout_toLeftOf="@id/tv_chat_content"
             android:visibility="invisible"
             />
     </RelativeLayout>

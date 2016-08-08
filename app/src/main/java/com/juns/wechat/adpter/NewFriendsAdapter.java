@@ -10,26 +10,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.InviteMsg;
-import com.juns.wechat.chat.ChatActivity;
-import com.juns.wechat.common.Utils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.activity.UserInfoActivity;
+import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.dao.UserDao;
+import com.juns.wechat.net.callback.AddFriendCallBack;
 import com.juns.wechat.net.callback.QueryUserCallBack;
+import com.juns.wechat.net.request.FriendRequest;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.util.ImageUtil;
-import com.juns.wechat.xmpp.util.SendMessage;
 
 import java.util.List;
 
-public class NewFriendsAdapter extends BaseAdapter {
+public class NewFriendsAdapter extends BaseAdapter{
 	protected Context context;
     private List<MessageBean> inviteMessages;
     private UserDao userDao = UserDao.getInstance();
@@ -70,7 +68,7 @@ public class NewFriendsAdapter extends BaseAdapter {
 		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
 		final TextView txt_add = ViewHolder.get(convertView, R.id.tvAdd);
 
-        MessageBean messageBean = inviteMessages.get(position);
+        final MessageBean messageBean = inviteMessages.get(position);
         final UserBean userBean = userDao.findByName(messageBean.getOtherName());
         if(userBean == null){
             UserRequest.queryUserData(messageBean.getOtherName(), queryUserCallBack);
@@ -98,9 +96,7 @@ public class NewFriendsAdapter extends BaseAdapter {
         txt_add.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(inviteMsg.reply == 0){
-
-                }
+                addFriend(messageBean);
             }
         });
 
@@ -115,6 +111,33 @@ public class NewFriendsAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+    private void addFriend(MessageBean messageBean){
+        FriendRequest.addFriend(messageBean.getOtherName(), new MyAddFriendCallBack(messageBean));
+    }
+
+    class MyAddFriendCallBack extends AddFriendCallBack{
+        private MessageBean messageBean;
+
+        public MyAddFriendCallBack(MessageBean messageBean){
+            this.messageBean = messageBean;
+        }
+
+        @Override
+        protected void handleSuccess(BaseResponse result) {
+            super.handleSuccess(result);
+            InviteMsg inviteMsg = (InviteMsg) messageBean.getMsgObj();
+            inviteMsg.reply = InviteMsg.Reply.ACCEPT.value;
+            messageBean.setMsg(inviteMsg.toJson());
+            MessageDao.getInstance().saveOrUpdate(messageBean);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected void handleFailed(BaseResponse result) {
+
+        }
+    };
+
     private QueryUserCallBack queryUserCallBack = new QueryUserCallBack() {
         @Override
         protected void handleSuccess(BaseResponse.QueryUserResponse result) {
@@ -127,4 +150,5 @@ public class NewFriendsAdapter extends BaseAdapter {
 
         }
     };
+
 }

@@ -2,7 +2,6 @@ package com.juns.wechat.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Click;
 import com.juns.wechat.annotation.Content;
@@ -18,10 +16,10 @@ import com.juns.wechat.annotation.Extra;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.FriendDao;
+import com.juns.wechat.exception.UserNotFoundException;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.request.UserRequest;
@@ -61,13 +59,23 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 	}
 
 	protected void initData() {
+        if(userName.equals(account.getUserName())){  //查看自己的信息
+            userBean = account;
+            setData();
+            return;
+        }
+
 		friendBean = FriendDao.getInstance().findByOwnerAndContactName(account.getUserName(), userName);
         if (friendBean == null){  //不是好友关系
             UserRequest.queryUserData(userName, queryUserCallBack);
         }else {
             subType = friendBean.getSubType();
-            userBean = friendBean.getContactUser();
-            setData();
+            try {
+                userBean = friendBean.getContactUser();
+                setData();
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 	}
 
@@ -76,10 +84,15 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
         tvUserName.setText("微信号：" + userBean.getUserName());
         ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
 
-        if(subType == null){
-            btnSendMsg.setText("加为好友");
+        if(userName.equals(account.getUserName())){
+            findViewById(R.id.ivRightBtn).setVisibility(View.GONE); //隐藏右边按钮
+            btnSendMsg.setText("个人信息");
         }else {
-            btnSendMsg.setText("发送消息");
+            if(subType == null){
+                btnSendMsg.setText("加为好友");
+            }else {
+                btnSendMsg.setText("发送消息");
+            }
         }
     }
 
@@ -98,12 +111,18 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 
 	@Click(viewId = R.id.btnSendMsg)
 	public void onClick(View v) {
+        if(userName.equals(account.getUserName())){
+            CommonUtil.startActivity(this, MyProfileActivity.class);
+            return;
+        }
 	    if(subType == null){
             Intent intent = new Intent(UserInfoActivity.this, AddFriendFinalActivity.class);
             intent.putExtra(AddFriendFinalActivity.ARG_USER_NAME, userName);
             startActivity(intent);
         }else {
-            Utils.start_Activity(this, ChatActivity.class);
+            Intent intent = new Intent(UserInfoActivity.this, ChatActivity.class);
+            intent.putExtra(ChatActivity.ARG_USER_NAME, userName);
+            startActivity(intent);
         }
 	}
 

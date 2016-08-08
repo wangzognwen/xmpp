@@ -16,12 +16,11 @@ import com.juns.wechat.activity.AddFriendActivity;
 import com.juns.wechat.adpter.MainAdapter;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.common.BaseActivity;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dialog.WarnTipDialog;
 import com.juns.wechat.dialog.TitleMenu.ActionItem;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup.OnItemOnClickListener;
-import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.service.XmppService;
 import com.juns.wechat.view.activity.AddGroupChatActivity;
 import com.juns.wechat.view.activity.GetMoneyActivity;
@@ -40,10 +39,8 @@ public class MainActivity extends BaseActivity{
 	private TextView unreadFindLable;// 发现
 	private ImageView[] imagebuttons;
 	private TextView[] textviews;
-	private String connectMsg = "";
 	private int index;
-	private int currentTabIndex;// 当前fragment的index
-    private AccountManager userManager = AccountManager.getInstance();
+
 
 	private MainAdapter mainAdapter;
 
@@ -161,17 +158,17 @@ public class MainActivity extends BaseActivity{
 			// mLoadingDialog.show();
 			switch (position) {
 			case 0:// 发起群聊
-				Utils.start_Activity(MainActivity.this,
+				CommonUtil.startActivity(MainActivity.this,
 						AddGroupChatActivity.class);
 				break;
 			case 1:// 添加朋友
-				Utils.start_Activity(MainActivity.this, AddFriendActivity.class);
+				CommonUtil.startActivity(MainActivity.this, AddFriendActivity.class);
 				break;
 			case 2:// 扫一扫
-				Utils.start_Activity(MainActivity.this, CaptureActivity.class);
+				CommonUtil.startActivity(MainActivity.this, CaptureActivity.class);
 				break;
 			case 3:// 收钱
-				Utils.start_Activity(MainActivity.this, GetMoneyActivity.class);
+				CommonUtil.startActivity(MainActivity.this, GetMoneyActivity.class);
 				break;
 			default:
 				break;
@@ -213,22 +210,11 @@ public class MainActivity extends BaseActivity{
         }
     };
 
-	private void initVersion() {
-		// TODO 检查版本更新
-		String versionInfo = Utils.getValue(this, Constants.VersionInfo);
-		if (!TextUtils.isEmpty(versionInfo)) {
-			Tipdialog = new WarnTipDialog(this,
-					"发现新版本：  1、更新啊阿三达到阿德阿   2、斯顿阿斯顿撒旦？");
-			Tipdialog.setBtnOkLinstener(onclick);
-			Tipdialog.show();
-		}
-	}
-
 	private DialogInterface.OnClickListener onclick = new DialogInterface.OnClickListener() {
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			Utils.showLongToast(MainActivity.this, "正在下载...");// TODO
+			CommonUtil.showLongToast(MainActivity.this, "正在下载...");// TODO
 			Tipdialog.dismiss();
 		}
 	};

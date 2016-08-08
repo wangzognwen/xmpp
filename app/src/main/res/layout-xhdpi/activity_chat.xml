@@ -1,36 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/root_layout"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:background="#f2f0eb"
-    android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f2f0eb"
+    android:orientation="vertical"
+    android:keepScreenOn="true">
 
-    <include android:id="@+id/toolbar"
-            layout="@layout/comm_toolbar" />
+    <include android:id="@+id/toolbar" layout="@layout/comm_toolbar" />
 
     <RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
         android:layout_weight="1">
-		<ProgressBar
-			android:id="@+id/pb_load_more"
-			android:layout_width="28dp"
-			android:layout_height="28dp"
-			android:layout_centerHorizontal="true"
-			android:visibility="gone" />
 
-        <ListView
-            android:id="@+id/list"
+        <in.srain.cube.views.ptr.PtrClassicFrameLayout
+            android:id="@+id/ptRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:cacheColorHint="#00000000"
-            android:divider="@null"
-            android:scrollbars="none"/>
+            cube_ptr:ptr_resistance="1.7"
+            cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+            cube_ptr:ptr_duration_to_close="300"
+            cube_ptr:ptr_duration_to_close_header="2000"
+            cube_ptr:ptr_keep_header_when_refresh="true"
+            cube_ptr:ptr_pull_to_fresh="false">
+
+            <ListView
+                android:id="@+id/lvMessages"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="#00000000"
+                android:divider="@null"
+                android:scrollbars="none"/>
+
+        </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 
            <!-- 录音动画 -->
 		<LinearLayout
-			android:id="@+id/view_talk"
+			android:id="@+id/ll_record_animation"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:gravity="center"
@@ -40,13 +49,13 @@
 			android:layout_centerInParent="true"
 			android:background="@drawable/btn_bg_tranblak">
 			<ImageView
-				android:id="@+id/mic_image"
+				android:id="@+id/ivRecord"
 				android:layout_width="120dip"
 				android:layout_height="120dip"
 				android:contentDescription="@string/app_name"
-				android:background="@anim/video_frame" />
+				android:background="@drawable/video_frame" />
 			<TextView
-				android:id="@+id/recording_hint"
+				android:id="@+id/tvRecordHint"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="10dp"
@@ -82,7 +91,6 @@
                 android:layout_height="32dp"
                 android:layout_marginLeft="6dp"
                 android:background="@drawable/chatting_setmode_voice_btn"
-                android:onClick="setModeVoice"
                 android:visibility="visible" />
             <Button
                 android:id="@+id/btn_set_mode_keyboard"
@@ -90,10 +98,9 @@
                 android:layout_height="32dp"
                 android:layout_marginLeft="6dp"
                 android:background="@drawable/chatting_setmode_keyboard_btn"
-                android:onClick="setModeKeyboard"
                 android:visibility="gone" />
             <LinearLayout
-                android:id="@+id/btn_press_to_speak"
+                android:id="@+id/ll_press_to_speak"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
@@ -113,7 +120,7 @@
                     android:textSize="16sp" />
             </LinearLayout>
             <RelativeLayout
-                android:id="@+id/edittext_layout"
+                android:id="@+id/rl_input_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
@@ -122,7 +129,7 @@
                 android:layout_weight="1"
                 android:gravity="bottom">
                 <com.juns.wechat.chat.widght.PasteEditText
-                    android:id="@+id/et_sendmessage"
+                    android:id="@+id/et_input_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="35dip"
@@ -163,8 +170,7 @@
                 android:layout_height="32dip"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/type_select_btn"
-                android:onClick="more" />
+                android:background="@drawable/type_select_btn"/>
             <Button
                 android:id="@+id/btn_send"
                 android:layout_width="70dp"
@@ -178,7 +184,7 @@
                 android:visibility="gone" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/more"
+            android:id="@+id/ll_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
@@ -188,13 +194,13 @@
 
             <!-- 表情图片 -->
             <LinearLayout
-                android:id="@+id/ll_face_container"
+                android:id="@+id/ll_emoticon_container"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:orientation="vertical"
                 android:visibility="visible">
                 <android.support.v4.view.ViewPager
-                    android:id="@+id/vPager"
+                    android:id="@+id/viewPager"
                     android:paddingTop="10dp"
                     android:background="@drawable/menu_bg"
                     android:layout_width="match_parent"
@@ -203,7 +209,7 @@
 
             <!-- 图片，表情，名片等按钮 -->
             <LinearLayout
-                android:id="@+id/ll_btn_container"
+                android:id="@+id/ll_more_function_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

@@ -119,7 +119,6 @@ public class SearchActivity extends BaseActivity {
     private void showSearchResult(ArrayList<UserBean> userBeans){
         if(userBeans != null && !userBeans.isEmpty()){
             Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
-            Bundle bundle = new Bundle();
             intent.putParcelableArrayListExtra(SearchResultActivity.ARG_SEARCH_RESULTS, userBeans);
             startActivity(intent);
         }else {

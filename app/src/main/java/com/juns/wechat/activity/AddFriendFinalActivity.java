@@ -14,6 +14,7 @@ import com.juns.wechat.annotation.Extra;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.util.ToastUtil;
+import com.juns.wechat.util.ToolBarUtil;
 import com.juns.wechat.xmpp.util.SendMessage;
 
 @Content(R.layout.activity_add_friend_final)
@@ -28,8 +29,7 @@ public class AddFriendFinalActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((Button) findViewById(R.id.tvRightText)).setText("发送");
-
+        ToolBarUtil.setToolbarRightText(this, "发送");
 
     }
 

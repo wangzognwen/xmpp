@@ -20,8 +20,8 @@ import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.NewMsgAdpter;
 import com.juns.wechat.bean.PublicMsgInfo;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.common.NetUtil;
-import com.juns.wechat.common.Utils;
 import com.juns.wechat.view.activity.PublishMsgListActivity;
 
 //消息
@@ -83,8 +83,8 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 			// if (GloableParams.isHasPulicMsg) {
 			/*EMConversation nee = new EMConversation("100000");
 			conversationList.insertOrUpdate(0, nee);*/
-			String time = Utils.getValue(getActivity(), "TimeElement");
-			String content = Utils.getValue(getActivity(), "Content");
+			String time = "";
+			String content = "";
 			time = "下午 02:45";
 			content = "[腾讯娱乐] 赵薇炒股日赚74亿";
 			PublicMsgInfo msgInfo = new PublicMsgInfo();
@@ -158,7 +158,7 @@ public class Fragment_Msg extends Fragment implements OnClickListener,
 			long arg3) {
 		if (adpter.PublicMsg != null && position == 0) {
 			// 打开订阅号列表页面
-			Utils.start_Activity(getActivity(), PublishMsgListActivity.class);
+			CommonUtil.startActivity(getActivity(), PublishMsgListActivity.class);
 		}
 	}
 

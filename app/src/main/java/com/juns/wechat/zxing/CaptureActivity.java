@@ -32,7 +32,7 @@ import com.google.zxing.BarcodeFormat;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.SplashActivity;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.view.activity.SetMoneyActivity;
 import com.juns.wechat.zxing.camera.CameraManager;
@@ -85,10 +85,10 @@ public class CaptureActivity extends Activity implements Callback {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (isNoCute) {
-				Utils.finish(CaptureActivity.this);
+				CommonUtil.finish(CaptureActivity.this);
 			} else {
-				Utils.start_Activity(CaptureActivity.this, SplashActivity.class);
-				Utils.finish(CaptureActivity.this);
+				CommonUtil.startActivity(CaptureActivity.this, SplashActivity.class);
+				CommonUtil.finish(CaptureActivity.this);
 			}
 		}
 		return super.onKeyDown(keyCode, event);
@@ -102,7 +102,7 @@ public class CaptureActivity extends Activity implements Callback {
 		mGoHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Utils.finish(CaptureActivity.this);
+				CommonUtil.finish(CaptureActivity.this);
 			}
 		});
 	}
@@ -255,13 +255,13 @@ public class CaptureActivity extends Activity implements Callback {
 
 		if (!isNoCute) {
 			if (TextUtils.isEmpty(resultString)) {
-				Utils.showLongToast(CaptureActivity.this, "二维码信息错误！");
+				CommonUtil.showLongToast(CaptureActivity.this, "二维码信息错误！");
 				return;
 			} else {
 				if (resultString.startsWith("JUNS_WeChat@User")) {
 					String[] name = resultString.split(":");
 					Log.e("", "扫描到的好友为：" + name[1]);
-					Utils.start_Activity(CaptureActivity.this,
+					CommonUtil.startActivity(CaptureActivity.this,
 							UserInfoActivity.class, new BasicNameValuePair(
 									Constants.User_ID, name[1]),
 							new BasicNameValuePair(Constants.NAME, name[1]));
@@ -269,7 +269,7 @@ public class CaptureActivity extends Activity implements Callback {
 					String[] msg = resultString.split(":");
 					String[] money_msg = msg[1].split(",");
 					Log.e("", "扫描到的好友ID为：" + money_msg[1]);
-					Utils.start_Activity(
+					CommonUtil.startActivity(
 							CaptureActivity.this,
 							SetMoneyActivity.class,
 							new BasicNameValuePair(Constants.User_ID,
@@ -281,7 +281,7 @@ public class CaptureActivity extends Activity implements Callback {
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 					startActivity(intent);
 				} else {
-					Utils.showLongToast(this, "扫描结果为：" + result);
+					CommonUtil.showLongToast(this, "扫描结果为：" + result);
 				}
 			}
 		}

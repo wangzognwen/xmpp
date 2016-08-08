@@ -117,6 +117,17 @@ public class BaseDao<T> implements IDao<T> {
     }
 
     @Override
+    public boolean saveOrUpdate(T t) {
+        try {
+            dbManager.saveOrUpdate(t);
+            return true;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs) {
         try {
             dbManager.update(clazz, whereBuilder, keyValuePairs);

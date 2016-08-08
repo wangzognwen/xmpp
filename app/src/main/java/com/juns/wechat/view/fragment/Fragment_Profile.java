@@ -19,7 +19,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.activity.MyProfileActivity;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ImageUtil;
@@ -28,7 +28,6 @@ import com.juns.wechat.view.activity.SettingActivity;
 
 //我
 public class Fragment_Profile extends Fragment implements OnClickListener {
-	private Activity ctx;
 	private View layout;
     private ImageView ivAvatar;
 	private TextView tvNickName, tvUserName;
@@ -72,6 +71,7 @@ public class Fragment_Profile extends Fragment implements OnClickListener {
 		userBean = AccountManager.getInstance().getUser();
         tvUserName.setText("微信号：" + userBean.getUserName());
         tvNickName.setText(userBean.getNickName() == null ? userBean.getUserName() : userBean.getNickName());
+
         ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
 	}
 
@@ -88,35 +88,35 @@ public class Fragment_Profile extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.view_user:
-			Utils.start_Activity(getActivity(), MyProfileActivity.class);
+			CommonUtil.startActivity(getActivity(), MyProfileActivity.class);
 			break;
 		case R.id.txt_album:// 相册
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.my_posts)));
 			break;
 		case R.id.txt_collect:// 收藏
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.collection)));
 			break;
 		case R.id.txt_money:// 钱包
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.wallet)));
 			break;
 		case R.id.txt_card:// 相册
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.card_bag)));
 			break;
 		case R.id.txt_smail:// 表情
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.expression)));
 			break;
 		case R.id.txt_setting:// 设置
-			Utils.start_Activity(getActivity(), SettingActivity.class);
+			CommonUtil.startActivity(getActivity(), SettingActivity.class);
 			break;
 		default:
 			break;

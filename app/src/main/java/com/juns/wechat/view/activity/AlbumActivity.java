@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.AlbumAdpter;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //朋友圈
@@ -66,7 +66,7 @@ public class AlbumActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public boolean onLongClick(View v) {
-				Utils.showLongToast(context, "长按发送文字");
+				CommonUtil.showLongToast(context, "长按发送文字");
 				return true;
 			}
 		});
@@ -82,10 +82,10 @@ public class AlbumActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(AlbumActivity.this);
+			CommonUtil.finish(AlbumActivity.this);
 			break;
 		case R.id.img_right:
-			Utils.start_Activity(this, ShareActivity.class);
+			CommonUtil.startActivity(this, ShareActivity.class);
 			break;
 		default:
 			break;

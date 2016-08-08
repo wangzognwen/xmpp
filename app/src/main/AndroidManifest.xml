@@ -176,7 +176,7 @@
         <!-- 环信开始 -->
 
         <activity
-            android:name=".chat.ChatActivity"
+            android:name=".activity.ChatActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -228,7 +228,8 @@
         </activity>
         <activity
             android:name=".activity.AddFriendActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:label="@string/label_activity_add_friend"/>
         <activity
             android:name=".activity.SearchActivity"
             android:screenOrientation="portrait"/>
@@ -297,23 +298,32 @@
 
         <activity
             android:name=".activity.SearchResultActivity"
-            android:label="@string/label_activity_show_search_result">
+            android:label="@string/label_activity_show_search_result"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.MyProfileActivity"
-            android:label="@string/label_activity_my_profile">
+            android:label="@string/label_activity_my_profile"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.ModifyNameActivity"
-            android:label="@string/label_activity_modify_name">
+            android:label="@string/label_activity_modify_name"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.CropImageActivity">
+        <activity android:name=".activity.CropImageActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.SendInviteMessageActivity">
+        <activity android:name=".activity.SendInviteMessageActivity"
+                  android:label="@string/label_activity_send_invite_message"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.NewFriendsActivity">
+        <activity android:name=".activity.NewFriendsActivity"
+            android:label="@string/label_activity_new_friends"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.AddFriendFinalActivity">
+        <activity android:name=".activity.AddFriendFinalActivity"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

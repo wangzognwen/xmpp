@@ -6,15 +6,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.util.Log;
 
 
 import com.juns.wechat.App;
 import com.juns.wechat.R;
-import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.activity.ChatActivity;
 import com.juns.wechat.util.SharedPreferencesUtil;
 
 import java.util.HashMap;

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.juns.wechat.config.MsgType;
 
+import org.json.JSONObject;
+
 /**
  * Created by 王者 on 2016/8/3.
  */
@@ -15,9 +17,7 @@ public abstract class Msg {
         return gson.toJson(this);
     }
 
-    public  String toSendJson(){
-        return toJson();
-    }
+    public abstract JSONObject toSendJsonObject();
 
     public static Msg fromJson(String json, int type){
         Msg msg = null;

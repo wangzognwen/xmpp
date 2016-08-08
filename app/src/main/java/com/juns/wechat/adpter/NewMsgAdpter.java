@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.bean.PublicMsgInfo;
-import com.juns.wechat.common.UserUtils;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.dialog.WarnTipDialog;
 import com.juns.wechat.widget.swipe.SwipeLayout;
@@ -32,7 +31,6 @@ public class NewMsgAdpter extends BaseAdapter {
 	public NewMsgAdpter(Context ctx, List objects) {
 		context = ctx;
 		conversationList = objects;
-		userid = UserUtils.getUserID(context);
 	}
 
 	public void setPublicMsg(PublicMsgInfo Msg) {
@@ -161,7 +159,7 @@ public class NewMsgAdpter extends BaseAdapter {
 		/*	EMConversation conversation = conversationList.get(deleteID);
 			EMChatManager.getDbManager().deleteConversation(
 					conversation.getUserName());
-			// Utils.showLongToast((Activity) context, "删除成功");
+			// CommonUtil.showLongToast((Activity) context, "删除成功");
 			conversationList.remove(deleteID);
 			notifyDataSetChanged();
 			Tipdialog.dismiss();*/

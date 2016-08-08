@@ -21,7 +21,7 @@ public class InviteMsg extends Msg{
     public int reply;
 
     @Override
-    public String toSendJson() {
+    public JSONObject toSendJsonObject() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(USERNAME, name);
@@ -32,7 +32,7 @@ public class InviteMsg extends Msg{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return jsonObject.toString();
+        return jsonObject;
     }
 
     public enum Reply{

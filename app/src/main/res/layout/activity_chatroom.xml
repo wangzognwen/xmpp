@@ -69,7 +69,7 @@
 			android:orientation="vertical"
 			android:background="@color/windows_color">
 			<ListView
-				android:id="@+id/list"
+				android:id="@+id/lvMessages"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
 				android:scrollbars="none"

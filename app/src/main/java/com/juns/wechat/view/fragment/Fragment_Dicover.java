@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.activity.AlbumActivity;
 import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.zxing.CaptureActivity;
@@ -66,29 +66,29 @@ public class Fragment_Dicover extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.txt_pengyouquan:// 朋友圈
-			Utils.start_Activity(getActivity(), AlbumActivity.class);
+			CommonUtil.startActivity(getActivity(), AlbumActivity.class);
 			break;
 		case R.id.txt_saoyisao:// 扫一扫
-			Utils.start_Activity(getActivity(), CaptureActivity.class);
+			CommonUtil.startActivity(getActivity(), CaptureActivity.class);
 			break;
 		case R.id.txt_yaoyiyao:
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.shake)));
 			break;
 		case R.id.txt_nearby:
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.people_nearby)));
 			break;
 		case R.id.txt_piaoliuping:
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.drift_bottle)));
 			break;
 		case R.id.txt_shop:
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.shopping)));
 			break;
 		case R.id.txt_game:
-			Utils.start_Activity(getActivity(), PublicActivity.class,
+			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.games)));
 			break;
 		default:

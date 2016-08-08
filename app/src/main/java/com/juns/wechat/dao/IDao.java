@@ -17,5 +17,6 @@ public interface IDao<T> {
     void save(List<T> list);
     boolean replace(T t);
     boolean replace(List<T> list);
+    boolean saveOrUpdate(T t);
     boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs);
 }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.activity.ChatActivity;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.activity.UserInfoActivity;
 

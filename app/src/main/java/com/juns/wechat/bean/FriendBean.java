@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.juns.wechat.database.DbUtil;
 import com.juns.wechat.database.FriendTable;
+import com.juns.wechat.exception.UserNotFoundException;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
@@ -98,12 +99,12 @@ public class FriendBean {
         this.modifyDate = modifyDate;
     }
 
-    public UserBean getContactUser() {
+    public UserBean getContactUser() throws UserNotFoundException{
         try {
             return DbUtil.getDbManager().selector(UserBean.class).where("userName", "=", contactName).findFirst();
         } catch (DbException e) {
             e.printStackTrace();
-            return null;
+            throw new UserNotFoundException(e);
         }
     }
 
@@ -111,15 +112,23 @@ public class FriendBean {
         if(!TextUtils.isEmpty(remark)){
             return remark;
         }else{
-            UserBean userBean = getContactUser();
-            return userBean.getShowName();
+            try {
+                UserBean userBean = getContactUser();
+                return userBean.getShowName();
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 
     public String getHeadUrl(){
-        if(getContactUser() == null){
-            return null;
+        try {
+            UserBean userBean = getContactUser();
+            return userBean.getHeadUrl();
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
         }
-        return getContactUser().getHeadUrl();
+        return null;
     }
 }

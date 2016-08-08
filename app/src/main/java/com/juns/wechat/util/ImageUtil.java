@@ -20,8 +20,7 @@ public class ImageUtil {
 
     private static final ImageOptions OPTIONS = new ImageOptions.Builder()
             .setFailureDrawableId(R.drawable.default_useravatar)
-            .setLoadingDrawableId(R.drawable.default_useravatar)
-            .setImageScaleType(ImageView.ScaleType.CENTER).build();
+            .setLoadingDrawableId(R.drawable.default_useravatar).build();
 
     public static void loadImage(ImageView imageView, String fileName){
         x.image().bind(imageView, REMOTE_PATH  + fileName, OPTIONS);

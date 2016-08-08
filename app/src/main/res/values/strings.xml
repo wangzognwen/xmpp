@@ -44,4 +44,8 @@
     <string name="label_activity_my_profile">个人信息</string>
     <string name="label_activity_modify_name">更改名字</string>
     <string name="label_activity_show_search_result">搜索结果</string>
+    <string name="label_activity_add_friend">添加朋友</string>
+    <string name="label_activity_new_friends">新的朋友</string>
+    <string name="label_activity_crop_image">剪切图片</string>
+    <string name="label_activity_send_invite_message">微信</string>
 </resources>

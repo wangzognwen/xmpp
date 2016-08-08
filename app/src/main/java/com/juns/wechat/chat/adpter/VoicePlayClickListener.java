@@ -20,14 +20,12 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.juns.wechat.R;
-import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.activity.ChatActivity;
 
 public class VoicePlayClickListener implements View.OnClickListener {
 

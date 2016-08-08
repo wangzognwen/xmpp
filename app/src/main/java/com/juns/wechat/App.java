@@ -16,7 +16,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.baidu.frontia.FrontiaApplication;
-import com.juns.wechat.chat.ChatActivity;
 import com.juns.wechat.chat.VoiceCallActivity;
 
 import org.xutils.x;

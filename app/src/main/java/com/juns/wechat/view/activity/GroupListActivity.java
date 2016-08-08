@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.MyGroupAdpter;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //群聊列表
@@ -69,10 +69,10 @@ public class GroupListActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(GroupListActivity.this);
+			CommonUtil.finish(GroupListActivity.this);
 			break;
 		case R.id.img_right:
-			Utils.start_Activity(GroupListActivity.this,
+			CommonUtil.startActivity(GroupListActivity.this,
 					AddGroupChatActivity.class);
 			break;
 		default:

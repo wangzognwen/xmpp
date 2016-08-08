@@ -36,7 +36,7 @@ public class SendMessage {
                 TextMsg textMsg = new TextMsg();
                 textMsg.content = content;
                 try {
-                    messageBean.setMsg(textMsg.toSendJson());
+                    messageBean.setMsg(textMsg.toJson());
                     messageBean.setOtherName(otherName);
                     messageBean.setType(MsgType.MSG_TYPE_TEXT);
                     sendMsg(messageBean);
@@ -61,7 +61,7 @@ public class SendMessage {
                 inviteMsg.name = AccountManager.getInstance().getUser().getShowName();
                 inviteMsg.reason = reason;
                 try {
-                    messageBean.setMsg(inviteMsg.toSendJson());
+                    messageBean.setMsg(inviteMsg.toJson());
                     messageBean.setOtherName(otherName);
                     messageBean.setType(MsgType.MSG_TYPE_INVITE);
                     sendMsg(messageBean);
@@ -84,7 +84,7 @@ public class SendMessage {
                 InviteMsg inviteMsg = new InviteMsg();
                 inviteMsg.reply = reply;
                 try {
-                    messageBean.setMsg(inviteMsg.toSendJson());
+                    messageBean.setMsg(inviteMsg.toJson());
                     messageBean.setOtherName(otherName);
                     messageBean.setType(MsgType.MSG_TYPE_INVITE);
                     sendMsg(messageBean);

@@ -89,5 +89,37 @@ public class ToolBarUtil {
         }
     }
 
+    public static void setToolbarRightText(AppCompatActivity activity, int resId){
+        setToolbarRightText(activity, activity.getString(resId));
+    }
+
+    public static void setToolbarRightText(AppCompatActivity activity, String text){
+        Toolbar toolBar = setToolBar(activity);
+        TextView tvRightText = (TextView) toolBar.findViewById(R.id.tvRightText);
+        ImageView ivRightBtn = (ImageView) toolBar.findViewById(R.id.ivRightBtn);
+
+        tvRightText.setVisibility(View.VISIBLE);
+        ivRightBtn.setVisibility(View.GONE);
+        tvRightText.setText(text);
+    }
+
+    public static void setToolbarRightImage(AppCompatActivity activity, int resId){
+        Toolbar toolBar = setToolBar(activity);
+        TextView tvRightText = (TextView) toolBar.findViewById(R.id.tvRightText);
+        ImageView ivRightBtn = (ImageView) toolBar.findViewById(R.id.ivRightBtn);
+
+        tvRightText.setVisibility(View.GONE);
+        ivRightBtn.setVisibility(View.VISIBLE);
+        ivRightBtn.setImageResource(resId);
+    }
+
+    public static void hideToolbarRight(AppCompatActivity activity){
+        Toolbar toolBar = setToolBar(activity);
+        TextView tvRightText = (TextView) toolBar.findViewById(R.id.tvRightText);
+        ImageView ivRightBtn = (ImageView) toolBar.findViewById(R.id.ivRightBtn);
+        tvRightText.setVisibility(View.GONE);
+        ivRightBtn.setVisibility(View.GONE);
+    }
+
 
 }

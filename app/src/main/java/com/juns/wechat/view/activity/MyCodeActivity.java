@@ -18,7 +18,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 public class MyCodeActivity extends BaseActivity implements OnClickListener {
@@ -36,7 +36,7 @@ public class MyCodeActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(MyCodeActivity.this);
+			CommonUtil.finish(MyCodeActivity.this);
 			break;
 
 		default:
@@ -61,7 +61,7 @@ public class MyCodeActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void initData() {
-		String id = Utils.getValue(this, Constants.User_ID);
+		String id = null;
 		tv_accout.setText("微信号：" + id);
 		UserBean user = GloableParams.Users.get(id);
 		if (user != null && !TextUtils.isEmpty(user.getUserName()))

@@ -1,8 +1,6 @@
 package com.juns.wechat.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -10,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //注册后填写用户信息
@@ -54,7 +52,7 @@ public class EditUserNameActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(EditUserNameActivity.this);
+			CommonUtil.finish(EditUserNameActivity.this);
 			break;
 		case R.id.btn_start:
 

@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.view.activity.WebViewActivity;
 
@@ -69,7 +69,7 @@ public class PublishMsgDetailAdpter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 
-			Utils.start_Activity(
+			CommonUtil.startActivity(
 					(Activity) context,
 					WebViewActivity.class,
 					new BasicNameValuePair(Constants.Title, "人人都是产品经理"),

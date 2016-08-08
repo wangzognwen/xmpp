@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //从通讯录添加好友
@@ -37,8 +37,6 @@ public class AddFromContactActivity extends BaseActivity implements
 	@Override
 	protected void initView() {
 		getLoadingDialog("正在获取联系人").show();
-		String str_contact = Utils.getValue(this, Constants.ContactMsg);
-
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class AddFromContactActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(AddFromContactActivity.this);
+			CommonUtil.finish(AddFromContactActivity.this);
 			break;
 		default:
 			break;

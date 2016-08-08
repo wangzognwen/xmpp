@@ -15,7 +15,7 @@ import android.util.Log;
 
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.juns.wechat.common.BaiduUtils;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 
 /**
  * Push消息处理receiver
@@ -243,9 +243,7 @@ public class PushMessageReceiver extends FrontiaPushMessageReceiver {
 		}
 		Long tsLong = System.currentTimeMillis() / 1000;
 		String ts = tsLong.toString();
-		Utils.putValue(context, "TimeElement", ts);
 
-		Utils.putValue(context, "Content", content);
 
 		GloableParams.isHasPulicMsg = true;
 

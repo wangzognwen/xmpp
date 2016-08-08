@@ -1,12 +1,19 @@
 package com.juns.wechat.dao;
 
+import android.database.Cursor;
+
+import com.juns.wechat.bean.Flag;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.Msg;
 import com.juns.wechat.config.MsgType;
+import com.juns.wechat.database.CursorUtil;
 
 import org.xutils.common.util.KeyValue;
+import org.xutils.db.sqlite.SqlInfo;
 import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.ex.DbException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +24,11 @@ import java.util.Map;
 public class MessageDao extends BaseDao<MessageBean>{
 
     private static MessageDao mInstance;
+
+    private static final String SELECT_MESSAGES_BY_PAGING =
+            "select * from wcMessage where myselfName = ? and otherName = ? and flag != -1 limit ? offset ?";
+    private static final String SELECT_MESSGAE_COUNT_BETWEEN_TWO_USER =
+            "select count(id) as count from wcMessage where myselfName = ? and otherName = ? and flag != -1";
 
     public static MessageDao getInstance(){
         if(mInstance == null){
@@ -31,9 +43,10 @@ public class MessageDao extends BaseDao<MessageBean>{
         return update(whereBuilder, keyValue);
     }
 
-    public MessageBean findByPacketId(String packetId){
+    public MessageBean findByPacketId(String myselfName, String packetId){
         Map<String, Object> params = new HashMap<>();
         params.put(MessageBean.PACKET_ID, packetId);
+        params.put(MessageBean.MYSELF_NAME, myselfName);
         return findByParams(params);
     }
 
@@ -50,6 +63,55 @@ public class MessageDao extends BaseDao<MessageBean>{
             }
         }
         return messageBeen;
+    }
+
+    public List<MessageBean> getMessagesByIndexAndSize(String myselfName, String otherName, int index, int size){
+        SqlInfo sqlInfo = new SqlInfo(SELECT_MESSAGES_BY_PAGING);
+        sqlInfo.addBindArg(new KeyValue("key1", myselfName));
+        sqlInfo.addBindArg(new KeyValue("key2", otherName));
+        sqlInfo.addBindArg(new KeyValue("key3", size));
+        sqlInfo.addBindArg(new KeyValue("key4", index));
+
+        try {
+            Cursor cursor = dbManager.execQuery(sqlInfo);
+            List<MessageBean> messageBeanList = new ArrayList<>();
+            while (cursor.moveToNext()){
+                MessageBean messageBean = CursorUtil.fromCursor(cursor, MessageBean.class);
+                messageBeanList.add(messageBean);
+            }
+            return messageBeanList;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int getMessageCount(String myselfName, String otherName){
+        SqlInfo sqlInfo = new SqlInfo(SELECT_MESSGAE_COUNT_BETWEEN_TWO_USER);
+        sqlInfo.addBindArg(new KeyValue("key1", myselfName));
+        sqlInfo.addBindArg(new KeyValue("key2", otherName));
+        int count = 0;
+        try {
+            Cursor cursor = dbManager.execQuery(sqlInfo);
+            if(cursor.moveToNext()){
+                count = cursor.getInt(cursor.getColumnIndex("count"));
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public void markAsRead(String myselfName, String otherName){
+        WhereBuilder whereBuilder = WhereBuilder.b();
+        whereBuilder.and(MessageBean.MYSELF_NAME, "=", myselfName);
+        whereBuilder.and(MessageBean.OTHER_NAME, "=", otherName);
+        whereBuilder.and(MessageBean.FLAG, "!=", Flag.INVALID.value());
+        whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
+        whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
+
+        KeyValue keyValue = new KeyValue(MessageBean.STATE, MessageBean.State.READ.value);
+        update(whereBuilder, keyValue);
     }
 
 }

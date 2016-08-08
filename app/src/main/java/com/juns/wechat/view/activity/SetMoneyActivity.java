@@ -10,7 +10,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //付钱
@@ -72,11 +72,11 @@ public class SetMoneyActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(SetMoneyActivity.this);
+			CommonUtil.finish(SetMoneyActivity.this);
 			break;
 		case R.id.btn_pay:
-			Utils.showLongToast(this, "付款成功！");
-			Utils.finish(this);
+			CommonUtil.showLongToast(this, "付款成功！");
+			CommonUtil.finish(this);
 			break;
 		default:
 			break;

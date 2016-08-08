@@ -93,7 +93,7 @@ public class AddGroupChatActivity extends ToolbarActivity{
 		menuLinerLayout = (LinearLayout) this
 				.findViewById(R.id.linearLayoutMenu);
 		et_search = (EditText) this.findViewById(R.id.et_search);
-		listView = (ListView) findViewById(R.id.list);
+		listView = (ListView) findViewById(R.id.lvMessages);
 		iv_search = (ImageView) this.findViewById(R.id.iv_search);
 		mDialogText = (TextView) LayoutInflater.from(this).inflate(
 				R.layout.list_position, null);

@@ -7,7 +7,7 @@
     android:paddingTop="13dp" >
 
     <TextView
-        android:id="@+id/timestamp"
+        android:id="@+id/tv_date"
         style="@style/chat_text_date_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -18,7 +18,7 @@
         android:layout_marginTop="@dimen/margin_chat_activity" >
 
         <ImageView
-            android:id="@+id/iv_userhead"
+            android:id="@+id/iv_avatar"
             android:layout_width="@dimen/size_avatar"
             android:layout_height="@dimen/size_avatar"
             android:layout_alignParentLeft="true"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:layout_toRightOf="@id/iv_userhead"
+            android:layout_toRightOf="@id/iv_avatar"
             android:padding="17dp"
             android:background="@drawable/chatfrom_bg" >
 
@@ -47,7 +47,7 @@
 
             <TextView
                 android:layout_toRightOf="@id/iv_call_icon"
-                android:id="@+id/tv_chatcontent"
+                android:id="@+id/tv_chat_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="苏定方"
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/iv_userhead"
+            android:layout_below="@id/iv_avatar"
             android:layout_toLeftOf="@id/row_recv_pic" />
     </RelativeLayout>
 

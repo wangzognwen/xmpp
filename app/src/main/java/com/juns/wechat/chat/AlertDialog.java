@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
+import com.juns.wechat.activity.ChatActivity;
 import com.juns.wechat.chat.task.DownloadImageTask;
 import com.juns.wechat.chat.utils.ImageCache;
 import com.juns.wechat.common.BaseActivity;

@@ -2,16 +2,15 @@ package com.juns.wechat.view.activity;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.juns.wechat.App;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.view.BaseActivity;
 
 //设置
@@ -61,25 +60,17 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(SettingActivity.this);
+			CommonUtil.finish(SettingActivity.this);
 			break;
 		case R.id.txt_about:
-			Utils.start_Activity(SettingActivity.this, WebViewActivity.class,
+			CommonUtil.startActivity(SettingActivity.this, WebViewActivity.class,
 					new BasicNameValuePair(Constants.Title, "关于微信"),
 					new BasicNameValuePair(Constants.URL,
 							"https://github.com/motianhuo/wechat"));
 			break;
 
 		case R.id.btnexit:
-			//EMChatManager.getDbManager().logout();// 退出环信聊天
-			Utils.RemoveValue(context, Constants.LoginState);
-			Utils.RemoveValue(context, Constants.UserInfo);
-			Utils.RemoveValue(context, Constants.NAME);
-			Utils.RemoveValue(context, Constants.PWD);
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intent);
-            finish();
+            AccountManager.getInstance().logOut(this);
 			break;
 		default:
 			break;

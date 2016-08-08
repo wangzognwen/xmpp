@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //浏览器
@@ -184,7 +184,7 @@ public class WebViewActivity extends BaseActivity {
 				if (mWebView.canGoBack())
 					mWebView.goBack();
 				else
-					Utils.finish(WebViewActivity.this);
+					CommonUtil.finish(WebViewActivity.this);
 			}
 		});
 	}

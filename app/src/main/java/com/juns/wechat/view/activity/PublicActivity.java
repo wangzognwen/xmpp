@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //公共页面
@@ -49,7 +49,7 @@ public class PublicActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(PublicActivity.this);
+			CommonUtil.finish(PublicActivity.this);
 			break;
 		default:
 			break;

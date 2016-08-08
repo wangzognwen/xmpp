@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //朋友圈分享页面
@@ -41,7 +41,7 @@ public class ShareActivity extends BaseActivity implements OnClickListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			// TODO
-			Utils.finish(this);
+			CommonUtil.finish(this);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -78,7 +78,7 @@ public class ShareActivity extends BaseActivity implements OnClickListener {
 		String sharedTitle = intent.getStringExtra(Intent.EXTRA_TITLE);
 		if (sharedText != null) {
 			// Update UI to reflect text being shared
-			Utils.showLongToast(context, sharedText);
+			CommonUtil.showLongToast(context, sharedText);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class ShareActivity extends BaseActivity implements OnClickListener {
 		Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
 		if (imageUri != null) {
 			// Update UI to reflect image being shared
-			Utils.showLongToast(context, imageUri.toString());
+			CommonUtil.showLongToast(context, imageUri.toString());
 		}
 	}
 
@@ -108,7 +108,7 @@ public class ShareActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(ShareActivity.this);
+			CommonUtil.finish(ShareActivity.this);
 			break;
 		case R.id.txt_right:
 			break;

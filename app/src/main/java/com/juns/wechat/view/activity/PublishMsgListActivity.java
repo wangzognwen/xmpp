@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.PublishMsgAdpter;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //订阅号信息列表
@@ -60,7 +60,7 @@ public class PublishMsgListActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(PublishMsgListActivity.this);
+			CommonUtil.finish(PublishMsgListActivity.this);
 			break;
 		default:
 			break;
@@ -70,7 +70,7 @@ public class PublishMsgListActivity extends BaseActivity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		Utils.start_Activity(this, PublishMsgDetailActivity.class,
+		CommonUtil.startActivity(this, PublishMsgDetailActivity.class,
 				new BasicNameValuePair(Constants.NAME, "人人都是产品经理"));
 	}
 

@@ -6,6 +6,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@style/AppTheme.SwitchAnimation</item>
     </style>
 
     <style name="AppTheme.Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -13,6 +14,13 @@
         <item name="actionMenuTextAppearance">@style/TextAppearance.AppCompat.Medium</item>
         <item name="contentInsetStart">0dp</item>
         <item name="contentInsetEnd">0dp</item>
+    </style>
+    
+    <style name="AppTheme.SwitchAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/push_left_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/push_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/push_right_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/push_right_out</item>
     </style>
  <!-- 标题1样式 -->
     <style name="txt_titleStyle1">

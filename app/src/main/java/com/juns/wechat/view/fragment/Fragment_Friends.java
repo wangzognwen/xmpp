@@ -1,25 +1,21 @@
 package com.juns.wechat.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.FriendBean;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.activity.UserInfoActivity;
@@ -85,13 +81,13 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.re_newfriends:// 添加好友
-			Utils.start_Activity(getActivity(), NewFriendsListActivity.class);
+			CommonUtil.startActivity(getActivity(), NewFriendsListActivity.class);
 			break;
 		case R.id.re_chatroom:// 群聊
-			Utils.start_Activity(getActivity(), GroupListActivity.class);
+			CommonUtil.startActivity(getActivity(), GroupListActivity.class);
 			break;
 		case R.id.re_public:// 公众号
-			Utils.start_Activity(getActivity(), PublishUserListActivity.class);
+			CommonUtil.startActivity(getActivity(), PublishUserListActivity.class);
 			break;
 		default:
 			break;

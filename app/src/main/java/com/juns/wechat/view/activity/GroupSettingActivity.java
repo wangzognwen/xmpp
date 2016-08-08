@@ -24,9 +24,9 @@ import com.juns.wechat.GloableParams;
 import com.juns.wechat.R;
 import com.juns.wechat.bean.GroupInfo;
 import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.activity.ChatActivity;
 import com.juns.wechat.chat.widght.ExpandGridView;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //群设置
@@ -83,7 +83,7 @@ public class GroupSettingActivity extends BaseActivity implements
 
 	@Override
 	protected void initView() {
-		hxid = Utils.getValue(GroupSettingActivity.this, Constants.User_ID);
+		//hxid = CommonUtil.getValue(GroupSettingActivity.this, Constants.User_ID);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class GroupSettingActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(GroupSettingActivity.this);
+			CommonUtil.finish(GroupSettingActivity.this);
 			break;
 		case R.id.btn_exit_grp:
 			// deleteMembersFromGroup(hxid);
@@ -286,7 +286,7 @@ public class GroupSettingActivity extends BaseActivity implements
 							// 如果是删除自己，return
 						/*	if (EMChatManager.getDbManager().getCurrentUser()
 									.equals(userhid)) {
-								Utils.showLongToast(GroupSettingActivity.this,
+								CommonUtil.showLongToast(GroupSettingActivity.this,
 										"不能删除自己");
 								return;
 							}

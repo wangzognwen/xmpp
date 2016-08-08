@@ -131,13 +131,10 @@ public class TimeUtil {
     }
 
 
-    /**
-     * 获取格式化时间 yyyy-MM-dd HH:mm:ss
-     */
     @SuppressLint("SimpleDateFormat")
     public static String getRecentTime(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(date);
+        return getStandardDate(format.format(date));
     }
 
     /**

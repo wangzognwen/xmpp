@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.activity.ChatActivity;
 
 /**
  * 自定义的textview，用来处理复制粘贴的消息

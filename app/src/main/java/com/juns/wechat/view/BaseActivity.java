@@ -7,7 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dialog.FlippingLoadingDialog;
 
 public abstract class BaseActivity extends Activity {
@@ -36,7 +36,7 @@ public abstract class BaseActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Utils.finish(this);
+			CommonUtil.finish(this);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -71,7 +71,7 @@ public abstract class BaseActivity extends Activity {
 	 */
 	public void start_Activity(Activity activity, Class<?> cls,
 			BasicNameValuePair... name) {
-		Utils.start_Activity(activity, cls, name);
+		CommonUtil.startActivity(activity, cls, name);
 	}
 
 	/**
@@ -80,14 +80,14 @@ public abstract class BaseActivity extends Activity {
 	 * @param activity
 	 */
 	public void finish(Activity activity) {
-		Utils.finish(activity);
+		CommonUtil.finish(activity);
 	}
 
 	/**
 	 * 判断是否有网络连接
 	 */
 	public boolean isNetworkAvailable(Context context) {
-		return Utils.isNetworkAvailable(context);
+		return true;
 	}
 
 	public FlippingLoadingDialog getLoadingDialog(String msg) {

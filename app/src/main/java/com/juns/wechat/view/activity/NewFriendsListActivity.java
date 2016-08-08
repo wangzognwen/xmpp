@@ -13,10 +13,11 @@ import com.juns.wechat.adpter.NewFriendsAdapter;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.MessageBean;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ToolBarUtil;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class NewFriendsListActivity extends ToolbarActivity implements OnClickLi
         List<MessageBean> myReceivedInviteMessages =
                 MessageDao.getInstance().getMyReceivedInviteMessages(myselfName);
 
+        LogUtil.i("size: " + myReceivedInviteMessages.size());
+
 		lvNewFriends.setAdapter(new NewFriendsAdapter(this, myReceivedInviteMessages));
 	}
 
@@ -47,11 +50,11 @@ public class NewFriendsListActivity extends ToolbarActivity implements OnClickLi
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.tvRightText:
-			Utils.start_Activity(this, PublicActivity.class,
+			CommonUtil.startActivity(this, PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, "添加朋友"));
 			break;
 		case R.id.txt_search:
-			Utils.start_Activity(this, PublicActivity.class,
+			CommonUtil.startActivity(this, PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, "搜索"));
 			break;
 		default:

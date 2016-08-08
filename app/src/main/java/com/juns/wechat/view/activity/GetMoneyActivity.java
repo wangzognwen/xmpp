@@ -15,7 +15,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //收钱
@@ -34,7 +34,7 @@ public class GetMoneyActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(GetMoneyActivity.this);
+			CommonUtil.finish(GetMoneyActivity.this);
 			break;
 
 		default:
@@ -62,7 +62,7 @@ public class GetMoneyActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void initData() {
-		String id = Utils.getValue(this, Constants.User_ID);
+		String id = null;
 		Bitmap qrcode = generateQRCode("JUNS_WeChat@getMoney:" + id + ",188");
 		ImageView imageView = (ImageView) findViewById(R.id.img_code);
 		imageView.setImageBitmap(qrcode);

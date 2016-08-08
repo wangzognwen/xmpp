@@ -2,19 +2,16 @@ package com.juns.wechat.xmpp.process;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.juns.wechat.R;
 import com.juns.wechat.bean.MessageBean;
-import com.juns.wechat.chat.ChatActivity;
+import com.juns.wechat.activity.ChatActivity;
 import com.juns.wechat.dao.MessageDao;
+import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.prompt.NoticePrompt;
 import com.juns.wechat.xmpp.prompt.SoundPrompt;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /*******************************************************
  * Created by 王宗文 on 2015/11/27
@@ -57,7 +54,8 @@ public abstract class MessageProcess {
     }
 
     protected final boolean isMsgExist(String packetId){
-        boolean isMsgExist = messageDao.findByPacketId(packetId) != null;
+        String myselfName = AccountManager.getInstance().getUserName();
+        boolean isMsgExist = messageDao.findByPacketId(myselfName, packetId) != null;
         LogUtil.i("isMsgExist:"  + isMsgExist);
         return isMsgExist;
     }

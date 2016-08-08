@@ -1,0 +1,973 @@
+package com.juns.wechat.activity;
+
+import java.io.File;
+import java.util.List;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.text.ClipboardManager;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.juns.wechat.Constants;
+import com.juns.wechat.R;
+import com.juns.wechat.adpter.ChatAdapter;
+import com.juns.wechat.annotation.Content;
+import com.juns.wechat.annotation.Extra;
+import com.juns.wechat.annotation.Id;
+import com.juns.wechat.bean.FriendBean;
+import com.juns.wechat.bean.MessageBean;
+import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.chat.AlertDialog;
+import com.juns.wechat.chat.BaiduMapActivity;
+import com.juns.wechat.chat.adpter.MessageAdapter;
+import com.juns.wechat.chat.adpter.VoicePlayClickListener;
+import com.juns.wechat.chat.utils.CommonUtils;
+import com.juns.wechat.common.ToolbarActivity;
+import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.dao.FriendDao;
+import com.juns.wechat.dao.MessageDao;
+import com.juns.wechat.exception.UserNotFoundException;
+import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.manager.MessageManager;
+import com.juns.wechat.util.ToolBarUtil;
+
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
+//聊天页面
+@Content(R.layout.activity_chat)
+public class ChatActivity extends ToolbarActivity implements OnClickListener {
+    public static final String ARG_USER_NAME = "user_name";
+
+	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
+	private static final int REQUEST_CODE_MAP = 4;
+	public static final int REQUEST_CODE_COPY_AND_PASTE = 11;
+	public static final int REQUEST_CODE_CAMERA = 18;
+	public static final int REQUEST_CODE_LOCAL = 19;
+	public static final int REQUEST_CODE_SELECT_FILE = 24;
+
+	public static final int RESULT_CODE_COPY = 1;
+	public static final int RESULT_CODE_DELETE = 2;
+	public static final int RESULT_CODE_FORWARD = 3;
+	public static final int RESULT_CODE_OPEN = 4;
+	public static final int RESULT_CODE_DWONLOAD = 5;
+	public static final int RESULT_CODE_TO_CLOUD = 6;
+	public static final int RESULT_CODE_EXIT_GROUP = 7;
+
+	public static final int CHATTYPE_SINGLE = 1;
+
+	public static final String COPY_IMAGE = "EASEMOBIMG";
+
+    private static final int SIZE = 10;
+
+
+	private ClipboardManager clipboard;
+
+	private InputMethodManager manager;
+
+	private Drawable[] micImages;
+	private int chatType;
+
+	public static ChatActivity activityInstance = null;
+
+	//private VoiceRecorder voiceRecorder;
+	private MessageAdapter adapter;
+	private File cameraFile;
+	static int resendPos;
+
+	public String playMsgId;
+
+    @Id
+    private PtrClassicFrameLayout ptRefresh; //下拉刷新控件
+    @Id
+    private ListView lvMessages;
+    @Extra(name = ARG_USER_NAME)
+    private String contactName;
+
+    private ChatInputManager chatInputManager;
+    private ChatAdapter mAdapter;
+    private ChatActivityHelper chatActivityHelper;
+
+    private UserBean account = AccountManager.getInstance().getUser();
+    private MessageManager messageManager = new MessageManager(contactName);
+    private FriendBean friendBean;
+    private UserBean contactUser;
+
+    private List<MessageBean> messageBeen;
+    private Handler mHandler = new Handler();
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+        ToolBarUtil.setToolBar(this);
+		initData();
+		setUpView();
+		setListener();
+	}
+
+	/**
+	 * initData
+	 */
+	private void initData() {
+        friendBean = FriendDao.getInstance().findByOwnerAndContactName(account.getUserName(), contactName);
+        try {
+            contactUser = friendBean.getContactUser();
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+            finish();
+            return;
+        }
+        ToolBarUtil.setTitle(this, friendBean.getShowName());
+        ToolBarUtil.setToolbarRightImage(this, R.drawable.icon_single_setting);
+        chatInputManager = new ChatInputManager(this);
+        chatInputManager.onCreate();
+        chatActivityHelper = new ChatActivityHelper(this);
+        chatActivityHelper.onCreate();
+
+        ptRefresh.setLastUpdateTimeKey(contactUser.getUserName());
+        mAdapter = new ChatAdapter(this);
+        lvMessages.setAdapter(mAdapter);
+
+
+        ptRefresh.setPtrHandler(new PtrDefaultHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                int queryIndex = chatActivityHelper.getQueryIndex();
+                if (queryIndex < 0) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ptRefresh.refreshComplete();
+                        }
+                    });
+
+                } else {
+                    chatActivityHelper.loadMessagesFromDb();
+                }
+            }
+        });
+
+
+		// 初始化表情viewpager
+		//voiceRecorder = new VoiceRecorder(micImageHandler);
+
+	}
+
+	private void setUpView() {
+		activityInstance = this;
+
+		// position = getIntent().getIntExtra("position", -1);
+		clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+		// 判断单聊还是群聊
+		chatType = getIntent().getIntExtra(Constants.TYPE, CHATTYPE_SINGLE);
+;
+		//img_right.setVisibility(View.VISIBLE);
+		if (chatType == CHATTYPE_SINGLE) { // 单聊
+
+		} else {
+			// 群聊
+			findViewById(R.id.view_location_video).setVisibility(View.GONE);;
+			//img_right.setImageResource(R.drawable.icon_groupinfo);
+		}
+		//conversation = EMChatManager.getDbManager().getConversation(
+				//toChatUsername);
+		// 把此会话的未读数置为0
+		//conversation.resetUnreadMsgCount();
+		adapter = new MessageAdapter(this, contactName, chatType);
+		// 显示消息
+		lvMessages.setAdapter(adapter);
+
+		// 注册接收消息广播
+
+		/*IntentFilter intentFilter = new IntentFilter(EMChatManager
+				.getDbManager().getNewMessageBroadcastAction());
+		// 设置广播的优先级别大于Mainacitivity,这样如果消息来的时候正好在chat页面，直接显示消息，而不是提示消息未读
+		intentFilter.setPriority(5);
+		registerReceiver(receiver, intentFilter);
+
+		// 注册一个ack回执消息的BroadcastReceiver
+		IntentFilter ackMessageIntentFilter = new IntentFilter(EMChatManager
+				.getDbManager().getAckMessageBroadcastAction());
+		ackMessageIntentFilter.setPriority(5);
+		registerReceiver(ackMessageReceiver, ackMessageIntentFilter);
+
+		// 注册一个消息送达的BroadcastReceiver
+		IntentFilter deliveryAckMessageIntentFilter = new IntentFilter(
+				EMChatManager.getDbManager()
+						.getDeliveryAckMessageBroadcastAction());
+		deliveryAckMessageIntentFilter.setPriority(5);
+		registerReceiver(deliveryAckMessageReceiver,
+				deliveryAckMessageIntentFilter);
+
+		// 监听当前会话的群聊解散被T事件
+		groupListener = new GroupListener();
+		EMGroupManager.getDbManager().addGroupChangeListener(groupListener);*/
+
+		// show forward message if the message is not null
+		String forward_msg_id = getIntent().getStringExtra("forward_msg_id");
+		if (forward_msg_id != null) {
+			// 显示发送要转发的消息
+			forwardMessage(forward_msg_id);
+		}
+
+	}
+
+	protected void setListener() {
+		findViewById(R.id.view_camera).setOnClickListener(this);
+		findViewById(R.id.view_file).setOnClickListener(this);
+		findViewById(R.id.view_video).setOnClickListener(this);
+		findViewById(R.id.view_photo).setOnClickListener(this);
+		findViewById(R.id.view_location).setOnClickListener(this);
+		findViewById(R.id.view_audio).setOnClickListener(this);
+	}
+
+	/**
+	 * onActivityResult
+	 */
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+        findViewById(R.id.ll_more_function_container).setVisibility(View.GONE);
+		lvMessages.setSelection(lvMessages.getCount());
+		if (resultCode == RESULT_CODE_EXIT_GROUP) {
+			setResult(RESULT_OK);
+			finish();
+			return;
+		}
+		/*if (requestCode == REQUEST_CODE_CONTEXT_MENU) {
+			switch (resultCode) {
+			case RESULT_CODE_COPY: // 复制消息
+				EMMessage copyMsg = ((EMMessage) adapter.getItem(data
+						.getIntExtra("position", -1)));
+				// clipboard.setText(SmileUtils.getSmiledText(ChatActivity.this,
+				// ((TextMessageBody) copyMsg.getBody()).getMessage()));
+				clipboard.setText(((TextMessageBody) copyMsg.getBody())
+						.getMessage());
+				break;
+			case RESULT_CODE_DELETE: // 删除消息
+				EMMessage deleteMsg = (EMMessage) adapter.getItem(data
+						.getIntExtra("position", -1));
+				conversation.removeMessage(deleteMsg.getMsgId());
+				adapter.refresh();
+				listView.setSelection(data.getIntExtra("position",
+						adapter.getCount()) - 1);
+				break;
+
+			case RESULT_CODE_FORWARD: // 转发消息
+				// EMMessage forwardMsg = (EMMessage) adapter.getItem(data
+				// .getIntExtra("position", 0));
+				// Intent intent = new Intent(this,
+				// ForwardMessageActivity.class);
+				// intent.putExtra("forward_msg_id", forwardMsg.getMsgId());
+				// startActivity(intent);
+
+				break;
+
+			default:
+				break;
+			}
+		}
+		if (resultCode == RESULT_OK) { // 清空消息
+			if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {
+				// 清空会话
+				EMChatManager.getDbManager().clearConversation(toChatUsername);
+				adapter.refresh();
+			} else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
+				if (cameraFile != null && cameraFile.exists())
+					sendPicture(cameraFile.getAbsolutePath());
+			} else if (requestCode == REQUEST_CODE_SELECT_VIDEO) { // 发送本地选择的视频
+
+				int duration = data.getIntExtra("dur", 0);
+				String videoPath = data.getStringExtra("path");
+				File file = new File(PathUtil.getDbManager().getImagePath(),
+						"thvideo" + System.currentTimeMillis());
+				Bitmap bitmap = null;
+				FileOutputStream fos = null;
+				try {
+					if (!file.getParentFile().exists()) {
+						file.getParentFile().mkdirs();
+					}
+					bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, 3);
+					if (bitmap == null) {
+						EMLog.d("chatactivity",
+								"problem load video thumbnail bitmap,use default icon");
+						bitmap = BitmapFactory.decodeResource(getResources(),
+								R.drawable.app_panel_video_icon);
+					}
+					fos = new FileOutputStream(file);
+
+					bitmap.compress(CompressFormat.JPEG, 100, fos);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if (fos != null) {
+						try {
+							fos.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						fos = null;
+					}
+					if (bitmap != null) {
+						bitmap.recycle();
+						bitmap = null;
+					}
+
+				}
+				sendVideo(videoPath, file.getAbsolutePath(), duration / 1000);
+
+			} else if (requestCode == REQUEST_CODE_LOCAL) { // 发送本地图片
+				if (data != null) {
+					Uri selectedImage = data.getData();
+					if (selectedImage != null) {
+						sendPicByUri(selectedImage);
+					}
+				}
+			} else if (requestCode == REQUEST_CODE_SELECT_FILE) { // 发送选择的文件
+				if (data != null) {
+					Uri uri = data.getData();
+					if (uri != null) {
+						sendFile(uri);
+					}
+				}
+
+			} else if (requestCode == REQUEST_CODE_MAP) { // 地图
+				double latitude = data.getDoubleExtra("latitude", 0);
+				double longitude = data.getDoubleExtra("longitude", 0);
+				String locationAddress = data.getStringExtra("address");
+				if (locationAddress != null && !locationAddress.equals("")) {
+					more(more);
+					sendLocationMsg(latitude, longitude, "", locationAddress);
+				} else {
+					String st = getResources().getString(
+							R.string.unable_to_get_loaction);
+					Toast.makeText(this, st, 0).show();
+				}
+				// 重发消息
+			} else if (requestCode == REQUEST_CODE_TEXT
+					|| requestCode == REQUEST_CODE_VOICE
+					|| requestCode == REQUEST_CODE_PICTURE
+					|| requestCode == REQUEST_CODE_LOCATION
+					|| requestCode == REQUEST_CODE_VIDEO
+					|| requestCode == REQUEST_CODE_FILE) {
+				resendMessage();
+			} else if (requestCode == REQUEST_CODE_COPY_AND_PASTE) {
+				// 粘贴
+				if (!TextUtils.isEmpty(clipboard.getText())) {
+					String pasteText = clipboard.getText().toString();
+					if (pasteText.startsWith(COPY_IMAGE)) {
+						// 把图片前缀去掉，还原成正常的path
+						sendPicture(pasteText.replace(COPY_IMAGE, ""));
+					}
+
+				}
+			} else if (requestCode == REQUEST_CODE_ADD_TO_BLACKLIST) { // 移入黑名单
+				EMMessage deleteMsg = (EMMessage) adapter.getItem(data
+						.getIntExtra("position", -1));
+				addUserToBlacklist(deleteMsg.getFrom());
+			} else if (conversation.getMsgCount() > 0) {
+				adapter.refresh();
+				setResult(RESULT_OK);
+			} else if (requestCode == REQUEST_CODE_GROUP_DETAIL) {
+				adapter.refresh();
+			}
+		}*/
+	}
+
+    public String getContactName(){
+        return contactName;
+    }
+
+    public UserBean getContactUser(){
+        return contactUser;
+    }
+
+    public void refreshComplete(){
+        ptRefresh.refreshComplete();
+    }
+
+
+	/**
+	 * 消息图标点击事件
+	 * 
+	 * @param view
+	 */
+	@Override
+	public void onClick(View view) {
+		int id = view.getId();
+		switch (id) {
+		case R.id.img_back:
+			CommonUtil.finish(ChatActivity.this);
+			break;
+		case R.id.img_right:
+
+			break;
+		case R.id.view_camera:
+			selectPicFromCamera();// 点击照相图标
+			break;
+		case R.id.view_file:
+			// 发送文件
+			selectFileFromLocal();
+			break;
+		case R.id.view_video:
+			// 视频通话
+			/*if (!EMChatManager.getDbManager().isConnected())
+				Toast.makeText(this, Constants.NET_ERROR, 0).show();
+			else
+				startActivity(new Intent(this, VideoCallActivity.class)
+						.putExtra("username", toChatUsername).putExtra(
+								"isComingCall", false));*/
+			break;
+		case R.id.view_photo:
+			selectPicFromLocal(); // 点击图片图标
+			break;
+		case R.id.view_location:
+			// TODO 位置
+			startActivityForResult(new Intent(this, BaiduMapActivity.class),
+					REQUEST_CODE_MAP);
+			break;
+		case R.id.view_audio:
+			// 语音通话
+		/*	if (!EMChatManager.getDbManager().isConnected())
+				Toast.makeText(this, Constants.NET_ERROR, 0).show();
+			else
+				startActivity(new Intent(ChatActivity.this,
+						VoiceCallActivity.class).putExtra("username",
+						toChatUsername).putExtra("isComingCall", false));*/
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 照相获取图片
+	 */
+	public void selectPicFromCamera() {
+		if (!CommonUtils.isExitsSdcard()) {
+			String st = getResources().getString(
+					R.string.sd_card_does_not_exist);
+			//Toast.makeText(getApplicationContext(), st, 0).show();
+			return;
+		}
+
+		/*cameraFile = new File(PathUtil.getDbManager().getImagePath(), "Walk"
+				+ System.currentTimeMillis() + ".jpg");*/
+		cameraFile.getParentFile().mkdirs();
+		startActivityForResult(
+				new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(
+						MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
+				REQUEST_CODE_CAMERA);
+	}
+
+	/**
+	 * 选择文件
+	 */
+	private void selectFileFromLocal() {
+		Intent intent = null;
+		if (Build.VERSION.SDK_INT < 19) {
+			intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("*/*");
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+		} else {
+			intent = new Intent(
+					Intent.ACTION_PICK,
+					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		}
+		startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
+	}
+
+	/**
+	 * 从图库获取图片
+	 */
+	public void selectPicFromLocal() {
+		Intent intent;
+		if (Build.VERSION.SDK_INT < 19) {
+			intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.setType("image/*");
+
+		} else {
+			intent = new Intent(
+					Intent.ACTION_PICK,
+					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		}
+		startActivityForResult(intent, REQUEST_CODE_LOCAL);
+	}
+
+	/**
+	 * 发送文本消息
+	 * 
+	 * @param content
+	 *            message content
+	 *            boolean resend
+	 */
+	public void sendText(String content) {
+
+		if (content.length() > 0) {
+		/*	EMMessage message = EMMessage.createSendMessage(EMMessage.Type.TXT);
+			// 如果是群聊，设置chattype,默认是单聊
+			if (chatType == CHATTYPE_GROUP)
+				message.setChatType(ChatType.GroupChat);
+			TextMessageBody txtBody = new TextMessageBody(content);
+			// 设置消息body
+			message.addBody(txtBody);
+			// 设置要发给谁,用户username或者群聊groupid
+			message.setReceipt(toChatUsername);
+			// 把messgage加到conversation中
+			conversation.addMessage(message);*/
+			// 通知adapter有消息变动，adapter会根据加入的这条message显示消息和调用sdk的发送方法
+			adapter.refresh();
+			//listView.setSelection(listView.getCount() - 1);
+			//mEditTextContent.setText("");
+
+			setResult(RESULT_OK);
+
+		}
+	}
+
+	/**
+	 * 发送语音
+	 * 
+	 * @param filePath
+	 * @param fileName
+	 * @param length
+	 * @param isResend
+	 */
+	private void sendVoice(String filePath, String fileName, String length,
+			boolean isResend) {
+		if (!(new File(filePath).exists())) {
+			return;
+		}
+		try {
+		/*	final EMMessage message = EMMessage
+					.createSendMessage(EMMessage.Type.VOICE);
+			// 如果是群聊，设置chattype,默认是单聊
+			if (chatType == CHATTYPE_GROUP)
+				message.setChatType(ChatType.GroupChat);
+			message.setReceipt(toChatUsername);
+			int len = Integer.parseInt(length);
+			VoiceMessageBody body = new VoiceMessageBody(new File(filePath),
+					len);
+			message.addBody(body);
+
+			conversation.addMessage(message);*/
+			adapter.refresh();
+			//listView.setSelection(listView.getCount() - 1);
+			setResult(RESULT_OK);
+			// send file
+			// sendVoiceSub(filePath, fileName, message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 发送图片
+	 * 
+	 * @param filePath
+	 */
+	private void sendPicture(final String filePath) {
+
+		// create and insertOrUpdate image message in view
+		/*final EMMessage message = EMMessage
+				.createSendMessage(EMMessage.Type.IMAGE);
+		// 如果是群聊，设置chattype,默认是单聊
+		if (chatType == CHATTYPE_GROUP)
+			message.setChatType(ChatType.GroupChat);
+
+		message.setReceipt(to);
+		ImageMessageBody body = new ImageMessageBody(new File(filePath));
+		// 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
+		// body.setSendOriginalImage(true);
+		message.addBody(body);
+		conversation.addMessage(message);*/
+
+		//listView.setAdapter(adapter);
+		adapter.refresh();
+		//listView.setSelection(listView.getCount() - 1);
+		setResult(RESULT_OK);
+		// more(more);
+	}
+
+	/**
+	 * 发送视频消息
+	 */
+	private void sendVideo(final String filePath, final String thumbPath,
+			final int length) {
+		final File videoFile = new File(filePath);
+		if (!videoFile.exists()) {
+			return;
+		}
+		try {
+		/*	EMMessage message = EMMessage
+					.createSendMessage(EMMessage.Type.VIDEO);
+			// 如果是群聊，设置chattype,默认是单聊
+			if (chatType == CHATTYPE_GROUP)
+				message.setChatType(ChatType.GroupChat);
+			String to = toChatUsername;
+			message.setReceipt(to);
+			VideoMessageBody body = new VideoMessageBody(videoFile, thumbPath,
+					length, videoFile.length());
+			message.addBody(body);
+			conversation.addMessage(message);*/
+			//listView.setAdapter(adapter);
+			adapter.refresh();
+			//listView.setSelection(listView.getCount() - 1);
+			setResult(RESULT_OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * 根据图库图片uri发送图片
+	 * 
+	 * @param selectedImage
+	 */
+	private void sendPicByUri(Uri selectedImage) {
+		// String[] filePathColumn = { MediaStore.Images.Media.DATA };
+		Cursor cursor = getContentResolver().query(selectedImage, null, null,
+				null, null);
+		String st8 = getResources().getString(R.string.cant_find_pictures);
+		if (cursor != null) {
+			cursor.moveToFirst();
+			int columnIndex = cursor.getColumnIndex("_data");
+			String picturePath = cursor.getString(columnIndex);
+			cursor.close();
+			cursor = null;
+
+			if (picturePath == null || picturePath.equals("null")) {
+				Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				return;
+			}
+			sendPicture(picturePath);
+		} else {
+			File file = new File(selectedImage.getPath());
+			if (!file.exists()) {
+				Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				return;
+
+			}
+			sendPicture(file.getAbsolutePath());
+		}
+
+	}
+
+	/**
+	 * 发送位置信息
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @param imagePath
+	 * @param locationAddress
+	 */
+	private void sendLocationMsg(double latitude, double longitude,
+			String imagePath, String locationAddress) {
+		/*EMMessage message = EMMessage
+				.createSendMessage(EMMessage.Type.LOCATION);
+		// 如果是群聊，设置chattype,默认是单聊
+		if (chatType == CHATTYPE_GROUP)
+			message.setChatType(ChatType.GroupChat);
+		LocationMessageBody locBody = new LocationMessageBody(locationAddress,
+				latitude, longitude);
+		message.addBody(locBody);
+		message.setReceipt(toChatUsername);
+		conversation.addMessage(message);*/
+		//listView.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
+		//listView.setSelection(listView.getCount() - 1);
+		setResult(RESULT_OK);
+
+	}
+
+	/**
+	 * 发送文件
+	 * 
+	 * @param uri
+	 */
+	private void sendFile(Uri uri) {
+		String filePath = null;
+		if ("content".equalsIgnoreCase(uri.getScheme())) {
+			String[] projection = { "_data" };
+			Cursor cursor = null;
+
+			try {
+				cursor = getContentResolver().query(uri, projection, null,
+						null, null);
+				int column_index = cursor.getColumnIndexOrThrow("_data");
+				if (cursor.moveToFirst()) {
+					filePath = cursor.getString(column_index);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			filePath = uri.getPath();
+		}
+		File file = new File(filePath);
+		/*if (file == null || !file.exists()) {
+			String st7 = getResources().getString(R.string.File_does_not_exist);
+			Toast.makeText(getApplicationContext(), st7, 0).show();
+			return;
+		}
+		if (file.length() > 10 * 1024 * 1024) {
+			String st6 = getResources().getString(
+					R.string.The_file_is_not_greater_than_10_m);
+			Toast.makeText(getApplicationContext(), st6, 0).show();
+			return;
+		}*/
+
+	/*	// 创建一个文件消息
+		EMMessage message = EMMessage.createSendMessage(EMMessage.Type.FILE);
+		// 如果是群聊，设置chattype,默认是单聊
+		if (chatType == CHATTYPE_GROUP)
+			message.setChatType(ChatType.GroupChat);
+
+		message.setReceipt(toChatUsername);
+		// insertOrUpdate message body
+		NormalFileMessageBody body = new NormalFileMessageBody(new File(
+				filePath));
+		message.addBody(body);
+		conversation.addMessage(message);*/
+		//listView.setAdapter(adapter);
+		adapter.refresh();
+		//listView.setSelection(listView.getCount() - 1);
+		setResult(RESULT_OK);
+	}
+
+
+	/**
+	 * 点击清空聊天记录
+	 * 
+	 * @param view
+	 */
+	public void emptyHistory(View view) {
+		String st5 = getResources().getString(
+				R.string.Whether_to_empty_all_chats);
+		startActivityForResult(
+				new Intent(this, AlertDialog.class)
+						.putExtra("titleIsCancel", true).putExtra("msg", st5)
+						.putExtra("cancel", true), REQUEST_CODE_EMPTY_HISTORY);
+	}
+
+	/**
+	 * 点击进入群组详情
+	 * 
+	 * @param view
+	 */
+	public void toGroupDetails(View view) {
+		// startActivityForResult(
+		// (new Intent(this, GroupDeatilActivity.class).putExtra(
+		// "groupId", toChatUsername)), REQUEST_CODE_GROUP_DETAIL);
+	}
+
+	/**
+	 * 消息回执BroadcastReceiver
+	 */
+	private BroadcastReceiver ackMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			abortBroadcast();
+
+			String msgid = intent.getStringExtra("msgid");
+			String from = intent.getStringExtra("from");
+		/*	EMConversation conversation = EMChatManager.getDbManager()
+					.getConversation(from);
+			if (conversation != null) {
+				// 把message设为已读
+				EMMessage msg = conversation.getMessage(msgid);
+				if (msg != null) {
+					msg.isAcked = true;
+				}
+			}*/
+			adapter.notifyDataSetChanged();
+
+		}
+	};
+
+	/**
+	 * 消息送达BroadcastReceiver
+	 */
+	private BroadcastReceiver deliveryAckMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			abortBroadcast();
+
+			String msgid = intent.getStringExtra("msgid");
+			String from = intent.getStringExtra("from");
+		/*	EMConversation conversation = EMChatManager.getDbManager()
+					.getConversation(from);
+			if (conversation != null) {
+				// 把message设为已读
+				EMMessage msg = conversation.getMessage(msgid);
+				if (msg != null) {
+					msg.isDelivered = true;
+				}
+			}*/
+
+			adapter.notifyDataSetChanged();
+		}
+	};
+
+
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+        chatInputManager.onDestroy();
+
+		activityInstance = null;
+
+		try {
+			unregisterReceiver(ackMessageReceiver);
+			ackMessageReceiver = null;
+			unregisterReceiver(deliveryAckMessageReceiver);
+			deliveryAckMessageReceiver = null;
+		} catch (Exception e) {
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (VoicePlayClickListener.isPlaying
+				&& VoicePlayClickListener.currentPlayListener != null) {
+			// 停止语音播放
+			VoicePlayClickListener.currentPlayListener.stopPlayVoice();
+		}
+
+		try {
+			// 停止录音
+		/*	if (voiceRecorder.isRecording()) {
+				voiceRecorder.discardRecording();
+				recordingContainer.setVisibility(View.INVISIBLE);
+			}*/
+		} catch (Exception e) {
+		}
+	}
+
+	/**
+	 * 隐藏软键盘
+	 */
+	private void hideKeyboard() {
+		if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+			if (getCurrentFocus() != null)
+				manager.hideSoftInputFromWindow(getCurrentFocus()
+						.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		}
+	}
+
+
+
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// 点击notification bar进入聊天页面，保证只有一个聊天页面
+		String username = intent.getStringExtra("userId");
+
+
+	}
+
+	/**
+	 * 转发消息
+	 * 
+	 * @param forward_msg_id
+	 */
+	protected void forwardMessage(String forward_msg_id) {
+		/*EMMessage forward_msg = EMChatManager.getDbManager().getMessage(
+				forward_msg_id);
+		EMMessage.Type type = forward_msg.getType();
+		switch (type) {
+		case TXT:
+			// 获取消息内容，发送消息
+			String content = ((TextMessageBody) forward_msg.getBody())
+					.getMessage();
+			sendText(content);
+			break;
+		case IMAGE:
+			// 发送图片
+			String filePath = ((ImageMessageBody) forward_msg.getBody())
+					.getLocalUrl();
+			if (filePath != null) {
+				File file = new File(filePath);
+				if (!file.exists()) {
+					// 不存在大图发送缩略图
+					filePath = ImageUtils.getThumbnailImagePath(filePath);
+				}
+				sendPicture(filePath);
+			}
+			break;
+		default:
+			break;
+		}*/
+	}
+
+	/**
+	 * 监测群组解散或者被T事件
+	 * 
+	 */
+	/*class GroupListener extends GroupReomveListener {
+
+		@Override
+		public void onUserRemoved(final String groupId, String groupName) {
+			runOnUiThread(new Runnable() {
+				String st13 = getResources().getString(R.string.you_are_group);
+
+				public void run() {
+					if (toChatUsername.equals(groupId)) {
+						Toast.makeText(ChatActivity.this, st13, 1).show();
+						// if (GroupDeatilActivity.instance != null)
+						// GroupDeatilActivity.instance.finish();
+						// finish();
+					}
+				}
+			});
+		}
+
+		@Override
+		public void onGroupDestroy(final String groupId, String groupName) {
+			// 群组解散正好在此页面，提示群组被解散，并finish此页面
+			runOnUiThread(new Runnable() {
+				String st14 = getResources().getString(
+						R.string.the_current_group);
+
+				public void run() {
+					if (toChatUsername.equals(groupId)) {
+						Toast.makeText(ChatActivity.this, st14, 1).show();
+						// if (GroupDeatilActivity.instance != null)
+						// GroupDeatilActivity.instance.finish();
+						// finish();
+					}
+				}
+			});
+		}
+
+	}
+*/
+
+
+}

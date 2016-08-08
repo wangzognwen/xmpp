@@ -1,5 +1,6 @@
 package com.juns.wechat.chat.utils;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -159,6 +160,19 @@ public class SmileUtils {
 		map.put(Pattern.compile(Pattern.quote(smile)), resource);
 	}
 
+    public static String getFieldValue(String fieldName){
+        try {
+            Field field = SmileUtils.class.getField(fieldName);
+            return (String) field.get(null);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 	/**
 	 * replace existing spannable with smiles
 	 * 
@@ -196,7 +210,8 @@ public class SmileUtils {
 		return hasChanges;
 	}
 
-	public static Spannable getSmiledText(Context context, CharSequence text) {
+	public static Spannable getSmiledText(Context context, String sequence) {
+        String text = getFieldValue(sequence);
 		Spannable spannable = spannableFactory.newSpannable(text);
 		addSmiles(context, spannable);
 		return spannable;

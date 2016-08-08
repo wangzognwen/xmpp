@@ -1,5 +1,7 @@
 package com.juns.wechat.bean;
 
+import android.database.Cursor;
+
 import com.juns.wechat.bean.chat.Msg;
 import com.juns.wechat.database.ChatTable;
 
@@ -54,10 +56,14 @@ public class MessageBean{
 
     public MessageBean() { }
 
+
     public String toSendJson(){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(MSG, msg);
+            if(msgObj == null){
+                msgObj = Msg.fromJson(msg, type);
+            }
+            jsonObject.put(MSG, msgObj.toSendJsonObject());
             jsonObject.put(TYPE, type);
             jsonObject.put(TYPE_DESC, typeDesc);
         } catch (JSONException e) {
@@ -174,6 +180,9 @@ public class MessageBean{
     }
 
     public Msg getMsgObj() {
+        if(msgObj == null){
+            msgObj = Msg.fromJson(msg, type);
+        }
         return msgObj;
     }
 

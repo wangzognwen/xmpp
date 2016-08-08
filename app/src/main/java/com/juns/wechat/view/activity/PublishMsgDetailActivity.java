@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.PublishMsgDetailAdpter;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 
 //订阅号信息详情
@@ -71,7 +71,7 @@ public class PublishMsgDetailActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(PublishMsgDetailActivity.this);
+			CommonUtil.finish(PublishMsgDetailActivity.this);
 			break;
 		case R.id.img_right:
 			break;

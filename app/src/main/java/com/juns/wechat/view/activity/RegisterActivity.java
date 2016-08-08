@@ -16,7 +16,7 @@ import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.response.BaseResponse;
@@ -73,7 +73,7 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(RegisterActivity.this);
+			CommonUtil.finish(RegisterActivity.this);
 			break;
 		case R.id.btn_send:
 			if (mc == null) {
@@ -93,16 +93,16 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 		userName = etInputName.getText().toString().trim();
 		passWord = etPassword.getText().toString();
 		String code = et_code.getText().toString();
-		if (!Utils.isMobileNO(userName)) {
-			Utils.showLongToast(RegisterActivity.this, "请使用手机号码注册账户！ ");
+		if (!CommonUtil.isMobileNO(userName)) {
+			CommonUtil.showLongToast(RegisterActivity.this, "请使用手机号码注册账户！ ");
 			return;
 		}
 		if (TextUtils.isEmpty(code)) {
-			Utils.showLongToast(RegisterActivity.this, "请填写手机号码，并获取验证码！");
+			CommonUtil.showLongToast(RegisterActivity.this, "请填写手机号码，并获取验证码！");
 			return;
 		}
 		if (TextUtils.isEmpty(passWord) || passWord.length() < 6) {
-			Utils.showLongToast(RegisterActivity.this, "密码不能少于6位！");
+			CommonUtil.showLongToast(RegisterActivity.this, "密码不能少于6位！");
 			return;
 		}
 		getLoadingDialog("正在注册...  ").show();
@@ -159,8 +159,8 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
         protected void handleSuccess(BaseResponse.LoginResponse result) {
             super.handleSuccess(result);
             AccountManager.getInstance().setUserPassWord(passWord);
-            Utils.start_Activity(RegisterActivity.this, MainActivity.class);
-            Utils.finish(RegisterActivity.this);
+            CommonUtil.startActivity(RegisterActivity.this, MainActivity.class);
+            CommonUtil.finish(RegisterActivity.this);
         }
 
         @Override
@@ -195,7 +195,7 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 				int count) {
 			String phone = etInputName.getText().toString();
 			if (phone.length() == 11) {
-				if (Utils.isMobileNO(phone)) {
+				if (CommonUtil.isMobileNO(phone)) {
 					btn_send.setBackgroundDrawable(getResources().getDrawable(
 							R.drawable.btn_bg_green));
 					btn_send.setTextColor(0xFFFFFFFF);

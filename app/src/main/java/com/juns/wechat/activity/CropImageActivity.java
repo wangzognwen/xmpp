@@ -11,8 +11,8 @@ import com.juns.wechat.annotation.Click;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Extra;
 import com.juns.wechat.annotation.Id;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
 import com.juns.wechat.net.callback.UpdateUserCallBack;
 import com.juns.wechat.net.request.UploadFileRequest;
 import com.juns.wechat.net.response.UpdateUserResponse;
@@ -67,7 +67,7 @@ public class CropImageActivity extends ToolbarActivity {
         @Override
         protected void handleSuccess(UpdateUserResponse result) {
             super.handleSuccess(result);
-            Utils.finish(CropImageActivity.this);
+            CommonUtil.finish(CropImageActivity.this);
         }
 
         @Override

@@ -1,47 +1,20 @@
 package com.juns.wechat.chat.adpter;
 
-import java.io.File;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
-import android.text.Spannable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
-import android.widget.Toast;
-
-import com.juns.wechat.R;
-import com.juns.wechat.chat.AlertDialog;
-import com.juns.wechat.chat.BaiduMapActivity;
-import com.juns.wechat.chat.ChatActivity;
-import com.juns.wechat.chat.ContextMenu;
-import com.juns.wechat.chat.ShowBigImage;
-import com.juns.wechat.chat.ShowNormalFileActivity;
-import com.juns.wechat.chat.task.LoadImageTask;
-import com.juns.wechat.chat.task.LoadVideoImageTask;
-import com.juns.wechat.chat.utils.Constant;
-import com.juns.wechat.chat.utils.ImageCache;
-import com.juns.wechat.chat.utils.ImageUtils;
-import com.juns.wechat.chat.utils.SmileUtils;
 
 public class MessageAdapter extends BaseAdapter {
 
@@ -203,8 +176,8 @@ public class MessageAdapter extends BaseAdapter {
 						.inflate(R.layout.row_received_video_call, null)
 						: inflater.inflate(R.layout.row_sent_video_call, null);
 			return message.direct == EMMessage.Direct.RECEIVE ? inflater
-					.inflate(R.layout.row_received_message, null) : inflater
-					.inflate(R.layout.row_sent_message, null);
+					.inflate(R.layout.chat_item_received_message, null) : inflater
+					.inflate(R.layout.chat_item_sent_message, null);
 		}
 	}*/
 

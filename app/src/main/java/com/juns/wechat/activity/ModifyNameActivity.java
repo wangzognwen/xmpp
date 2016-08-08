@@ -10,7 +10,7 @@ import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.UpdateUserCallBack;
@@ -50,7 +50,7 @@ public class ModifyNameActivity extends ToolbarActivity {
         @Override
         protected void handleSuccess(UpdateUserResponse result) {
             super.handleSuccess(result);
-            Utils.finish(ModifyNameActivity.this);
+            CommonUtil.finish(ModifyNameActivity.this);
         }
 
         @Override

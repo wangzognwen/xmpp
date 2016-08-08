@@ -18,8 +18,8 @@ import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.Utils;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.LoginCallBack;
@@ -72,10 +72,10 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(LoginActivity.this);
+			CommonUtil.finish(LoginActivity.this);
 			break;
 		case R.id.tv_wenti:
-			Utils.start_Activity(LoginActivity.this, WebViewActivity.class,
+			CommonUtil.startActivity(LoginActivity.this, WebViewActivity.class,
 					new BasicNameValuePair(Constants.Title, "帮助"),
 					new BasicNameValuePair(Constants.URL,
 							"http://weixin.qq.com/"));
@@ -117,8 +117,8 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
         protected void handleSuccess(BaseResponse.LoginResponse result) {
             super.handleSuccess(result);
             AccountManager.getInstance().setUserPassWord(password);
-            Utils.start_Activity(LoginActivity.this, MainActivity.class);
-            Utils.finish(LoginActivity.this);
+            CommonUtil.startActivity(LoginActivity.this, MainActivity.class);
+            CommonUtil.finish(LoginActivity.this);
         }
 
         @Override

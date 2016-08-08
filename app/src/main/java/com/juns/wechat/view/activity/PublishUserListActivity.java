@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.BaseActivity;
 import com.juns.wechat.widget.SideBar;
 
@@ -85,10 +85,10 @@ public class PublishUserListActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Utils.finish(PublishUserListActivity.this);
+			CommonUtil.finish(PublishUserListActivity.this);
 			break;
 		case R.id.img_right:
-			Utils.start_Activity(this, PublicActivity.class,
+			CommonUtil.startActivity(this, PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, "查找公众号"));
 			break;
 		default:

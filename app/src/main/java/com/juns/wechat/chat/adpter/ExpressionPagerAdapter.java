@@ -18,6 +18,7 @@ import java.util.List;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 
 public class ExpressionPagerAdapter extends PagerAdapter {
 
@@ -38,15 +39,14 @@ public class ExpressionPagerAdapter extends PagerAdapter {
 	}
 
 	@Override
-	public Object instantiateItem(View arg0, int arg1) {
-		((ViewPager) arg0).addView(views.get(arg1));
-		return views.get(arg1);
+	public Object instantiateItem(ViewGroup container, int position) {
+        container.addView(views.get(position));
+		return views.get(position);
 	}
 
 	@Override
-	public void destroyItem(View arg0, int arg1, Object arg2) {
-		((ViewPager) arg0).removeView(views.get(arg1));
-
+	public void destroyItem(ViewGroup container, int position, Object object) {
+		container.removeView(views.get(position));
 	}
 
 }

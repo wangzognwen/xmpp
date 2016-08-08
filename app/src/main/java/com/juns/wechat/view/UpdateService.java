@@ -1,7 +1,5 @@
 package com.juns.wechat.view;
 
-import java.util.List;
-
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,10 +9,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 
 import com.juns.wechat.Constants;
-import com.juns.wechat.GloableParams;
-import com.juns.wechat.bean.GroupInfo;
-import com.juns.wechat.bean.UserBean;
-import com.juns.wechat.common.Utils;
+import com.juns.wechat.common.CommonUtil;
 
 public class UpdateService extends Service {
 
@@ -30,19 +25,18 @@ public class UpdateService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		int RunCount = Utils.getIntValue(this, "RUN_COUNT");
+		int RunCount = 0;
 		if (RunCount % 10 == 0) {
 			initUserList();
 			initGroupList();
 
-			String str_contact = Utils.getValue(this, Constants.ContactMsg);
+			String str_contact = null;
 			PackageManager pm = getPackageManager();
 			boolean permission = (PackageManager.PERMISSION_GRANTED == pm
 					.checkPermission("android.permission.READ_CONTACTS",
 							"com.juns.wechat"));
 			if (TextUtils.isEmpty(str_contact) && permission) {
 				str_contact = getContact();
-				Utils.putValue(this, Constants.ContactMsg, str_contact);
 			}
 		}
 		return super.onStartCommand(intent, flags, startId);
@@ -97,7 +91,7 @@ public class UpdateService extends Service {
 							if (phoneNumber.startsWith("+186")) {
 								phoneNumber = phoneNumber.substring(4);
 							}
-							if (Utils.isMobileNO(phoneNumber)) {
+							if (CommonUtil.isMobileNO(phoneNumber)) {
 								strTelphones = strTelphones + "'" + phoneNumber
 										+ "',";
 								strNames = strNames + "',";

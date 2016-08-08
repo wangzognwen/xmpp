@@ -58,7 +58,7 @@
 
     <ListView
         android:headerDividersEnabled="false"
-        android:id="@+id/list"
+        android:id="@+id/lvMessages"
         android:footerDividersEnabled="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

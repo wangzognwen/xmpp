@@ -42,7 +42,7 @@ public class SyncDataUtil {
         });
     }
 
-    public static void syncUserData(){
+    private static void syncUserData(){
         String[] userNames = FriendDao.getInstance().getNotExistUsersInFriend(AccountManager.getInstance().getUserName());
         long lastModifyDate = UserDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
         UserRequest.syncUserData(userNames, lastModifyDate, new BaseCallBack<UserListResponse>() {
