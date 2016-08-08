@@ -13,6 +13,8 @@ import com.juns.wechat.util.SharedPreferencesUtil;
 import com.juns.wechat.view.activity.LoginActivity;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 
+import org.xutils.db.sqlite.WhereBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +42,8 @@ public class AccountManager {
 
     private void initUser(){
         String userName = getUserName();
-        Map<String, Object> params = new HashMap<>();
-        params.put(UserBean.USERNAME, userName);
-        user = userDao.findByParams(params);
+        WhereBuilder whereBuilder = WhereBuilder.b(UserBean.USERNAME, "=", userName);
+        user = userDao.findByParams(whereBuilder);
     }
 
     public void setUser(UserBean userBean){

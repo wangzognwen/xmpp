@@ -211,8 +211,7 @@ public class SmileUtils {
 	}
 
 	public static Spannable getSmiledText(Context context, String sequence) {
-        String text = getFieldValue(sequence);
-		Spannable spannable = spannableFactory.newSpannable(text);
+		Spannable spannable = spannableFactory.newSpannable(sequence);
 		addSmiles(context, spannable);
 		return spannable;
 	}

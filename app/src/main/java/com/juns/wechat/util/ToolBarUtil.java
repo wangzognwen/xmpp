@@ -99,7 +99,9 @@ public class ToolBarUtil {
         ImageView ivRightBtn = (ImageView) toolBar.findViewById(R.id.ivRightBtn);
 
         tvRightText.setVisibility(View.VISIBLE);
-        ivRightBtn.setVisibility(View.GONE);
+        if(ivRightBtn != null){ //comm_toolbar_btn layout中不存在这个控件
+            ivRightBtn.setVisibility(View.GONE);
+        }
         tvRightText.setText(text);
     }
 

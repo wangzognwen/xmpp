@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 
 import com.juns.wechat.Constants;
 import com.juns.wechat.R;
+import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.view.activity.AlbumActivity;
 import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.zxing.CaptureActivity;
 
-public class Fragment_Dicover extends Fragment implements OnClickListener {
+public class Fragment_Dicover extends BaseFragment implements OnClickListener {
 	// 发现
 	private Activity ctx;
 	private View layout;

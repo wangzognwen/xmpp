@@ -179,6 +179,7 @@ public class ChatInputManager implements View.OnClickListener{
         ivEmoticonsChecked.setOnClickListener(this);
         btnSetModeKeyBoard.setOnClickListener(this);
         btnSetModeVoice.setOnClickListener(this);
+        btnSend.setOnClickListener(this);
         btnMore.setOnClickListener(this);
 
         mChatActivity.findViewById(R.id.view_camera).setOnClickListener(this);
@@ -189,26 +190,13 @@ public class ChatInputManager implements View.OnClickListener{
         mChatActivity.findViewById(R.id.view_audio).setOnClickListener(this);
     }
 
-    /**
-     * 发送文本消息
-     *
-     * @param content
-     *            message content
-     *            boolean resend
-     */
-    public void sendText(String content) {
-        if (content.length() > 0) {
-            SendMessage.sendTextMsg(mChatActivity.getContactName(), content);
-        }
-    }
-
     public void onDestroy(){
         mChatActivity = null;
     }
 
     @Override
     public void onClick(View view) {
-        CommonUtil.hideKeyboard(mChatActivity);
+        String otherUserName = mChatActivity.getContactName();
         int id = view.getId();
         switch (id) {
             case R.id.view_camera:
@@ -236,6 +224,7 @@ public class ChatInputManager implements View.OnClickListener{
                 // 语音通话
                 break;
             case R.id.iv_emoticons_normal:
+                CommonUtil.hideKeyboard(mChatActivity);
                 // 点击显示表情框
                 llMore.setVisibility(View.VISIBLE);
                 ivEmoticonsNormal.setVisibility(View.INVISIBLE);
@@ -244,6 +233,7 @@ public class ChatInputManager implements View.OnClickListener{
                 llEmoticonContainer.setVisibility(View.VISIBLE);
                 break;
             case R.id.iv_emoticons_checked:// 点击隐藏表情框
+                CommonUtil.hideKeyboard(mChatActivity);
                 ivEmoticonsNormal.setVisibility(View.VISIBLE);
                 ivEmoticonsChecked.setVisibility(View.INVISIBLE);
                 llMoreFunctionContainer.setVisibility(View.VISIBLE);
@@ -261,10 +251,22 @@ public class ChatInputManager implements View.OnClickListener{
                 break;
             case R.id.btn_send:
                 // 点击发送按钮(发文字和表情)
-
+                sendText(otherUserName);
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 发送文本消息
+     * @param otherUserName
+     */
+    private void sendText(String otherUserName){
+        String content = etInputText.getText().toString();
+        if(!TextUtils.isEmpty(content)){
+            SendMessage.sendTextMsg(otherUserName, content);
+            etInputText.getText().clear();
         }
     }
 

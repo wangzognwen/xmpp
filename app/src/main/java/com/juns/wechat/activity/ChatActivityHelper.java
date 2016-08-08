@@ -1,15 +1,16 @@
 package com.juns.wechat.activity;
 
+import com.juns.wechat.bean.Flag;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
 import com.juns.wechat.bean.chat.viewmodel.TextMsgViewModel;
 import com.juns.wechat.config.MsgType;
+import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ThreadPoolUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,12 +29,12 @@ public class ChatActivityHelper {
 
     private UserBean account = AccountManager.getInstance().getUser();
 
-    private List<MsgViewModel> msgViewModels = new ArrayList<>();
-
 
     public ChatActivityHelper(ChatActivity chatActivity){
         this.chatActivity = chatActivity;
+        this.myselfName = account.getUserName();
         this.otherName = chatActivity.getContactName();
+        messageDao = MessageDao.getInstance();
     }
 
     public void onCreate(){
@@ -52,26 +53,40 @@ public class ChatActivityHelper {
 
     public void loadMessagesFromDb(){
         List<MessageBean> messageBeen = getMessagesByIndexAndSize();
-        chatActivity.refreshComplete();
-        if(messageBeen == null || messageBeen.isEmpty()) return;
+        if(messageBeen == null || messageBeen.isEmpty()) {
+            notifyActivityDataSetChanged();
+            return;
+        }
+
         mQueryIndex = mQueryIndex - messageBeen.size();
-        addEntityToViewModel(messageBeen);
+        if(mQueryIndex < 0){
+            mQueryIndex = 0;
+        }
+
+        List<MsgViewModel> msgViewModels = chatActivity.getMsgViewModels();
+        addEntityToViewModel(msgViewModels, messageBeen);
+
+        notifyActivityDataSetChanged();
+    }
+
+    private void notifyActivityDataSetChanged(){
+        chatActivity.loadDataComplete();
     }
 
     /**
      * 由于消息是从上向下展示，下拉刷新查询出消息应该放在数据链表头部
      * @param messageEntities
      */
-    private void addEntityToViewModel(List<MessageBean> messageEntities){
+    private void addEntityToViewModel(List<MsgViewModel> msgViewModels, List<MessageBean> messageEntities){
         int size = messageEntities.size();
         for(int i = size - 1; i >= 0 ; i--){
             MessageBean entity = messageEntities.get(i);
-            addEntityToViewModel(entity);
+            addEntityToViewModel(msgViewModels, entity);
         }
         Collections.sort(msgViewModels);  //要将消息重新排一次序
     }
 
-    private void addEntityToViewModel(MessageBean entity){
+    private void addEntityToViewModel(List<MsgViewModel> msgViewModels,MessageBean entity){
         int type = entity.getType();
         if(entity == null) return;
         MsgViewModel viewModel = null;
@@ -89,6 +104,48 @@ public class ChatActivityHelper {
     }
 
     /**
+     * 处理一条消息，在观察到一条数据变化时调用。下拉刷新出来的数据不应该调用此方法
+     * @param entity
+     */
+    public void processOneMessage(List<MsgViewModel> msgViewModels, MessageBean entity, int action){
+        int position = -1;
+        for(int i = 0 ; i < msgViewModels.size() ; i++){
+            MsgViewModel viewModel = msgViewModels.get(i);
+            if(entity.getId() == viewModel.getId()){
+                position = i;
+                break;
+            }
+        }
+        switch (action){
+            case DbDataEvent.SAVE_ONE:
+                addEntityToViewModel(msgViewModels, entity);
+                Collections.sort(msgViewModels);
+                chatActivity.refreshOneData(true);
+            break;
+            case DbDataEvent.UPDATE_ONE:
+                if(position != -1){
+                    msgViewModels.remove(position);
+                }
+                addEntityToViewModel(msgViewModels, entity);
+                Collections.sort(msgViewModels);
+                chatActivity.refreshOneData(true);
+                break;
+            case DbDataEvent.DELETE_ONE:
+                if(position != -1){
+                    msgViewModels.remove(position);
+                }
+                if(mQueryIndex != 0){
+                    mQueryIndex--;
+                }
+                chatActivity.refreshOneData(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /**
      * 将未读消息状态置为已读状态
      * @param otherName
      */
@@ -102,7 +159,7 @@ public class ChatActivityHelper {
     }
 
     public void onDestroy(){
-
+        chatActivity = null;
     }
 
     public int getQueryIndex() {

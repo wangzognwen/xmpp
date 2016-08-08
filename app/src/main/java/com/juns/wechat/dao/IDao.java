@@ -11,12 +11,13 @@ import java.util.Map;
  */
 public interface IDao<T> {
     T findById(Integer id);
-    T findByParams(Map<String, Object> params);
-    List<T> findAllByParams(Map<String, Object> params);
+    T findByParams(WhereBuilder whereBuilder);
+    List<T> findAllByParams(WhereBuilder whereBuilder);
     void save(T t);
     void save(List<T> list);
     boolean replace(T t);
     boolean replace(List<T> list);
-    boolean saveOrUpdate(T t);
+    boolean update(T t);
+    boolean delete(Integer id);
     boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs);
 }

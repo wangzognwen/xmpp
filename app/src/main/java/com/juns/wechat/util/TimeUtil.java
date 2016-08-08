@@ -52,7 +52,7 @@ public class TimeUtil {
     public static Date format(String date, boolean fullTime) {
         SimpleDateFormat sdf = null;
         if (fullTime) {
-            sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         } else {
             sdf = new SimpleDateFormat("yyyy-MM-dd");
         }

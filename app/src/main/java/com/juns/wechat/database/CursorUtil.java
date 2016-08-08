@@ -2,10 +2,13 @@ package com.juns.wechat.database;
 
 import android.database.Cursor;
 
+import com.juns.wechat.util.TimeUtil;
+
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
  * Created by 王者 on 2016/8/7.
@@ -51,8 +54,11 @@ public class CursorUtil {
            return cursor.getDouble(cursor.getColumnIndex(columnName));
         }else if(fieldType.equals(long.class) || field.equals(Long.class)){
            return cursor.getLong(cursor.getColumnIndex(columnName));
+        }else if(fieldType.equals(Date.class)){
+            long time  = cursor.getLong(cursor.getColumnIndex(columnName));
+            Date date = new Date(time);
+            return date;
         }
-
-        return null;
+        return cursor.getString(cursor.getColumnIndex(columnName));
     }
 }

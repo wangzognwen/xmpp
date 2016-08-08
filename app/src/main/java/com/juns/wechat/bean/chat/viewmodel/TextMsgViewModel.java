@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
@@ -61,10 +62,16 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
         if(isShowMyself()){
             loadUrl(ivAvatar, myselfAvatar);
             ImageView ivSendState = ViewHolder.get(convertView, R.id.msg_status);
+            ProgressBar sendingProgress = ViewHolder.get(convertView, R.id.pb_sending);
             if(messageBean.getState() == MessageBean.State.SEND_FAILED.value){
                 ivSendState.setVisibility(View.VISIBLE);
-            }else {
+                sendingProgress.setVisibility(View.GONE);
+            }else if(messageBean.getState() == MessageBean.State.SEND_SUCCESS.value){
                 ivSendState.setVisibility(View.GONE);
+                sendingProgress.setVisibility(View.GONE);
+            } else {
+                ivSendState.setVisibility(View.GONE);
+                sendingProgress.setVisibility(View.VISIBLE);
             }
         }else {
             loadUrl(ivAvatar, otherAvatar);

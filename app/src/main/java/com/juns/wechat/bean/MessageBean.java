@@ -89,6 +89,10 @@ public class MessageBean{
         }
     }
 
+    @Override
+    public String toString() {
+        return "[id: " + id + "]";
+    }
 
     public int getId() {
         return id;

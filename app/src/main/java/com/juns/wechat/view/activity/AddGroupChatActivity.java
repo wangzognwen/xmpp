@@ -118,7 +118,7 @@ public class AddGroupChatActivity extends ToolbarActivity{
 
 	protected void initData() {
 		// 获取好友列表
-		myFriends = FriendDao.getInstance().queryAllByOwner(user.getUserName());
+		myFriends = FriendDao.getInstance().getMyFriends(user.getUserName());
 		contactAdapter = new PickContactAdapter(AddGroupChatActivity.this,
                 myFriends);
 		listView.setAdapter(contactAdapter);

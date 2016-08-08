@@ -128,7 +128,7 @@ public class NewFriendsAdapter extends BaseAdapter{
             InviteMsg inviteMsg = (InviteMsg) messageBean.getMsgObj();
             inviteMsg.reply = InviteMsg.Reply.ACCEPT.value;
             messageBean.setMsg(inviteMsg.toJson());
-            MessageDao.getInstance().saveOrUpdate(messageBean);
+            MessageDao.getInstance().update(messageBean);
             notifyDataSetChanged();
         }
 

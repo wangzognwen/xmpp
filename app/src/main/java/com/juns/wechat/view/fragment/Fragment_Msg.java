@@ -20,12 +20,13 @@ import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.NewMsgAdpter;
 import com.juns.wechat.bean.PublicMsgInfo;
+import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.common.NetUtil;
 import com.juns.wechat.view.activity.PublishMsgListActivity;
 
 //消息
-public class Fragment_Msg extends Fragment implements OnClickListener,
+public class Fragment_Msg extends BaseFragment implements OnClickListener,
 		OnItemClickListener {
 	private Activity ctx;
 	private View layout, layout_head;;

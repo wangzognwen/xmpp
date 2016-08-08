@@ -3,10 +3,13 @@ package com.juns.wechat.dao;
 import android.database.Cursor;
 
 import com.juns.wechat.bean.Flag;
+import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.Msg;
 import com.juns.wechat.config.MsgType;
+import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.database.CursorUtil;
+import com.juns.wechat.database.IdGenerator;
 
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.SqlInfo;
@@ -27,7 +30,7 @@ public class MessageDao extends BaseDao<MessageBean>{
 
     private static final String SELECT_MESSAGES_BY_PAGING =
             "select * from wcMessage where myselfName = ? and otherName = ? and flag != -1 limit ? offset ?";
-    private static final String SELECT_MESSGAE_COUNT_BETWEEN_TWO_USER =
+    private static final String SELECT_MESSAGE_COUNT_BETWEEN_TWO_USER =
             "select count(id) as count from wcMessage where myselfName = ? and otherName = ? and flag != -1";
 
     public static MessageDao getInstance(){
@@ -44,18 +47,16 @@ public class MessageDao extends BaseDao<MessageBean>{
     }
 
     public MessageBean findByPacketId(String myselfName, String packetId){
-        Map<String, Object> params = new HashMap<>();
-        params.put(MessageBean.PACKET_ID, packetId);
-        params.put(MessageBean.MYSELF_NAME, myselfName);
-        return findByParams(params);
+        WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.PACKET_ID, "=", packetId);
+        whereBuilder.and(MessageBean.MYSELF_NAME, "=", myselfName);
+        return findByParams(whereBuilder);
     }
 
     public List<MessageBean> getMyReceivedInviteMessages(String myselfName){
-        Map<String, Object> params = new HashMap<>();
-        params.put(MessageBean.MYSELF_NAME, myselfName);
-        params.put(MessageBean.DIRECTION, MessageBean.Direction.INCOMING.value);
-        params.put(MessageBean.TYPE, MsgType.MSG_TYPE_INVITE);
-        List<MessageBean> messageBeen =  findAllByParams(params);
+        WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.MYSELF_NAME, "=", myselfName);
+        whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
+        whereBuilder.and(MessageBean.TYPE, "=", MsgType.MSG_TYPE_INVITE);
+        List<MessageBean> messageBeen =  findAllByParams(whereBuilder);
 
         if(messageBeen != null && !messageBeen.isEmpty()){
             for(MessageBean messageBean : messageBeen){
@@ -87,7 +88,7 @@ public class MessageDao extends BaseDao<MessageBean>{
     }
 
     public int getMessageCount(String myselfName, String otherName){
-        SqlInfo sqlInfo = new SqlInfo(SELECT_MESSGAE_COUNT_BETWEEN_TWO_USER);
+        SqlInfo sqlInfo = new SqlInfo(SELECT_MESSAGE_COUNT_BETWEEN_TWO_USER);
         sqlInfo.addBindArg(new KeyValue("key1", myselfName));
         sqlInfo.addBindArg(new KeyValue("key2", otherName));
         int count = 0;
@@ -114,4 +115,10 @@ public class MessageDao extends BaseDao<MessageBean>{
         update(whereBuilder, keyValue);
     }
 
+    @Override
+    protected void addIdIfNeeded(MessageBean messageBean) {
+        if(messageBean.getId() == 0){
+            messageBean.setId(IdGenerator.nextId(ChatTable.TABLE_NAME));
+        }
+    }
 }

@@ -2,7 +2,6 @@ package com.juns.wechat.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +14,10 @@ import android.widget.TextView;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.FriendBean;
+import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.activity.UserInfoActivity;
@@ -24,27 +26,33 @@ import com.juns.wechat.view.activity.NewFriendsListActivity;
 import com.juns.wechat.view.activity.PublishUserListActivity;
 import com.juns.wechat.widget.SideBar;
 
+import org.simple.eventbus.Subscriber;
+
 import java.util.List;
 
 //通讯录
 
-public class Fragment_Friends extends Fragment implements OnClickListener,
+public class Fragment_Friends extends BaseFragment implements OnClickListener,
 		OnItemClickListener {
 	private View layout, layout_head;
 	private ListView lvContact;
 	private SideBar indexBar;
 	private TextView tvDialog;
     private FriendDao rosterDao = FriendDao.getInstance();
-    private List<FriendBean> rosterBeans;
+    private List<FriendBean> friendBeen;
+    private List<UserBean> userBeen;
     private ContactAdapter contactAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-        layout = inflater.inflate(R.layout.fragment_friends, container, false);
-        initViews();
-        initData();
-        setOnListener();
+        if(layout == null){
+            layout = inflater.inflate(R.layout.fragment_friends, container, false);
+            initViews();
+            initData();
+            setOnListener();
+        }
+
 		return layout;
 	}
 
@@ -58,15 +66,14 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 		indexBar.setListView(lvContact);
 		indexBar.setTextView(tvDialog);
 
-		layout_head = getActivity().getLayoutInflater().inflate(
-				R.layout.layout_head_friend, null);
+		layout_head = getActivity().getLayoutInflater().inflate(R.layout.layout_head_friend, null);
 		lvContact.addHeaderView(layout_head);
 	}
 
 	private void initData() {
         String ownerName = AccountManager.getInstance().getUser().getUserName();
-	    rosterBeans = rosterDao.queryAllByOwner(ownerName);
-        contactAdapter.setData(rosterBeans);
+	    friendBeen = rosterDao.getMyFriends(ownerName);
+        contactAdapter.setData(friendBeen);
 	}
 
 	private void setOnListener() {
@@ -76,6 +83,16 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 		layout_head.findViewById(R.id.re_chatroom).setOnClickListener(this);
 		layout_head.findViewById(R.id.re_public).setOnClickListener(this);
 	}
+
+    @Subscriber
+    private void onFriendDataChanged(DbDataEvent<FriendBean> event){
+        initData(); //重新加载一次数据
+    }
+
+    @Subscriber
+    private void onUserDataChanged(DbDataEvent<UserBean> event){
+        initData(); //重新加载数据
+    }
 
 	@Override
 	public void onClick(View v) {
@@ -96,7 +113,7 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-		FriendBean rosterBean = rosterBeans.get(position - 1);
+		FriendBean rosterBean = friendBeen.get(position - 1);
 
         Intent intent = new Intent(getActivity(), UserInfoActivity.class);
         intent.putExtra(UserInfoActivity.ARG_USER_NAME, rosterBean.getContactName());
@@ -106,4 +123,9 @@ public class Fragment_Friends extends Fragment implements OnClickListener,
                 R.anim.push_left_out);
 
 	}
+
+    @Override
+    protected boolean registerEventBus() {
+        return true;
+    }
 }

@@ -2,7 +2,10 @@ package com.juns.wechat.dao;
 
 import android.database.Cursor;
 
+import com.juns.wechat.bean.Flag;
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.database.DbUtil;
+import com.juns.wechat.database.IdGenerator;
 
 
 import org.simple.eventbus.EventBus;
@@ -10,19 +13,22 @@ import org.xutils.DbManager;
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.Selector;
 import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.db.table.ColumnEntity;
+import org.xutils.db.table.TableEntity;
 import org.xutils.ex.DbException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by 王宗文 on 2016/7/6.
  */
-public class BaseDao<T> implements IDao<T> {
+public abstract class BaseDao<T> implements IDao<T> {
     protected DbManager dbManager;
     private Class<T> clazz;
-    private DbDataEvent<T> dataEvent;
 
     public BaseDao(){
         dbManager = DbUtil.getDbManager();
@@ -41,8 +47,8 @@ public class BaseDao<T> implements IDao<T> {
     }
 
     @Override
-    public T findByParams(Map<String, Object> params) {
-        List<T> results = findAllByParams(params);
+    public T findByParams(WhereBuilder whereBuilder) {
+        List<T> results = findAllByParams(whereBuilder);
         if(results != null  && results.size() > 0){
             return results.get(0);
         }
@@ -50,21 +56,11 @@ public class BaseDao<T> implements IDao<T> {
     }
 
     @Override
-    public List<T> findAllByParams(Map<String, Object> params) {
+    public List<T> findAllByParams(WhereBuilder whereBuilder) {
         try {
             Selector<T> selector = dbManager.selector(clazz);
-            if(params != null){
-                int index = 0;
-                for(String key : params.keySet()){
-                    if(index == 0){
-                        selector.where(key, "=", params.get(key));
-                    }else {
-                        selector.and(key, "=", params.get(key));
-                    }
-                    index++;
-                }
-                selector.and("flag", "!=", -1);
-            }
+            whereBuilder.and("flag", "!=", Flag.INVALID.value());
+            selector.where(whereBuilder);
             return selector.findAll();
         } catch (DbException e) {
             e.printStackTrace();
@@ -75,16 +71,26 @@ public class BaseDao<T> implements IDao<T> {
     @Override
     public void save(T t) {
         try {
+            addIdIfNeeded(t);
             dbManager.save(t);
+            postDataChangedEvent(DbDataEvent.SAVE_ONE, t);
         } catch (DbException e) {
             e.printStackTrace();
         }
     }
 
+    protected abstract void addIdIfNeeded(T t);
+
     @Override
     public void save(List<T> list) {
         try {
+            if(list != null){
+                for(T t : list){
+                    addIdIfNeeded(t);
+                }
+            }
             dbManager.save(list);
+            postDataChangedEvent(DbDataEvent.SAVE_MANY, list);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -94,10 +100,7 @@ public class BaseDao<T> implements IDao<T> {
     public boolean replace(T t) {
         try {
             dbManager.replace(t);
-            dataEvent = new DbDataEvent();
-            dataEvent.action = DbDataEvent.REPLACE_ONE;
-            dataEvent.data = t;
-            EventBus.getDefault().post(dataEvent);
+            postDataChangedEvent(DbDataEvent.REPLACE_ONE, t);
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -109,6 +112,7 @@ public class BaseDao<T> implements IDao<T> {
     public boolean replace(List<T> list) {
         try {
             dbManager.replace(list);
+            postDataChangedEvent(DbDataEvent.REPLACE_MANY, list);
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -117,10 +121,35 @@ public class BaseDao<T> implements IDao<T> {
     }
 
     @Override
-    public boolean saveOrUpdate(T t) {
+    public boolean update(T t) {
         try {
             dbManager.saveOrUpdate(t);
+            postDataChangedEvent(DbDataEvent.UPDATE_ONE, t);
             return true;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 并不会执行真正的删除，只是将flag标记置为1，要求所有表有这个通用字段
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean delete(Integer id) {
+        T t = findById(id);
+        try {
+            TableEntity<T> tableEntity = dbManager.getTable(clazz);
+            ColumnEntity idColumn = tableEntity.getId();
+            String idName = idColumn.getName();
+            WhereBuilder whereBuilder = WhereBuilder.b();
+            whereBuilder.and(idName, "=", id);
+            KeyValue keyValue = new KeyValue("flag", Flag.INVALID.value());
+            update(whereBuilder, keyValue);
+
+            postDataChangedEvent(DbDataEvent.DELETE_ONE, t);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -131,11 +160,27 @@ public class BaseDao<T> implements IDao<T> {
     public boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs) {
         try {
             dbManager.update(clazz, whereBuilder, keyValuePairs);
+            T t = findByParams(whereBuilder);
+            postDataChangedEvent(DbDataEvent.UPDATE_ONE, t);
             return true;
         } catch (DbException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    protected final void postDataChangedEvent(int action, T data){
+        DbDataEvent<T> dbDataEvent = new DbDataEvent<>();
+        dbDataEvent.action = action;
+        dbDataEvent.data = data;
+        EventBus.getDefault().post(dbDataEvent);
+    }
+
+    protected final void postDataChangedEvent(int action, List<T> datas){
+        DbDataEvent<T> dbDataEvent = new DbDataEvent<>();
+        dbDataEvent.action = action;
+        dbDataEvent.datas = datas;
+        EventBus.getDefault().post(dbDataEvent);
     }
 
     public Class<T> getEntityClass() {

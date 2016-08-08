@@ -1,6 +1,7 @@
 package com.juns.wechat.activity;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.BroadcastReceiver;
@@ -31,6 +32,7 @@ import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
 import com.juns.wechat.chat.AlertDialog;
 import com.juns.wechat.chat.BaiduMapActivity;
 import com.juns.wechat.chat.adpter.MessageAdapter;
@@ -38,12 +40,14 @@ import com.juns.wechat.chat.adpter.VoicePlayClickListener;
 import com.juns.wechat.chat.utils.CommonUtils;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.FriendDao;
-import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.exception.UserNotFoundException;
 import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.manager.MessageManager;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ToolBarUtil;
+
+import org.simple.eventbus.Subscriber;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
@@ -104,11 +108,11 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
     private ChatActivityHelper chatActivityHelper;
 
     private UserBean account = AccountManager.getInstance().getUser();
-    private MessageManager messageManager = new MessageManager(contactName);
     private FriendBean friendBean;
     private UserBean contactUser;
+    private boolean mFirstLoad = true; //是否第一次加载数据
 
-    private List<MessageBean> messageBeen;
+    private List<MsgViewModel> msgViewModels = new ArrayList<>();
     private Handler mHandler = new Handler();
 
 	@Override
@@ -138,12 +142,13 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
         chatInputManager.onCreate();
         chatActivityHelper = new ChatActivityHelper(this);
         chatActivityHelper.onCreate();
-
-        ptRefresh.setLastUpdateTimeKey(contactUser.getUserName());
         mAdapter = new ChatAdapter(this);
         lvMessages.setAdapter(mAdapter);
+        mAdapter.setData(msgViewModels);
+        chatActivityHelper.loadMessagesFromDb();
 
 
+        ptRefresh.setLastUpdateTimeKey(contactUser.getUserName());
         ptRefresh.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
@@ -184,43 +189,9 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		} else {
 			// 群聊
 			findViewById(R.id.view_location_video).setVisibility(View.GONE);;
-			//img_right.setImageResource(R.drawable.icon_groupinfo);
+			//img_right.setImage;Resource(R.drawable.icon_groupinfo);
 		}
-		//conversation = EMChatManager.getDbManager().getConversation(
-				//toChatUsername);
-		// 把此会话的未读数置为0
-		//conversation.resetUnreadMsgCount();
-		adapter = new MessageAdapter(this, contactName, chatType);
-		// 显示消息
-		lvMessages.setAdapter(adapter);
 
-		// 注册接收消息广播
-
-		/*IntentFilter intentFilter = new IntentFilter(EMChatManager
-				.getDbManager().getNewMessageBroadcastAction());
-		// 设置广播的优先级别大于Mainacitivity,这样如果消息来的时候正好在chat页面，直接显示消息，而不是提示消息未读
-		intentFilter.setPriority(5);
-		registerReceiver(receiver, intentFilter);
-
-		// 注册一个ack回执消息的BroadcastReceiver
-		IntentFilter ackMessageIntentFilter = new IntentFilter(EMChatManager
-				.getDbManager().getAckMessageBroadcastAction());
-		ackMessageIntentFilter.setPriority(5);
-		registerReceiver(ackMessageReceiver, ackMessageIntentFilter);
-
-		// 注册一个消息送达的BroadcastReceiver
-		IntentFilter deliveryAckMessageIntentFilter = new IntentFilter(
-				EMChatManager.getDbManager()
-						.getDeliveryAckMessageBroadcastAction());
-		deliveryAckMessageIntentFilter.setPriority(5);
-		registerReceiver(deliveryAckMessageReceiver,
-				deliveryAckMessageIntentFilter);
-
-		// 监听当前会话的群聊解散被T事件
-		groupListener = new GroupListener();
-		EMGroupManager.getDbManager().addGroupChangeListener(groupListener);*/
-
-		// show forward message if the message is not null
 		String forward_msg_id = getIntent().getStringExtra("forward_msg_id");
 		if (forward_msg_id != null) {
 			// 显示发送要转发的消息
@@ -237,6 +208,63 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		findViewById(R.id.view_location).setOnClickListener(this);
 		findViewById(R.id.view_audio).setOnClickListener(this);
 	}
+
+    public String getContactName(){
+        return contactName;
+    }
+
+    public UserBean getContactUser(){
+        return contactUser;
+    }
+
+    /**
+     * {@link ChatActivityHelper#loadMessagesFromDb()}方法完成之后调用
+     */
+    public void loadDataComplete(){
+        ptRefresh.refreshComplete();
+        mAdapter.notifyDataSetChanged();  //ChatActivityHelper已经更新数据源
+        //第一次加载数据，listView要滚动到底部，下拉刷新加载出来的数据，不用滚动到底部
+        if(mFirstLoad){
+            scrollListViewToBottom();
+            mFirstLoad = false;
+        }
+    }
+
+    public void refreshOneData(boolean scrollListView){
+        mAdapter.notifyDataSetChanged();
+        if(scrollListView){
+            scrollListViewToBottom();
+        }
+    }
+
+    public List<MsgViewModel> getMsgViewModels(){
+        if(msgViewModels == null){
+            msgViewModels = new ArrayList<>();
+        }
+        return msgViewModels;
+    }
+
+    private void scrollListViewToBottom(){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lvMessages.setSelection(mAdapter.getCount() - 1);
+            }
+        });
+    }
+
+    /***
+     * 监听数据库中消息表数据的变化
+     * @see ChatActivityHelper#processOneMessage(List, MessageBean, int)
+     * @param event
+     */
+    @Subscriber
+    private void onDdDataChanged(DbDataEvent<MessageBean> event){
+        if(event.data == null) return;
+        LogUtil.i("data: " + event.data.toString() + "action: " + event.action);
+        MessageBean messageBean = event.data;
+        chatActivityHelper.processOneMessage(msgViewModels, messageBean, event.action);
+    }
 
 	/**
 	 * onActivityResult
@@ -390,18 +418,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			}
 		}*/
 	}
-
-    public String getContactName(){
-        return contactName;
-    }
-
-    public UserBean getContactUser(){
-        return contactUser;
-    }
-
-    public void refreshComplete(){
-        ptRefresh.refreshComplete();
-    }
 
 
 	/**

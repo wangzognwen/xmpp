@@ -19,6 +19,7 @@ import com.juns.wechat.Constants;
 import com.juns.wechat.R;
 import com.juns.wechat.activity.MyProfileActivity;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.manager.AccountManager;
@@ -27,7 +28,7 @@ import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.view.activity.SettingActivity;
 
 //我
-public class Fragment_Profile extends Fragment implements OnClickListener {
+public class Fragment_Profile extends BaseFragment implements OnClickListener {
 	private View layout;
     private ImageView ivAvatar;
 	private TextView tvNickName, tvUserName;

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.bean.Flag;
@@ -92,8 +91,11 @@ public abstract class MsgViewModel implements Comparable<MsgViewModel> {
         if(messageBean.getDirection() == MessageBean.Direction.OUTGOING.value){
             return;
         }
+        if(messageBean.getState() != MessageBean.State.NEW.value){
+            return;
+        }
         messageBean.setState(MessageBean.State.READ.value);
-        messageDao.saveOrUpdate(messageBean);
+        messageDao.update(messageBean);
     }
 
     /**
@@ -115,7 +117,7 @@ public abstract class MsgViewModel implements Comparable<MsgViewModel> {
      */
     public final void delete(){
         messageBean.setFlag(Flag.INVALID.value());
-        messageDao.saveOrUpdate(messageBean);
+        messageDao.update(messageBean);
     }
 
     /**

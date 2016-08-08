@@ -3,12 +3,16 @@ package com.juns.wechat.dao;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.database.CursorUtil;
 import com.juns.wechat.database.DbUtil;
+import com.juns.wechat.database.IdGenerator;
 import com.juns.wechat.database.UserTable;
 
 import org.xutils.common.util.KeyValue;
 import org.xutils.db.sqlite.SqlInfo;
+import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 
 import java.util.ArrayList;
@@ -26,7 +30,8 @@ public class UserDao extends BaseDao<UserBean>{
                     "(r.ownerName = ? and u.userName = r.contactName) and (r.subType = 'both' or r.subType = 'from')) t1" +
                     " UNION SELECT u.* from wcUser u WHERE u.userName = ?) t";
 
-
+    private static final String QUERY_MY_FRIENDS =
+            "select * from wcUser u, wcFriend f where f.ownerName = ? and f.contactName = u.userName";
 
     private static UserDao mInstance;
 
@@ -37,10 +42,27 @@ public class UserDao extends BaseDao<UserBean>{
         return mInstance;
     }
 
+    public List<UserBean> getMyFriends(String userName){
+        SqlInfo sqlInfo = new SqlInfo(QUERY_MY_FRIENDS);
+        sqlInfo.addBindArg(new KeyValue("key1", userName));
+        List<UserBean> userBeen = new ArrayList<>();
+        try {
+            Cursor cursor = dbManager.execQuery(sqlInfo);
+            while (cursor.moveToNext()){
+                UserBean userBean = CursorUtil.fromCursor(cursor, UserBean.class);
+                userBeen.add(userBean);
+            }
+            closeCursor(cursor);
+            return userBeen;
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public UserBean findByName(String userName){
-        Map<String, Object> param = new HashMap<>();
-        param.put(UserBean.USERNAME, userName);
-        return findByParams(param);
+        WhereBuilder whereBuilder = WhereBuilder.b(UserBean.USERNAME, "=", userName);
+        return findByParams(whereBuilder);
     }
 
     public long getLastModifyDate(String userName){
@@ -66,4 +88,10 @@ public class UserDao extends BaseDao<UserBean>{
         return lastModifyDate;
     }
 
+    @Override
+    protected void addIdIfNeeded(UserBean userBean) {
+        if(userBean.getId() == 0){
+            userBean.setId(IdGenerator.nextId(UserTable.TABLE_NAME));
+        }
+    }
 }
