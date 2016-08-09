@@ -66,7 +66,7 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
 
         final FriendBean friendBean = friendBeen.get(position);
         ImageView ivAvatar = ViewHolder.get(convertView,
-                R.id.contactitem_avatar_iv);
+                R.id.iv_avatar);
         TextView tvCatalog = ViewHolder.get(convertView,
                 R.id.contactitem_catalog);
         TextView tvNick = ViewHolder

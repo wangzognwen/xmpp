@@ -17,7 +17,7 @@
 			android:layout_centerVertical="true"
 			android:src="@drawable/head" />
 		<TextView
-		    android:id="@+id/txt_name"
+		    android:id="@+id/tv_title"
                 style="@style/MMFontTitleInList"
 			android:text="悠悠"
 			android:textSize="18sp"  
@@ -28,7 +28,7 @@
 		 
 		 <TextView
 		     android:id="@+id/txt_msg"
-		     android:layout_below="@id/txt_name"
+		     android:layout_below="@id/tv_title"
 			android:layout_toRightOf="@+id/ivAvatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

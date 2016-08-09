@@ -18,7 +18,7 @@
         android:background="@color/white">
         
         <ImageView
-            android:id="@+id/contactitem_avatar_iv"
+            android:id="@+id/iv_avatar"
             android:layout_width="40.0dip"
             android:layout_height="40.0dip"  
             android:layout_marginLeft="15dp"/>

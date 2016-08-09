@@ -118,7 +118,7 @@ public class FriendBean {
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
             }
-            return null;
+            return "";
         }
     }
 
@@ -129,6 +129,6 @@ public class FriendBean {
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 }

@@ -39,6 +39,7 @@ public class SendMessage {
                     messageBean.setMsg(textMsg.toJson());
                     messageBean.setOtherName(otherName);
                     messageBean.setType(MsgType.MSG_TYPE_TEXT);
+                    messageBean.setTypeDesc(content);
                     sendMsg(messageBean);
                 } catch (Exception e) {
                     e.printStackTrace();

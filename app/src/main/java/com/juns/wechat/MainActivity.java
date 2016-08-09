@@ -4,7 +4,6 @@ package com.juns.wechat;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,7 +63,7 @@ public class MainActivity extends BaseActivity{
 		img_right.setVisibility(View.VISIBLE);
 		img_right.setImageResource(R.drawable.icon_add);
 
-		unreaMsgdLabel = (TextView) findViewById(R.id.unread_msg_number);
+		unreaMsgdLabel = (TextView) findViewById(R.id.tv_unread_msg_number);
 		unreadAddressLable = (TextView) findViewById(R.id.unread_contact_number);
 		unreadFindLable = (TextView) findViewById(R.id.unread_find_number);
 

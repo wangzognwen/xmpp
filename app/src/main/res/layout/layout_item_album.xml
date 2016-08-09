@@ -27,14 +27,14 @@
 			android:paddingLeft="10dip"
 			android:paddingBottom="5dp">
 			<TextView
-				android:id="@+id/txt_content"
+				android:id="@+id/tv_content"
 				style="@style/MMFontTitleInList"
 				android:textColor="@color/blue1"
 				android:textSize="18sp"
 				android:text="老婆" />
 			<TextView
 				android:id="@+id/txt_msg"
-				android:layout_below="@+id/txt_content"
+				android:layout_below="@+id/tv_content"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="我是多幸福啊！辛苦了亲爱的！么么哒！~"
@@ -75,7 +75,7 @@
 		</LinearLayout>
 			
 			<TextView
-				android:id="@+id/txt_time"
+				android:id="@+id/tv_time"
 				android:layout_below="@+id/layout_photo"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

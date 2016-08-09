@@ -77,7 +77,7 @@ public class ChatInputManager implements View.OnClickListener{
 
         rlInputText = (RelativeLayout) view.findViewById(R.id.rl_input_text);
         etInputText = (PasteEditText) view.findViewById(R.id.et_input_text);
-        etInputText.requestFocus();
+        //etInputText.requestFocus();
 
         ivEmoticonsNormal = (ImageView) view.findViewById(R.id.iv_emoticons_normal);
         ivEmoticonsChecked = (ImageView) view.findViewById(R.id.iv_emoticons_checked);

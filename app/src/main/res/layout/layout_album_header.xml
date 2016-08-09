@@ -13,7 +13,7 @@
 	 
 		<TextView
 			android:textSize="20sp"
-			android:id="@+id/txt_name"
+			android:id="@+id/tv_title"
 			android:text="菲儿"
 			android:gravity="right|bottom"
 			android:paddingRight="110dp"

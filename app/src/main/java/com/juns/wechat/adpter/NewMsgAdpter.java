@@ -67,14 +67,14 @@ public class NewMsgAdpter extends BaseAdapter {
 					R.layout.layout_item_msg, parent, false);
 		}
 		ImageView img_avar = ViewHolder.get(convertView,
-				R.id.contactitem_avatar_iv);
-		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
+				R.id.iv_avatar);
+		TextView txt_name = ViewHolder.get(convertView, R.id.tv_title);
 		TextView txt_state = ViewHolder.get(convertView, R.id.txt_state);
 		TextView txt_del = ViewHolder.get(convertView, R.id.txt_del);
-		TextView txt_content = ViewHolder.get(convertView, R.id.txt_content);
-		TextView txt_time = ViewHolder.get(convertView, R.id.txt_time);
+		TextView txt_content = ViewHolder.get(convertView, R.id.tv_content);
+		TextView txt_time = ViewHolder.get(convertView, R.id.tv_time);
 		TextView unreadLabel = ViewHolder.get(convertView,
-				R.id.unread_msg_number);
+				R.id.tv_unread_msg_number);
 		SwipeLayout swipe = ViewHolder.get(convertView, R.id.swipe);
 		if (PublicMsg != null && position == 0) {
 			txt_name.setText(R.string.official_accounts);

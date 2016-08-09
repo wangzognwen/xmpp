@@ -65,7 +65,7 @@ public class NewFriendsAdapter extends BaseAdapter{
 					R.layout.layout_item_newfriend, parent, false);
 		}
 		ImageView ivAvatar = ViewHolder.get(convertView, R.id.ivAvatar);
-		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
+		TextView txt_name = ViewHolder.get(convertView, R.id.tv_title);
 		final TextView txt_add = ViewHolder.get(convertView, R.id.tvAdd);
 
         final MessageBean messageBean = inviteMessages.get(position);

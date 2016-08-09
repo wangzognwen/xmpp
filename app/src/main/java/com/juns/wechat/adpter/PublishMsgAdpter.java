@@ -41,13 +41,13 @@ public class PublishMsgAdpter extends BaseAdapter {
 					R.layout.layout_item_msg, parent, false);
 		}
 		ImageView img_avar = ViewHolder.get(convertView,
-				R.id.contactitem_avatar_iv);
-		TextView txt_name = ViewHolder.get(convertView, R.id.txt_name);
+				R.id.iv_avatar);
+		TextView txt_name = ViewHolder.get(convertView, R.id.tv_title);
 		TextView txt_del = ViewHolder.get(convertView, R.id.txt_del);
-		TextView txt_content = ViewHolder.get(convertView, R.id.txt_content);
-		TextView txt_time = ViewHolder.get(convertView, R.id.txt_time);
+		TextView txt_content = ViewHolder.get(convertView, R.id.tv_content);
+		TextView txt_time = ViewHolder.get(convertView, R.id.tv_time);
 		TextView unreadLabel = ViewHolder.get(convertView,
-				R.id.unread_msg_number);
+				R.id.tv_unread_msg_number);
 		img_avar.setImageResource(R.drawable.icon_public);
 		txt_name.setText("人人都是产品经理");
 		txt_content.setText("什么是用户？90%的人不知道");

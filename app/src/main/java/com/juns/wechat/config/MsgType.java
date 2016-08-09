@@ -19,4 +19,7 @@ public class MsgType {
     public final static int MSG_TYPE_TRANSFER  = MSG_TYPE_FACE+1;     //转让消息
     public final static int MSG_TYPE_INVITE = MSG_TYPE_TRANSFER + 1; //发送邀请消息成为好友。
 
+    public static final String MSG_TYPE_VOICE_DESC = "[语音]";
+    public static final String MSG_TYPE_PICTURE_DESC = "[图片";
+
 }

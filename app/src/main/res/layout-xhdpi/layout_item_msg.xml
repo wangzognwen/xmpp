@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	xmlns:app="http://schemas.android.com/apk/res/com.juns.wechat">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 	<com.juns.wechat.widget.swipe.SwipeLayout
 	    android:id="@+id/swipe"
 		app:drag_edge="right"
@@ -40,12 +40,12 @@
 			android:layout_height="match_parent"
 			android:layout_alignParentLeft="true">
 			<ImageView
-				android:id="@+id/contactitem_avatar_iv"
+				android:id="@+id/iv_avatar"
 				android:layout_width="50.0dip"
 				android:layout_height="50.0dip"
 				android:src="@drawable/head" />
 			<TextView
-				android:id="@+id/unread_msg_number"
+				android:id="@+id/tv_unread_msg_number"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_alignParentRight="true"
@@ -61,22 +61,22 @@
 			android:orientation="vertical"
 			android:paddingLeft="5dip">
 			<TextView
-				android:id="@+id/txt_name"
+				android:id="@+id/tv_title"
 				style="@style/MMFontTitleInList"
 				android:textColor="@color/black"
 				android:singleLine="true" />
 			<TextView
 				android:id="@+id/txt_state"
 				style="@style/MMFontTag"
-				android:layout_below="@+id/txt_name" 
+				android:layout_below="@+id/tv_title"
 				android:text="已读"
 				android:visibility="gone"
 				android:background="@drawable/btn_bg_blue"
 				android:layout_marginTop="5dp" />
 			<TextView
-				android:id="@+id/txt_content"
+				android:id="@+id/tv_content"
 				style="@style/MMFontTitleInList"
-				android:layout_below="@+id/txt_name"
+				android:layout_below="@+id/tv_title"
 				android:layout_toRightOf="@+id/txt_state"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
 				android:singleLine="true" />
 		</RelativeLayout>
 		<TextView
-			android:id="@+id/txt_time"
+			android:id="@+id/tv_time"
 			style="@style/MMFontTitleInList"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"

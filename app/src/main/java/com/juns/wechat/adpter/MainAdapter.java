@@ -3,15 +3,12 @@ package com.juns.wechat.adpter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.view.ViewGroup;
 
 import com.juns.wechat.common.BaseFragment;
-import com.juns.wechat.util.LogUtil;
-import com.juns.wechat.view.fragment.Fragment_Dicover;
-import com.juns.wechat.view.fragment.Fragment_Friends;
-import com.juns.wechat.view.fragment.Fragment_Msg;
-import com.juns.wechat.view.fragment.Fragment_Profile;
+import com.juns.wechat.fragment.Fragment_Dicover;
+import com.juns.wechat.fragment.Fragment_Friends;
+import com.juns.wechat.fragment.msg.Fragment_Msg;
+import com.juns.wechat.fragment.Fragment_Profile;
 
 import java.util.ArrayList;
 import java.util.List;

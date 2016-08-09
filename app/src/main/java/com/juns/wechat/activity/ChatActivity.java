@@ -245,6 +245,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
     }
 
     private void scrollListViewToBottom(){
+        LogUtil.i("scrollToBottom!");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
