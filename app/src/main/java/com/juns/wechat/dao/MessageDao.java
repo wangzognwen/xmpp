@@ -29,9 +29,9 @@ public class MessageDao extends BaseDao<MessageBean>{
     private static MessageDao mInstance;
 
     private static final String SELECT_MESSAGES_BY_PAGING =
-            "select * from wcMessage where myselfName = ? and otherName = ? and flag != -1 limit ? offset ?";
+            "select * from wcMessage where myselfName = ? and otherName = ? and type < ? and flag != -1 limit ? offset ?";
     private static final String SELECT_MESSAGE_COUNT_BETWEEN_TWO_USER =
-            "select count(id) as count from wcMessage where myselfName = ? and otherName = ? and flag != -1";
+            "select count(id) as count from wcMessage where myselfName = ? and otherName = ? and type < ? and flag != -1";
 
     public static MessageDao getInstance(){
         if(mInstance == null){
@@ -40,10 +40,21 @@ public class MessageDao extends BaseDao<MessageBean>{
         return mInstance;
     }
 
-    public boolean updateMessageState(String packetId, int state){
+    /**
+     * 根据收到的服务器消息回执更新数据库已有消息状态
+     * @param packetId
+     * @param state
+     * @param date 客户端的时间可能不准确，以收到的服务器时间为准
+     * @return
+     */
+    public boolean updateMessageState(String packetId, int state, Date date){
         WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.PACKET_ID, "=", packetId);
         KeyValue keyValue = new KeyValue(MessageBean.STATE, state);
-        return update(whereBuilder, keyValue);
+        if(date == null){
+            return update(whereBuilder, keyValue);
+        }
+        KeyValue keyValue2 = new KeyValue(MessageBean.DATE, date);
+        return update(whereBuilder, keyValue, keyValue2);
     }
 
     public MessageBean findByPacketId(String myselfName, String packetId){
@@ -58,8 +69,9 @@ public class MessageDao extends BaseDao<MessageBean>{
      */
     public List<MsgItem> getLastMessageWithEveryFriend(String userName){
         SqlInfo sqlInfo = new SqlInfo("select id, otherName, typeDesc, type, date" +
-                " from wcMessage where myselfName = ? and flag != -1 group by otherName order by date");
+                " from wcMessage where myselfName = ? and flag != -1 and type < ? group by otherName order by date");
         sqlInfo.addBindArg(new KeyValue(UserBean.USERNAME, userName));
+        sqlInfo.addBindArg(new KeyValue("key2", MsgType.MSG_TYPE_SEND_INVITE));
         try {
             List<MsgItem> msgItems = new ArrayList<>();
             Cursor cursor = dbManager.execQuery(sqlInfo);
@@ -82,11 +94,12 @@ public class MessageDao extends BaseDao<MessageBean>{
 
     public int getUnreadMsgNum(String myselfName, String otherName){
         SqlInfo sqlInfo = new SqlInfo("select count(1) as count from wcMessage where myselfName = ? " +
-                "and otherName = ? and direction = ? and state = ?");
+                "and otherName = ? and direction = ? and state = ? and type < ?");
         sqlInfo.addBindArg(new KeyValue("key1", myselfName));
         sqlInfo.addBindArg(new KeyValue("key2", otherName));
         sqlInfo.addBindArg((new KeyValue("key3", MessageBean.Direction.INCOMING.value)));
         sqlInfo.addBindArg(new KeyValue("key4", MessageBean.State.NEW.value));
+        sqlInfo.addBindArg(new KeyValue("key5", MsgType.MSG_TYPE_SEND_INVITE));
         try {
             Cursor cursor = dbManager.execQuery(sqlInfo);
             if(cursor.moveToNext()){
@@ -107,15 +120,27 @@ public class MessageDao extends BaseDao<MessageBean>{
     public List<MessageBean> getMyReceivedInviteMessages(String myselfName){
         WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.MYSELF_NAME, "=", myselfName);
         whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
-        whereBuilder.and(MessageBean.TYPE, "=", MsgType.MSG_TYPE_INVITE);
+        whereBuilder.and(MessageBean.TYPE, "=", MsgType.MSG_TYPE_SEND_INVITE);
         List<MessageBean> messageBeen =  findAllByParams(whereBuilder);
 
         if(messageBeen != null && !messageBeen.isEmpty()){
             for(MessageBean messageBean : messageBeen){
-                messageBean.setMsgObj(Msg.fromJson(messageBean.getMsg(),  MsgType.MSG_TYPE_INVITE));
+                messageBean.setMsgObj(Msg.fromJson(messageBean.getMsg(),  MsgType.MSG_TYPE_SEND_INVITE));
             }
         }
         return messageBeen;
+    }
+
+    public int getUnreadInviteMsgCount(String myselfName){
+        WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.MYSELF_NAME, "=", myselfName);
+        whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
+        whereBuilder.and(MessageBean.TYPE, "=", MsgType.MSG_TYPE_SEND_INVITE);
+        whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
+        List<MessageBean> messageBeen =  findAllByParams(whereBuilder);
+        if(messageBeen != null){
+            return messageBeen.size();
+        }
+        return 0;
     }
 
     /**
@@ -130,8 +155,9 @@ public class MessageDao extends BaseDao<MessageBean>{
         SqlInfo sqlInfo = new SqlInfo(SELECT_MESSAGES_BY_PAGING);
         sqlInfo.addBindArg(new KeyValue("key1", myselfName));
         sqlInfo.addBindArg(new KeyValue("key2", otherName));
-        sqlInfo.addBindArg(new KeyValue("key3", size));
-        sqlInfo.addBindArg(new KeyValue("key4", index));
+        sqlInfo.addBindArg(new KeyValue("key3", MsgType.MSG_TYPE_SEND_INVITE));
+        sqlInfo.addBindArg(new KeyValue("key4", size));
+        sqlInfo.addBindArg(new KeyValue("key5", index));
 
         try {
             Cursor cursor = dbManager.execQuery(sqlInfo);
@@ -158,6 +184,7 @@ public class MessageDao extends BaseDao<MessageBean>{
         SqlInfo sqlInfo = new SqlInfo(SELECT_MESSAGE_COUNT_BETWEEN_TWO_USER);
         sqlInfo.addBindArg(new KeyValue("key1", myselfName));
         sqlInfo.addBindArg(new KeyValue("key2", otherName));
+        sqlInfo.addBindArg(new KeyValue("key3", MsgType.MSG_TYPE_SEND_INVITE));
         int count = 0;
         try {
             Cursor cursor = dbManager.execQuery(sqlInfo);
@@ -178,6 +205,23 @@ public class MessageDao extends BaseDao<MessageBean>{
         whereBuilder.and(MessageBean.FLAG, "!=", Flag.INVALID.value());
         whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
         whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
+
+        KeyValue keyValue = new KeyValue(MessageBean.STATE, MessageBean.State.READ.value);
+        update(whereBuilder, keyValue);
+    }
+
+    /**
+     * 将用户的某一类型消息全部标为已读
+     * @param myselfName
+     * @param type
+     */
+    public void markAsRead(String myselfName, int type){
+        WhereBuilder whereBuilder = WhereBuilder.b();
+        whereBuilder.and(MessageBean.MYSELF_NAME, "=", myselfName);
+        whereBuilder.and(MessageBean.FLAG, "!=", Flag.INVALID.value());
+        whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
+        whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
+        whereBuilder.and(MessageBean.TYPE, "=", type);
 
         KeyValue keyValue = new KeyValue(MessageBean.STATE, MessageBean.State.READ.value);
         update(whereBuilder, keyValue);

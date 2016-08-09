@@ -14,11 +14,17 @@ import android.widget.TextView;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.FriendBean;
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.FriendDao;
+import com.juns.wechat.dao.MessageDao;
+import com.juns.wechat.database.ChatTable;
+import com.juns.wechat.database.FriendTable;
+import com.juns.wechat.database.UserTable;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.view.activity.GroupListActivity;
@@ -38,9 +44,12 @@ public class Fragment_Friends extends BaseFragment implements OnClickListener,
 	private ListView lvContact;
 	private SideBar indexBar;
 	private TextView tvDialog;
+    private TextView tvUnreadInviteMsgCount;
     private FriendDao rosterDao = FriendDao.getInstance();
     private List<FriendBean> friendBeen;
     private ContactAdapter contactAdapter;
+
+    private String account = AccountManager.getInstance().getUserName();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +57,8 @@ public class Fragment_Friends extends BaseFragment implements OnClickListener,
         if(layout == null){
             layout = inflater.inflate(R.layout.fragment_friends, container, false);
             initViews();
-            initData();
+            setUnreadInviteMsgData();
+            setFriendData();
             setOnListener();
         }
 
@@ -66,12 +76,22 @@ public class Fragment_Friends extends BaseFragment implements OnClickListener,
 		indexBar.setTextView(tvDialog);
 
 		layout_head = getActivity().getLayoutInflater().inflate(R.layout.layout_head_friend, null);
+        tvUnreadInviteMsgCount = (TextView) layout_head.findViewById(R.id.tv_unread_invite_msg);
 		lvContact.addHeaderView(layout_head);
 	}
 
-	private void initData() {
-        String ownerName = AccountManager.getInstance().getUser().getUserName();
-	    friendBeen = rosterDao.getMyFriends(ownerName);
+    private void setUnreadInviteMsgData(){
+        int count = MessageDao.getInstance().getUnreadInviteMsgCount(account);
+        if(count > 0){
+            tvUnreadInviteMsgCount.setVisibility(View.VISIBLE);
+            tvUnreadInviteMsgCount.setText(count + "");
+        }else {
+            tvUnreadInviteMsgCount.setVisibility(View.GONE);
+        }
+    }
+
+	private void setFriendData() {
+	    friendBeen = rosterDao.getMyFriends(account);
         contactAdapter.setData(friendBeen);
 	}
 
@@ -83,22 +103,33 @@ public class Fragment_Friends extends BaseFragment implements OnClickListener,
 		layout_head.findViewById(R.id.re_public).setOnClickListener(this);
 	}
 
-    @Subscriber
+    @Subscriber(tag = FriendTable.TABLE_NAME)
     private void onFriendDataChanged(DbDataEvent<FriendBean> event){
-        initData(); //重新加载一次数据
+        setFriendData(); //重新加载一次数据
     }
 
-    @Subscriber
+    @Subscriber(tag = UserTable.TABLE_NAME)
     private void onUserDataChanged(DbDataEvent<UserBean> event){
-        if(event.action >= DbDataEvent.UPDATE_ONE && event.action <= DbDataEvent.REPLACE_MANY){
-            initData(); //重新加载数据
+        if(event.action == DbDataEvent.UPDATE || event.action == DbDataEvent.REPLACE){
+            setFriendData(); //重新加载数据
+        }
+    }
+
+    @Subscriber(tag = ChatTable.TABLE_NAME)
+    private void onMessageDataChaned(DbDataEvent<MessageBean> event){
+        if(event.data != null && !event.data.isEmpty()){
+            MessageBean messageBean = event.data.get(0);
+            if(messageBean.getType() == MsgType.MSG_TYPE_SEND_INVITE){
+                setUnreadInviteMsgData();
+            }
         }
     }
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.re_newfriends:// 添加好友
+		case R.id.re_newfriends://
+            MessageDao.getInstance().markAsRead(account, MsgType.MSG_TYPE_SEND_INVITE);
 			CommonUtil.startActivity(getActivity(), NewFriendsListActivity.class);
 			break;
 		case R.id.re_chatroom:// 群聊

@@ -26,6 +26,7 @@ import org.simple.eventbus.Subscriber;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * create by 王者 on 2016/7/14
@@ -61,7 +62,7 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
 
-    private UserBean userBean;
+    private UserBean account;
 
     private SelectPhotoDialog selectPhotoDialog;
     private String imageName;
@@ -74,9 +75,9 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     }
 
     private void setData(){
-        userBean = AccountManager.getInstance().getUser();
-        tvNickName.setText(userBean.getNickName() == null ? "" : userBean.getNickName());
-        ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
+        account = AccountManager.getInstance().getUser();
+        tvNickName.setText(account.getNickName() == null ? "" : account.getNickName());
+        ImageUtil.loadImage(ivAvatar, account.getHeadUrl());
     }
 
     @Click(viewId = R.id.rlAvatar)
@@ -95,9 +96,14 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
 
     @Subscriber
     private void onDbDataChanged(DbDataEvent<UserBean> event){
-        if(event.action == DbDataEvent.REPLACE_ONE && event.data != null){
-            if(event.data.getUserName().equals(userBean.getUserName())){
-                setData();
+        if(event.action == DbDataEvent.REPLACE || event.action == DbDataEvent.UPDATE){
+            List<UserBean> updateData = event.data;
+            if(updateData != null && !updateData.isEmpty()){
+                for(UserBean userBean : updateData){
+                    if(userBean.getUserName().equals(account.getUserName())){
+                        setData();
+                    }
+                }
             }
         }
     }

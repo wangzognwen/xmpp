@@ -33,7 +33,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tv_unread"
+            android:id="@+id/tv_unread_invite_msg"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentRight="true"

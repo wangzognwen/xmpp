@@ -22,7 +22,7 @@ public class InviteMessageProcess extends MessageProcess {
     @Override
     public void noticeShow(MessageBean entity, String notice) {
         InviteMsg inviteMsg = (InviteMsg) entity.getMsgObj();
-        String noticeStr = inviteMsg.name + "请求添加你为好友";
+        String noticeStr = inviteMsg.userName + "请求添加你为好友";
         super.noticeShow(entity, noticeStr);
     }
 }

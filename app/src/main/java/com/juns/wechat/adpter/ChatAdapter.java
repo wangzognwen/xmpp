@@ -62,7 +62,7 @@ public class ChatAdapter extends ListDataAdapter<MsgViewModel> {
             case MsgType.MSG_TYPE_PICTURE:
                 viewType = 4;
                 break;
-            case MsgType.MSG_TYPE_INVITE:
+            case MsgType.MSG_TYPE_SEND_INVITE:
                 viewType = 6;
                 break;
             default:

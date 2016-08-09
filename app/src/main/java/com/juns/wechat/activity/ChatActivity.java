@@ -42,6 +42,7 @@ import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.FriendDao;
+import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.exception.UserNotFoundException;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.LogUtil;
@@ -259,11 +260,11 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
      * @see ChatActivityHelper#processOneMessage(List, MessageBean, int)
      * @param event
      */
-    @Subscriber
+    @Subscriber(tag = ChatTable.TABLE_NAME)
     private void onDdDataChanged(DbDataEvent<MessageBean> event){
-        if(event.data == null) return;
+        if(event.data == null || event.data.isEmpty()) return;
         LogUtil.i("data: " + event.data.toString() + "action: " + event.action);
-        MessageBean messageBean = event.data;
+        MessageBean messageBean = event.data.get(0);
         chatActivityHelper.processOneMessage(msgViewModels, messageBean, event.action);
     }
 

@@ -1,6 +1,8 @@
 package com.juns.wechat.bean.chat;
 
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,7 +18,7 @@ public class InviteMsg extends Msg{
     public static final String REASON = "reason";
     public static final String REPLY = "reply";
 
-    public String name;
+    public String userName;
     public String reason;
     public int reply;
 
@@ -24,11 +26,9 @@ public class InviteMsg extends Msg{
     public JSONObject toSendJsonObject() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(USERNAME, name);
+            jsonObject.put(USERNAME, userName);
             jsonObject.put(REASON, reason);
-            if(reply != 0){
-                jsonObject.put(REPLY, reply);
-            }
+            jsonObject.put(REPLY, reply);
         } catch (JSONException e) {
             e.printStackTrace();
         }

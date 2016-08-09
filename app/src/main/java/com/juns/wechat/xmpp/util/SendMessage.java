@@ -59,12 +59,12 @@ public class SendMessage {
             public void run() {
                 MessageBean messageBean = new MessageBean();
                 InviteMsg inviteMsg = new InviteMsg();
-                inviteMsg.name = AccountManager.getInstance().getUser().getShowName();
+                inviteMsg.userName = AccountManager.getInstance().getUser().getShowName();
                 inviteMsg.reason = reason;
                 try {
                     messageBean.setMsg(inviteMsg.toJson());
                     messageBean.setOtherName(otherName);
-                    messageBean.setType(MsgType.MSG_TYPE_INVITE);
+                    messageBean.setType(MsgType.MSG_TYPE_SEND_INVITE);
                     sendMsg(messageBean);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -77,17 +77,19 @@ public class SendMessage {
     /**
      * 发送添加好友消息
      */
-    public static void sendReplyInviteMsg(final String otherName, final int reply){
+    public static void sendReplyInviteMsg(final String otherName, final int reply, final String reason){
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
                 MessageBean messageBean = new MessageBean();
                 InviteMsg inviteMsg = new InviteMsg();
+                inviteMsg.userName = AccountManager.getInstance().getUser().getShowName();
+                inviteMsg.reason = reason;
                 inviteMsg.reply = reply;
                 try {
                     messageBean.setMsg(inviteMsg.toJson());
                     messageBean.setOtherName(otherName);
-                    messageBean.setType(MsgType.MSG_TYPE_INVITE);
+                    messageBean.setType(MsgType.MSG_TYPE_REPLY_INVITE);
                     sendMsg(messageBean);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -135,7 +137,7 @@ public class SendMessage {
      * @param state
      */
     private static void updateMessageState(String packetId, int state){
-        messageDao.updateMessageState(packetId, state);
+        messageDao.updateMessageState(packetId, state, null);
     }
 
 }

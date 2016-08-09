@@ -4,7 +4,6 @@ package com.juns.wechat.config;
  * Created by 王者 on 2016/7/21
  */
 public class MsgType {
-
     public final static int MSG_TYPE_TEXT    = 200;                  //文字
     public final static int MSG_TYPE_VOICE   = MSG_TYPE_TEXT+1; //语音
     public final static int MSG_TYPE_PICTURE = MSG_TYPE_VOICE+1;//图片
@@ -17,7 +16,10 @@ public class MsgType {
     public final static int MSG_TYPE_MEETING   = MSG_TYPE_PAY+1;     //会议室请求
     public final static int MSG_TYPE_FACE      = MSG_TYPE_MEETING+1;     //表情
     public final static int MSG_TYPE_TRANSFER  = MSG_TYPE_FACE+1;     //转让消息
-    public final static int MSG_TYPE_INVITE = MSG_TYPE_TRANSFER + 1; //发送邀请消息成为好友。
+
+    //大于500的消息不会在消息界面展示
+    public final static int MSG_TYPE_SEND_INVITE = 500; //发送邀请消息成为好友。
+    public final static int MSG_TYPE_REPLY_INVITE = MSG_TYPE_SEND_INVITE + 1; // 是否同意添加好友请求消息
 
     public static final String MSG_TYPE_VOICE_DESC = "[语音]";
     public static final String MSG_TYPE_PICTURE_DESC = "[图片";

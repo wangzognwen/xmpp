@@ -1,6 +1,5 @@
 package com.juns.wechat.activity;
 
-import com.juns.wechat.bean.Flag;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
@@ -117,12 +116,12 @@ public class ChatActivityHelper {
             }
         }
         switch (action){
-            case DbDataEvent.SAVE_ONE:
+            case DbDataEvent.SAVE:
                 addEntityToViewModel(msgViewModels, entity);
                 Collections.sort(msgViewModels);
                 chatActivity.refreshOneData(true);
             break;
-            case DbDataEvent.UPDATE_ONE:
+            case DbDataEvent.UPDATE:
                 if(position != -1){
                     msgViewModels.remove(position);
                 }
@@ -130,7 +129,7 @@ public class ChatActivityHelper {
                 Collections.sort(msgViewModels);
                 chatActivity.refreshOneData(true);
                 break;
-            case DbDataEvent.DELETE_ONE:
+            case DbDataEvent.DELETE:
                 if(position != -1){
                     msgViewModels.remove(position);
                 }

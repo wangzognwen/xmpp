@@ -20,6 +20,8 @@ import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.MessageDao;
+import com.juns.wechat.database.ChatTable;
+import com.juns.wechat.database.UserTable;
 import com.juns.wechat.manager.AccountManager;
 
 import org.simple.eventbus.Subscriber;
@@ -90,14 +92,14 @@ public class Fragment_Msg extends BaseFragment{
         mAdapter.setData(msgItemShowList);
     }
 
-    @Subscriber
+    @Subscriber(tag = ChatTable.TABLE_NAME)
     private void onMessageDataChanged(DbDataEvent<MessageBean> event){
         initData(); //重新加载数据
     }
 
-    @Subscriber
+    @Subscriber(tag = UserTable.TABLE_NAME)
     private void onUserDataChanged(DbDataEvent<MessageBean> event){
-        if(event.action >= DbDataEvent.UPDATE_ONE && event.action <= DbDataEvent.REPLACE_MANY){
+        if(event.action == DbDataEvent.UPDATE && event.action == DbDataEvent.REPLACE){
             initData(); //重新加载数据
         }
     }

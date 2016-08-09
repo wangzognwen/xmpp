@@ -3,9 +3,8 @@ package com.juns.wechat.dao;
 import android.database.Cursor;
 
 import com.juns.wechat.bean.Flag;
-import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.database.DbUtil;
-import com.juns.wechat.database.IdGenerator;
+import com.juns.wechat.util.LogUtil;
 
 
 import org.simple.eventbus.EventBus;
@@ -17,11 +16,9 @@ import org.xutils.db.table.ColumnEntity;
 import org.xutils.db.table.TableEntity;
 import org.xutils.ex.DbException;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 王宗文 on 2016/7/6.
@@ -73,7 +70,7 @@ public abstract class BaseDao<T> implements IDao<T> {
         try {
             addIdIfNeeded(t);
             dbManager.save(t);
-            postDataChangedEvent(DbDataEvent.SAVE_ONE, t);
+            postDataChangedEvent(DbDataEvent.SAVE, t);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -90,7 +87,7 @@ public abstract class BaseDao<T> implements IDao<T> {
                 }
             }
             dbManager.save(list);
-            postDataChangedEvent(DbDataEvent.SAVE_MANY, list);
+            postDataChangedEvent(DbDataEvent.SAVE, list);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -100,7 +97,7 @@ public abstract class BaseDao<T> implements IDao<T> {
     public boolean replace(T t) {
         try {
             dbManager.replace(t);
-            postDataChangedEvent(DbDataEvent.REPLACE_ONE, t);
+            postDataChangedEvent(DbDataEvent.REPLACE, t);
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -112,7 +109,7 @@ public abstract class BaseDao<T> implements IDao<T> {
     public boolean replace(List<T> list) {
         try {
             dbManager.replace(list);
-            postDataChangedEvent(DbDataEvent.REPLACE_MANY, list);
+            postDataChangedEvent(DbDataEvent.REPLACE, list);
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -124,7 +121,7 @@ public abstract class BaseDao<T> implements IDao<T> {
     public boolean update(T t) {
         try {
             dbManager.saveOrUpdate(t);
-            postDataChangedEvent(DbDataEvent.UPDATE_ONE, t);
+            postDataChangedEvent(DbDataEvent.UPDATE, t);
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -149,7 +146,7 @@ public abstract class BaseDao<T> implements IDao<T> {
             KeyValue keyValue = new KeyValue("flag", Flag.INVALID.value());
             update(whereBuilder, keyValue);
 
-            postDataChangedEvent(DbDataEvent.DELETE_ONE, t);
+            postDataChangedEvent(DbDataEvent.DELETE, t);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -159,9 +156,12 @@ public abstract class BaseDao<T> implements IDao<T> {
     @Override
     public boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs) {
         try {
-            dbManager.update(clazz, whereBuilder, keyValuePairs);
-            T t = findByParams(whereBuilder);
-            postDataChangedEvent(DbDataEvent.UPDATE_ONE, t);
+            int updatedRow = dbManager.update(clazz, whereBuilder, keyValuePairs);
+            LogUtil.i("updatedRow: " + updatedRow);
+            if(updatedRow >= 1){
+                List<T> list = findAllByParams(whereBuilder);
+                postDataChangedEvent(DbDataEvent.UPDATE, list);
+            }
             return true;
         } catch (DbException e) {
             e.printStackTrace();
@@ -170,17 +170,27 @@ public abstract class BaseDao<T> implements IDao<T> {
     }
 
     protected final void postDataChangedEvent(int action, T data){
-        DbDataEvent<T> dbDataEvent = new DbDataEvent<>();
-        dbDataEvent.action = action;
-        dbDataEvent.data = data;
-        EventBus.getDefault().post(dbDataEvent);
+        List<T> list = new ArrayList<>();
+        list.add(data);
+        postDataChangedEvent(action, list);
     }
 
     protected final void postDataChangedEvent(int action, List<T> datas){
-        DbDataEvent<T> dbDataEvent = new DbDataEvent<>();
+        DbDataEvent<T> dbDataEvent = new DbDataEvent();
         dbDataEvent.action = action;
-        dbDataEvent.datas = datas;
-        EventBus.getDefault().post(dbDataEvent);
+        dbDataEvent.data = datas;
+        String tag = getTableName();
+        EventBus.getDefault().post(dbDataEvent, tag);
+    }
+
+    private String getTableName(){
+        try {
+            TableEntity<T> tableEntity = dbManager.getTable(clazz);
+            return tableEntity.getName();
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Class<T> getEntityClass() {

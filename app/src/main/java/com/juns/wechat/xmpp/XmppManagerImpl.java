@@ -235,7 +235,7 @@ public class XmppManagerImpl implements XmppManager {
                         if(values.size() > 0){
                             searchResult.userName = row.getValues(column.getVariable()).get(0);
                         }
-                    }else if(column.getVariable().equalsIgnoreCase("name")){
+                    }else if(column.getVariable().equalsIgnoreCase("userName")){
                         List<String> values = row.getValues(column.getVariable());
                         if(values.size() > 0){
                             searchResult.nickName = row.getValues(column.getVariable()).get(0);

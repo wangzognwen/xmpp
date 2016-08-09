@@ -7,9 +7,11 @@ import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.xmpp.extensionelement.TimeElement;
 import com.juns.wechat.xmpp.process.IQRouter;
 import com.juns.wechat.xmpp.process.InviteMessageProcess;
 import com.juns.wechat.xmpp.process.MessageProcess;
+import com.juns.wechat.xmpp.process.ReplyInviteMessageProcess;
 import com.juns.wechat.xmpp.process.TextMessageProcess;
 import com.juns.wechat.xmpp.process.UnknownTypeMessageProcess;
 import com.juns.wechat.xmpp.util.ConvertUtil;
@@ -63,10 +65,7 @@ public class XmppReceivePacketListener implements StanzaListener {
             updateExistMessage(message);
         }else if(Message.Type.chat == message.getType()){
             handleChatMessageByType(message);
-        }else if(Message.Type.error == message.getType()){
-           // LogUtil.i("type : error!");
-          //  updateExistMessage(message, ChatTable.STATE_SEND_FAIL);
-        }
+        }else if(Message.Type.error == message.getType()){ }
     }
 
     /**
@@ -87,8 +86,10 @@ public class XmppReceivePacketListener implements StanzaListener {
      */
     private void updateExistMessage(Message message){
         if(("receipt." + ConfigUtil.getXmppDomain()).equals(message.getFrom())){
+            TimeElement timeElement = TimeElement.from(message);
+
             MessageDao.getInstance().updateMessageState(message.getStanzaId(),
-                    MessageBean.State.SEND_SUCCESS.value);
+                    MessageBean.State.SEND_SUCCESS.value, timeElement.getTime());
         }
     }
 
@@ -107,8 +108,11 @@ public class XmppReceivePacketListener implements StanzaListener {
                     case MsgType.MSG_TYPE_TEXT:
                         messageProcess = new TextMessageProcess(App.getInstance());
                         break;
-                    case MsgType.MSG_TYPE_INVITE:
+                    case MsgType.MSG_TYPE_SEND_INVITE:
                         messageProcess = new InviteMessageProcess(App.getInstance());
+                        break;
+                    case MsgType.MSG_TYPE_REPLY_INVITE:
+                        messageProcess = new ReplyInviteMessageProcess(App.getInstance());
                         break;
                     default:
                         messageProcess = new UnknownTypeMessageProcess(App.getInstance());

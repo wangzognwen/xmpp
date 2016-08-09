@@ -178,13 +178,13 @@ public class NewMsgAdpter extends BaseAdapter {
 		case LOCATION: // 位置消息
 			if (message.direct == EMMessage.Direct.RECEIVE) {
 				digest = getStrng(context, R.string.location_recv);
-				String name = message.getFrom();
+				String userName = message.getFrom();
 				if (GloableParams.UserInfos != null) {
 					User user = GloableParams.Users.get(message.getFrom());
 					if (user != null && null != user.getUserName())
-						name = user.getUserName();
+						userName = user.getUserName();
 				}
-				digest = String.format(digest, name);
+				digest = String.format(digest, userName);
 				return digest;
 			} else {
 				digest = getStrng(context, R.string.location_prefix);

@@ -193,4 +193,6 @@ public class MessageBean{
     public void setMsgObj(Msg msgObj) {
         this.msgObj = msgObj;
     }
+
+
 }

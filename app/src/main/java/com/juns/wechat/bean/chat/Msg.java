@@ -25,7 +25,8 @@ public abstract class Msg {
             case MsgType.MSG_TYPE_TEXT:
                 msg = gson.fromJson(json, TextMsg.class);
                 break;
-            case MsgType.MSG_TYPE_INVITE:
+            case MsgType.MSG_TYPE_SEND_INVITE:
+            case MsgType.MSG_TYPE_REPLY_INVITE:
                 msg = gson.fromJson(json, InviteMsg.class);
                 break;
             default:

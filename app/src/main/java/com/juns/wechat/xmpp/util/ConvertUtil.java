@@ -32,8 +32,6 @@ public class ConvertUtil {
             messageBean.setMsg(msg);
             messageBean.setType(type);
             messageBean.setTypeDesc(typeDesc);
-
-            messageBean.setMsgObj(Msg.fromJson(msg, type));
         } catch (JSONException e) {
             e.printStackTrace();
         }

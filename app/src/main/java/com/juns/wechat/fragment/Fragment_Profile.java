@@ -20,17 +20,20 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseFragment;
 import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
+import com.juns.wechat.database.UserTable;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ImageUtil;
 import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.view.activity.SettingActivity;
+
+import java.util.List;
 
 //我
 public class Fragment_Profile extends BaseFragment implements OnClickListener {
 	private View layout;
     private ImageView ivAvatar;
 	private TextView tvNickName, tvUserName;
-    private UserBean userBean;
+    private UserBean account;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,18 +70,23 @@ public class Fragment_Profile extends BaseFragment implements OnClickListener {
 	}
 
 	private void initData() {
-		userBean = AccountManager.getInstance().getUser();
-        tvUserName.setText("微信号：" + userBean.getUserName());
-        tvNickName.setText(userBean.getNickName() == null ? userBean.getUserName() : userBean.getNickName());
+		account = AccountManager.getInstance().getUser();
+        tvUserName.setText("微信号：" + account.getUserName());
+        tvNickName.setText(account.getNickName() == null ? account.getUserName() : account.getNickName());
 
-        ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
+        ImageUtil.loadImage(ivAvatar, account.getHeadUrl());
 	}
 
-    @Subscriber
+    @Subscriber(tag = UserTable.TABLE_NAME)
     private void onDbDataChanged(DbDataEvent<UserBean> event){
-        if(event.action == DbDataEvent.REPLACE_ONE && event.data != null){
-            if(event.data.getUserName().equals(userBean.getUserName())){
-                initData();
+        if(event.action == DbDataEvent.REPLACE || event.action == DbDataEvent.UPDATE){
+            List<UserBean> updateData = event.data;
+            if(updateData != null && !updateData.isEmpty()){
+                for(UserBean userBean : updateData){
+                    if(userBean.getUserName().equals(account.getUserName())){
+                        initData();
+                    }
+                }
             }
         }
     }
