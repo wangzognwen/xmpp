@@ -1,5 +1,7 @@
 package com.juns.wechat.fragment.msg;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,9 +16,11 @@ import com.juns.wechat.util.TimeUtil;
 public abstract class MsgItemShow {
     protected MsgItem msgItem;
     protected String myselfName = AccountManager.getInstance().getUserName();
+    protected Context mContext;
 
-    public MsgItemShow(MsgItem msgItem){
+    public MsgItemShow(Context context, MsgItem msgItem){
         this.msgItem = msgItem;
+        this.mContext = context;
     }
 
     public abstract void showTitle(TextView textView);
@@ -36,6 +40,8 @@ public abstract class MsgItemShow {
             textView.setText(unreadMsgCount + "");
         }
     }
+
+    public abstract void onItemClick();
 
     public final void showTime(TextView textView){
         textView.setText(TimeUtil.getRecentTime(msgItem.date));

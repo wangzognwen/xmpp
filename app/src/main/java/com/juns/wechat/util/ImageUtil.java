@@ -23,6 +23,10 @@ public class ImageUtil {
             .setLoadingDrawableId(R.drawable.default_useravatar).build();
 
     public static void loadImage(ImageView imageView, String fileName){
-        x.image().bind(imageView, REMOTE_PATH  + fileName, OPTIONS);
+        if(TextUtils.isEmpty(fileName)){
+            imageView.setImageResource(R.drawable.default_useravatar);
+        }else {
+            x.image().bind(imageView, REMOTE_PATH  + fileName, OPTIONS);
+        }
     }
 }

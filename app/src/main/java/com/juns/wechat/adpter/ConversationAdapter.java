@@ -36,12 +36,20 @@ public class ConversationAdapter extends ListDataAdapter<MsgItemShow>{
         TextView tvUnreadLabel = ViewHolder.get(convertView,
                 R.id.tv_unread_msg_number);
 
-        MsgItemShow msgItemShow = listData.get(position);
+        final MsgItemShow msgItemShow = listData.get(position);
         msgItemShow.loadUrl(ivAvatar);
         msgItemShow.showUnreadMsgNumber(tvUnreadLabel);
         msgItemShow.showTitle(tvTitle);
         msgItemShow.showContent(tvContent);
         msgItemShow.showTime(tvTime);
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                msgItemShow.onItemClick();
+            }
+        });
         return convertView;
     }
+
 }

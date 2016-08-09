@@ -16,10 +16,13 @@ import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ConversationAdapter;
 import com.juns.wechat.adpter.NewMsgAdpter;
-import com.juns.wechat.bean.PublicMsgInfo;
+import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.common.BaseFragment;
+import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
+
+import org.simple.eventbus.Subscriber;
 
 //消息
 public class Fragment_Msg extends BaseFragment{
@@ -33,7 +36,7 @@ public class Fragment_Msg extends BaseFragment{
 	private MainActivity parentActivity;
     private String account = AccountManager.getInstance().getUserName();
     private List<MsgItemShow> msgItemShowList;
-    private ConversationAdapter mAapter;
+    private ConversationAdapter mAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,11 +44,10 @@ public class Fragment_Msg extends BaseFragment{
 		if (layout == null) {
 			ctx = this.getActivity();
 			parentActivity = (MainActivity) getActivity();
-			layout = ctx.getLayoutInflater().inflate(R.layout.fragment_msg,
-					null);
+			layout = ctx.getLayoutInflater().inflate(R.layout.fragment_msg, null);
 			lvContact = (ListView) layout.findViewById(R.id.lvNewFriends);
-            mAapter = new ConversationAdapter(getActivity());
-            lvContact.setAdapter(mAapter);
+            mAdapter = new ConversationAdapter(getActivity());
+            lvContact.setAdapter(mAdapter);
 			errorItem = (RelativeLayout) layout
 					.findViewById(R.id.rl_error_item);
 			errorText = (TextView) errorItem
@@ -78,59 +80,30 @@ public class Fragment_Msg extends BaseFragment{
     private void assembleData(List<MsgItem> msgItems){
         if(msgItemShowList == null){
             msgItemShowList = new ArrayList<>();
+        }else {
+            msgItemShowList.clear();
         }
         for(MsgItem msgItem : msgItems){
-            MsgItemShow msgItemShow = new ChatMsgItemShow(msgItem);
+            MsgItemShow msgItemShow = new ChatMsgItemShow(getActivity(), msgItem);
             msgItemShowList.add(msgItemShow);
         }
-        mAapter.setData(msgItemShowList);
+        mAdapter.setData(msgItemShowList);
     }
 
+    @Subscriber
+    private void onMessageDataChanged(DbDataEvent<MessageBean> event){
+        initData(); //重新加载数据
+    }
 
-	private void initViews() {
-		conversationList.addAll(loadConversationsWithRecentChat());
-		if (conversationList != null && conversationList.size() > 0) {
-			layout.findViewById(R.id.txt_nochat).setVisibility(View.GONE);
-			adpter = new NewMsgAdpter(getActivity(), conversationList);
-			// TODO 加载订阅号信息 ，增加一个Item
-			// if (GloableParams.isHasPulicMsg) {
-			/*EMConversation nee = new EMConversation("100000");
-			conversationList.insertOrUpdate(0, nee);*/
-			String time = "";
-			String content = "";
-			time = "下午 02:45";
-			content = "[腾讯娱乐] 赵薇炒股日赚74亿";
-			PublicMsgInfo msgInfo = new PublicMsgInfo();
-			msgInfo.setContent(content);
-			msgInfo.setMsg_ID("12");
-			msgInfo.setTime(time);
-			adpter.setPublicMsg(msgInfo);
-			// }
-			lvContact.setAdapter(adpter);
-		} else {
-			layout.findViewById(R.id.txt_nochat).setVisibility(View.VISIBLE);
-		}
-	}
+    @Subscriber
+    private void onUserDataChanged(DbDataEvent<MessageBean> event){
+        if(event.action >= DbDataEvent.UPDATE_ONE && event.action <= DbDataEvent.REPLACE_MANY){
+            initData(); //重新加载数据
+        }
+    }
 
-	/**
-	 * 获取所有会话
-	 *
-	 * @return +
-	 */
-	private List loadConversationsWithRecentChat() {
-		/*// 获取所有会话，包括陌生人
-		Hashtable<String, EMConversation> conversations = EMChatManager
-				.getDbManager().getAllConversations();
-		List<EMConversation> list = new ArrayList<EMConversation>();
-		// 过滤掉messages seize为0的conversation
-		for (EMConversation conversation : conversations.values()) {
-			if (conversation.getAllMessages().size() != 0)
-				list.insertOrUpdate(conversation);
-		}
-		// 排序
-		sortConversationByLastChatTime(list);
-		return list;*/
-		return null;
-	}
-
+    @Override
+    protected boolean registerEventBus() {
+        return true;
+    }
 }

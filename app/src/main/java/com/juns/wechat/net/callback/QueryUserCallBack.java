@@ -14,4 +14,9 @@ public abstract class QueryUserCallBack extends BaseCallBack<BaseResponse.QueryU
             UserDao.getInstance().replace(result.userBean);
         }
     }
+
+    @Override
+    protected void handleFailed(BaseResponse.QueryUserResponse result) {
+
+    }
 }

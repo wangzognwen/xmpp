@@ -58,7 +58,7 @@ public class MessageDao extends BaseDao<MessageBean>{
      */
     public List<MsgItem> getLastMessageWithEveryFriend(String userName){
         SqlInfo sqlInfo = new SqlInfo("select id, otherName, typeDesc, type, date" +
-                " from wcMessage where myselfName = ? and state = ? and flag != -1 group by otherName order by date");
+                " from wcMessage where myselfName = ? and flag != -1 group by otherName order by date");
         sqlInfo.addBindArg(new KeyValue(UserBean.USERNAME, userName));
         try {
             List<MsgItem> msgItems = new ArrayList<>();
@@ -81,12 +81,12 @@ public class MessageDao extends BaseDao<MessageBean>{
     }
 
     public int getUnreadMsgNum(String myselfName, String otherName){
-        SqlInfo sqlInfo = new SqlInfo("select count(1) as count from wcFriend where myselfName = ? " +
+        SqlInfo sqlInfo = new SqlInfo("select count(1) as count from wcMessage where myselfName = ? " +
                 "and otherName = ? and direction = ? and state = ?");
         sqlInfo.addBindArg(new KeyValue("key1", myselfName));
         sqlInfo.addBindArg(new KeyValue("key2", otherName));
         sqlInfo.addBindArg((new KeyValue("key3", MessageBean.Direction.INCOMING.value)));
-        sqlInfo.addBindArg(new KeyValue("key4", MessageBean.State.NEW));
+        sqlInfo.addBindArg(new KeyValue("key4", MessageBean.State.NEW.value));
         try {
             Cursor cursor = dbManager.execQuery(sqlInfo);
             if(cursor.moveToNext()){
