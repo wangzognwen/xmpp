@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="13dp" >
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:paddingTop="13dp">
 
     <TextView
         android:id="@+id/tv_date"
@@ -19,22 +20,16 @@
 
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="@dimen/size_avatar"
-            android:layout_height="@dimen/size_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:background="@drawable/head"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/default_useravatar"
             android:scaleType="fitXY" />
-        <TextView
-            android:id="@+id/tv_userid"
-            style="@style/chat_text_name_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp" 
-            android:layout_toRightOf="@id/iv_avatar"/>
+
        <TextView
-             android:maxWidth="225.0dip"
+            android:maxWidth="240.0dip"
             android:id="@+id/tv_chat_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,12 +39,17 @@
             android:layout_below="@+id/tv_userid"
             android:autoLink="web"
             android:clickable="true"
-            android:focusable="true" 
-            android:padding="12dp"
+            android:focusable="true"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="11dp"
             android:gravity="center"
             android:lineSpacingExtra="2dp"
             android:textColor="#252424"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            tools:text="成都但是三顿饭三顿饭对的的"
+            android:minHeight="40dp"/>
         
     </RelativeLayout>
 

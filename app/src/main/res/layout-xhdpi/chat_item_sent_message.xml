@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingTop="13dp" >
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingTop="13dp">
 
     <TextView
         android:id="@+id/tv_date"
@@ -15,33 +16,38 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_chat_activity" >
+        android:layout_marginTop="@dimen/margin_chat_activity">
 
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="@dimen/size_avatar"
-            android:layout_height="@dimen/size_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/margin_chat_activity"
-            android:background="@drawable/head"
-            android:scaleType="fitXY" />
+            android:background="@drawable/default_useravatar"
+            android:scaleType="fitXY"
+            android:layout_marginTop="8dp"/>
 
        <TextView
             android:id="@+id/tv_chat_content"
             style="@style/chat_content_date_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:layout_marginRight="@dimen/margin_chat_activity"
             android:layout_toLeftOf="@id/iv_avatar"
             android:autoLink="web"
-            android:padding="17dp"
             android:background="@drawable/chatto_bg"
             android:gravity="center"
             android:lineSpacingExtra="2dp"
-            android:maxWidth="225.0dip"
-            android:paddingLeft="8dip"
-            android:textSize="15sp" />
+            android:maxWidth="240dp"
+            android:textSize="15sp"
+            tools:text="测试对的地方的但是是否飞是否第三方"
+            android:layout_alignParentTop="true"/>
 
 
         <ImageView

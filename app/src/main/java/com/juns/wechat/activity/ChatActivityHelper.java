@@ -58,9 +58,6 @@ public class ChatActivityHelper {
         }
 
         mQueryIndex = mQueryIndex - messageBeen.size();
-        if(mQueryIndex < 0){
-            mQueryIndex = 0;
-        }
 
         List<MsgViewModel> msgViewModels = chatActivity.getMsgViewModels();
         addEntityToViewModel(msgViewModels, messageBeen);

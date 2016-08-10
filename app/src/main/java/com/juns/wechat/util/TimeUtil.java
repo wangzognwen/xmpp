@@ -10,10 +10,12 @@ package com.juns.wechat.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 @SuppressLint("SimpleDateFormat")
@@ -81,20 +83,6 @@ public class TimeUtil {
     }
 
     /**
-     * 將long 轉換時間字符串 MM-dd HH:mm
-     *
-     * @param time
-     * @return
-     */
-    @SuppressLint("SimpleDateFormat")
-    public static String getAsyTime(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
-        Date date = new Date(time);
-        sdf.format(date);
-        return sdf.format(date);
-    }
-
-    /**
      * 根据生日获取年龄 格式必须符合
      *
      * @param s1 生日
@@ -112,16 +100,6 @@ public class TimeUtil {
     }
 
     /**
-     * 获取当前时间并格式化 HH:mm:ss a
-     * */
-    @SuppressLint("SimpleDateFormat")
-    public static String getFormatMessageTime(Context context) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss a");
-        return format.format(new Date());
-
-    }
-
-    /**
      * 获取格式化时间 HH:mm:ss
      */
     @SuppressLint("SimpleDateFormat")
@@ -130,83 +108,27 @@ public class TimeUtil {
         return format.format(date);
     }
 
-
     @SuppressLint("SimpleDateFormat")
     public static String getRecentTime(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return getStandardDate(format.format(date));
-    }
-
-    /**
-     * 获取今年的纪念日时间
-     *
-     * @param month 几月份，从1开始
-     * @param day 几号
-     * @return calendar
-     */
-    public static Calendar getMemoryDayInThisYear(int month, int day) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-        calendar.set(Calendar.MONTH, month - 1);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar;
-    }
-
-    /**
-     * 将long 转换 时间字符串 yyyy-MM-dd HH:mm:ss 時間為毫秒數
-     *
-     * @param timestamp
-     * @return
-     */
-    @SuppressLint("SimpleDateFormat")
-    public static String getStandardMTime(long timestamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // millisecond
-        Date date = new Date(timestamp);
-        sdf.format(date);
-        return sdf.format(date);
-    }
-
-    /**
-     * 获取今天的日期
-     *
-     * @return Calendar
-     */
-    public static Calendar getToday() {
-        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-        now.set(Calendar.HOUR_OF_DAY, 0);
-        now.set(Calendar.MINUTE, 0);
-        now.set(Calendar.SECOND, 0);
-        now.set(Calendar.MILLISECOND, 0);
-        return now;
-    }
-
-    /**
-     * 将年月日字符串“yyyy-mm-dd”切割成int数组
-     *
-     * @param date
-     * @return
-     */
-    public static int[] splitDateString(String date) {
-        String[] values = null;
-        try {
-            values = date.split("-");
-        } catch (Exception e) {
-            values = new String[]{"0", "0", "0"};
-        }
-        int[] retValues = new int[3];
-        if ((values != null) && (values.length == 3)) {
-            try {
-                for (int i = 0; i < values.length; i++) {
-                    retValues[i] = Integer.parseInt(values[i]);
-                }
-            } catch (Exception e) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+        Date nowDate = new Date();
+        int firstDayOfThisWeek = getFirstDayOfWeek(nowDate);
+        int day = date.getDate();
+        if(day >= firstDayOfThisWeek){
+            if(nowDate.getDate() == day){
+                return format.format(date);
+            }else if(nowDate.getDate() - day == 1){
+                return "昨天";
+            }else if(nowDate.getDate() - day == 2){
+                return "前天";
+            }else {
+                String strWeek = "星期" + "日一二三四五六".substring(getDayOfWeek(date), 1);
+                return strWeek;
             }
+        }else {
+            format = new SimpleDateFormat("yyyy-MM-dd");
+            return format.format(date);
         }
-        return retValues;
     }
 
     /**
@@ -228,6 +150,8 @@ public class TimeUtil {
         long hour = (long) Math.ceil(time / 60 / 60 / 1000.0f);// 小时
 
         long day = (long) Math.ceil(time / 24 / 60 / 60 / 1000.0f);// 天前
+
+
 
         if (day - 1 > 0) {
             sb.append(day + "天");
@@ -256,6 +180,26 @@ public class TimeUtil {
             sb.append("前");
         }
         return sb.toString();
+    }
+
+    /**
+     * 取得指定日期所在周的第一天的日期号
+     *
+     * @param date
+     * @return
+     */
+    public static int getFirstDayOfWeek(Date date) {
+        Calendar c = new GregorianCalendar();
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+        c.setTime(date);
+        c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Monday
+        return c.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static int getDayOfWeek(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
 }
