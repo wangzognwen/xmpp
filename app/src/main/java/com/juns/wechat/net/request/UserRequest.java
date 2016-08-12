@@ -10,10 +10,8 @@ import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.response.SearchUserResponse;
 import com.juns.wechat.net.response.UserListResponse;
 
-import org.json.JSONArray;
 import org.xutils.http.RequestParams;
 import org.xutils.http.annotation.HttpRequest;
-import org.xutils.http.body.StringBody;
 import org.xutils.x;
 
 /**

@@ -22,9 +22,16 @@ import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.LoginCallBack;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.NetWorkUtil;
 
 import org.xutils.view.annotation.ViewInject;
+
+import java.util.HashMap;
+
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+import cn.smssdk.gui.RegisterPage;
 
 
 /**
@@ -80,7 +87,9 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 				mc = new MyCount(60000, 1000); // 第一参数是总的时间，第二个是间隔时间
 			}
 			mc.start();
+            sendVerifyCode();
 			break;
+
 		case R.id.btnRegister:
 			getRegister();
 			break;
@@ -88,6 +97,24 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 			break;
 		}
 	}
+
+    private void sendVerifyCode(){
+        RegisterPage registerPage = new RegisterPage();
+        registerPage.setRegisterCallback(new EventHandler() {
+            @Override
+            public void afterEvent(int i, int i1, Object result) {
+                // 解析注册结果
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    @SuppressWarnings("unchecked")
+                    HashMap<String, Object> phoneMap = (HashMap<String, Object>) result;
+                    String country = (String) phoneMap.get("country");
+                    String phone = (String) phoneMap.get("phone");
+                    LogUtil.i("countty: " + country + ", phone: "+ phone);
+                }
+            }
+        });
+        registerPage.show(this);
+    }
 
 	private void getRegister() {
 		userName = etInputName.getText().toString().trim();

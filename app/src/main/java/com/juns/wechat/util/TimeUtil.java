@@ -122,7 +122,14 @@ public class TimeUtil {
             }else if(nowDate.getDate() - day == 2){
                 return "前天";
             }else {
-                String strWeek = "星期" + "日一二三四五六".substring(getDayOfWeek(date), 1);
+                String strWeek;
+                try {
+                    strWeek = "星期" + "日一二三四五六".substring(date.getDay(), date.getDay() + 1);
+                }catch (Exception e){
+                    LogUtil.e("day: " + date.getDay());
+                    strWeek = "";
+                }
+
                 return strWeek;
             }
         }else {
@@ -194,12 +201,6 @@ public class TimeUtil {
         c.setTime(date);
         c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Monday
         return c.get(Calendar.DAY_OF_MONTH);
-    }
-
-    public static int getDayOfWeek(Date date){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
 }

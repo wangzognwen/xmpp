@@ -16,9 +16,10 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.baidu.frontia.FrontiaApplication;
-import com.juns.wechat.chat.VoiceCallActivity;
 
 import org.xutils.x;
+
+import cn.smssdk.SMSSDK;
 
 public class App extends FrontiaApplication {
 
@@ -34,76 +35,11 @@ public class App extends FrontiaApplication {
 		// crashHandler.init(_context);
         x.Ext.init(this);
         x.Ext.setDebug(BuildConfig.DEBUG); // 开启debug会影响性能
+        SMSSDK.initSDK(this, Constants.MOB_SDK_KEY, Constants.MOB_SDK_SECRET);
+
 	}
 
-	private void initEMChat() {
-		int pid = android.os.Process.myPid();
-		String processAppName = getAppName(pid);
-		if (processAppName == null
-				|| !processAppName.equalsIgnoreCase("com.juns.wechat")) {
-			return;
-		}
-	/*	EMChatOptions options = EMChatManager.getDbManager().getChatOptions();
-		// 获取到EMChatOptions对象
-		// 设置自定义的文字提示
-		options.setNotifyText(new OnMessageNotifyListener() {
 
-			@Override
-			public String onNewMessageNotify(EMMessage message) {
-				return "你的好友发来了一条消息哦";
-			}
-
-			@Override
-			public String onLatestMessageNotify(EMMessage message,
-					int fromUsersNum, int messageNum) {
-				return fromUsersNum + "个好友，发来了" + messageNum + "条消息";
-			}
-
-			@Override
-			public String onSetNotificationTitle(EMMessage arg0) {
-				return null;
-			}
-
-			@Override
-			public int onSetSmallIcon(EMMessage arg0) {
-				return 0;
-			}
-		});
-		options.setOnNotificationClickListener(new OnNotificationClickListener() {
-
-			@Override
-			public Intent onNotificationClick(EMMessage message) {
-				Intent intent = new Intent(_context, MainActivity.class);
-				ChatType chatType = message.getChatType();
-				if (chatType == ChatType.Chat) { // 单聊信息
-					intent.putExtra("userId", message.getFrom());
-					intent.putExtra("chatType", ChatActivity.CHATTYPE_SINGLE);
-				} else { // 群聊信息
-					// message.getTo()为群聊id
-					intent.putExtra("groupId", message.getTo());
-					intent.putExtra("chatType", ChatActivity.CHATTYPE_GROUP);
-				}
-				return intent;
-			}
-		});*/
-		// IntentFilter callFilter = new
-		// IntentFilter(EMChatManager.getDbManager()
-		// .getIncomingCallBroadcastAction());
-		// registerReceiver(new CallReceiver(), callFilter);
-	}
-
-	private class CallReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// 拨打方username
-			String from = intent.getStringExtra("from");
-			// call type
-			String type = intent.getStringExtra("type");
-			startActivity(new Intent(_context, VoiceCallActivity.class)
-					.putExtra("username", from).putExtra("isComingCall", true));
-		}
-	}
 
 	private String getAppName(int pID) {
 		String processName = null;

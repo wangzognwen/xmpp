@@ -234,6 +234,12 @@
             android:name=".activity.SearchActivity"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
         <!-- 百度地图所需的service -->
         <service
             android:name="com.baidu.location.f"
