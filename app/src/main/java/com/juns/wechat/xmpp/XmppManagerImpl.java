@@ -5,6 +5,7 @@ import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.event.XmppEvent;
+import com.juns.wechat.xmpp.iq.FileTransferIQ;
 import com.juns.wechat.xmpp.listener.RosterLoadedListenerImpl;
 import com.juns.wechat.xmpp.listener.XmppConnectionListener;
 import com.juns.wechat.xmpp.listener.XmppReceivePacketFilter;
@@ -16,6 +17,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
@@ -32,7 +34,9 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.simple.eventbus.EventBus;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.nio.channels.NotYetConnectedException;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +206,26 @@ public class XmppManagerImpl implements XmppManager {
         message.setStanzaId(messageBean.getPacketId());
         message.setBody(messageBean.toSendJson());
         return sendPacket(message);
+    }
+
+    @Override
+    public boolean sendFile(File file) {
+        FileTransferIQ fileTransferIQ = new FileTransferIQ();
+        fileTransferIQ.setMimeType(URLConnection.guessContentTypeFromName(file.getName()));
+
+        try {
+            connect();
+            FileTransferIQ fileTransferIQResponse =
+                    xmppConnection.createPacketCollectorAndSend(new StanzaIdFilter(fileTransferIQ.getStanzaId()),
+                            fileTransferIQ).nextResult(5000);
+        } catch (IOException e) {
+        XmppExceptionHandler.handleIOException(e);
+        } catch (XMPPException e) {
+        XmppExceptionHandler.handleXmppExecption(e);
+        } catch (SmackException e) {
+        XmppExceptionHandler.handleSmackException(e);
+        }
+        return false;
     }
 
     @Override

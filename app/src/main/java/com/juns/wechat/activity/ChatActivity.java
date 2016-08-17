@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,7 +47,9 @@ import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.exception.UserNotFoundException;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.util.ToolBarUtil;
+import com.juns.wechat.xmpp.util.SendMessage;
 
 import org.simple.eventbus.Subscriber;
 
@@ -312,16 +315,15 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			default:
 				break;
 			}
-		}
+		}*/
 		if (resultCode == RESULT_OK) { // 清空消息
 			if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {
 				// 清空会话
-				EMChatManager.getDbManager().clearConversation(toChatUsername);
-				adapter.refresh();
+
 			} else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
 				if (cameraFile != null && cameraFile.exists())
 					sendPicture(cameraFile.getAbsolutePath());
-			} else if (requestCode == REQUEST_CODE_SELECT_VIDEO) { // 发送本地选择的视频
+			} /*else if (requestCode == REQUEST_CODE_SELECT_VIDEO) { // 发送本地选择的视频
 
 				int duration = data.getIntExtra("dur", 0);
 				String videoPath = data.getStringExtra("path");
@@ -363,7 +365,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 				}
 				sendVideo(videoPath, file.getAbsolutePath(), duration / 1000);
 
-			} else if (requestCode == REQUEST_CODE_LOCAL) { // 发送本地图片
+			} */else if (requestCode == REQUEST_CODE_LOCAL) { // 发送本地图片
 				if (data != null) {
 					Uri selectedImage = data.getData();
 					if (selectedImage != null) {
@@ -383,22 +385,15 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 				double longitude = data.getDoubleExtra("longitude", 0);
 				String locationAddress = data.getStringExtra("address");
 				if (locationAddress != null && !locationAddress.equals("")) {
-					more(more);
+
 					sendLocationMsg(latitude, longitude, "", locationAddress);
 				} else {
 					String st = getResources().getString(
 							R.string.unable_to_get_loaction);
-					Toast.makeText(this, st, 0).show();
+
 				}
 				// 重发消息
-			} else if (requestCode == REQUEST_CODE_TEXT
-					|| requestCode == REQUEST_CODE_VOICE
-					|| requestCode == REQUEST_CODE_PICTURE
-					|| requestCode == REQUEST_CODE_LOCATION
-					|| requestCode == REQUEST_CODE_VIDEO
-					|| requestCode == REQUEST_CODE_FILE) {
-				resendMessage();
-			} else if (requestCode == REQUEST_CODE_COPY_AND_PASTE) {
+			}  else if (requestCode == REQUEST_CODE_COPY_AND_PASTE) {
 				// 粘贴
 				if (!TextUtils.isEmpty(clipboard.getText())) {
 					String pasteText = clipboard.getText().toString();
@@ -408,17 +403,8 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 					}
 
 				}
-			} else if (requestCode == REQUEST_CODE_ADD_TO_BLACKLIST) { // 移入黑名单
-				EMMessage deleteMsg = (EMMessage) adapter.getItem(data
-						.getIntExtra("position", -1));
-				addUserToBlacklist(deleteMsg.getFrom());
-			} else if (conversation.getMsgCount() > 0) {
-				adapter.refresh();
-				setResult(RESULT_OK);
-			} else if (requestCode == REQUEST_CODE_GROUP_DETAIL) {
-				adapter.refresh();
 			}
-		}*/
+		}
 	}
 
 
@@ -517,17 +503,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * 从图库获取图片
 	 */
 	public void selectPicFromLocal() {
-		Intent intent;
-		if (Build.VERSION.SDK_INT < 19) {
-			intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.setType("image/*");
-
-		} else {
-			intent = new Intent(
-					Intent.ACTION_PICK,
-					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		}
-		startActivityForResult(intent, REQUEST_CODE_LOCAL);
+        PhotoUtil.openAlbum(this, REQUEST_CODE_LOCAL);
 	}
 
 	/**
@@ -603,26 +579,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * @param filePath
 	 */
 	private void sendPicture(final String filePath) {
-
-		// create and insertOrUpdate image message in view
-		/*final EMMessage message = EMMessage
-				.createSendMessage(EMMessage.Type.IMAGE);
-		// 如果是群聊，设置chattype,默认是单聊
-		if (chatType == CHATTYPE_GROUP)
-			message.setChatType(ChatType.GroupChat);
-
-		message.setReceipt(to);
-		ImageMessageBody body = new ImageMessageBody(new File(filePath));
-		// 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
-		// body.setSendOriginalImage(true);
-		message.addBody(body);
-		conversation.addMessage(message);*/
-
-		//listView.setAdapter(adapter);
-		adapter.refresh();
-		//listView.setSelection(listView.getCount() - 1);
-		setResult(RESULT_OK);
-		// more(more);
+        SendMessage.sendPictureMsg(contactName, filePath);
 	}
 
 	/**
@@ -671,7 +628,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 			int columnIndex = cursor.getColumnIndex("_data");
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			cursor = null;
 
 			if (picturePath == null || picturePath.equals("null")) {
 				Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);

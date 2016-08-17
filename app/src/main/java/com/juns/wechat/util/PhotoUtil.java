@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import com.juns.wechat.activity.CropImageActivity;
@@ -17,7 +19,7 @@ import java.io.IOException;
  * Created by 王者 on 2016/7/16.
  */
 public class PhotoUtil {
-    public static final String PHOTO_PATH = "/sdcard/wechat/img";
+    public static final String PHOTO_PATH = Environment.getExternalStorageDirectory().getPath() + "/wechat/img";
 
     static {
         File file = new File(PHOTO_PATH);
@@ -35,9 +37,16 @@ public class PhotoUtil {
     }
 
     public static void openAlbum(Activity activity, int requestCode){
-        Intent intent = new Intent(Intent.ACTION_PICK, null);
-        intent.setDataAndType(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        Intent intent;
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+
+        } else {
+            intent = new Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        }
         activity.startActivityForResult(intent, requestCode);
     }
 

@@ -54,6 +54,7 @@ public class ChatInputManager implements View.OnClickListener{
     private LinearLayout llEmoticonContainer; //表情容器
     private ViewPager emoticonsViewPager; //表情viewPager
     private LinearLayout llMoreFunctionContainer; //图片，相册等更多功能容器
+    private LinearLayout viewPhoto; //图片
 
     private ListView lvMessages;  //消息列表
     private List<String> emoticonsFileNames;
@@ -77,7 +78,6 @@ public class ChatInputManager implements View.OnClickListener{
 
         rlInputText = (RelativeLayout) view.findViewById(R.id.rl_input_text);
         etInputText = (PasteEditText) view.findViewById(R.id.et_input_text);
-        //etInputText.requestFocus();
 
         ivEmoticonsNormal = (ImageView) view.findViewById(R.id.iv_emoticons_normal);
         ivEmoticonsChecked = (ImageView) view.findViewById(R.id.iv_emoticons_checked);
@@ -87,6 +87,7 @@ public class ChatInputManager implements View.OnClickListener{
         llEmoticonContainer = (LinearLayout) view.findViewById(R.id.ll_emoticon_container);
         emoticonsViewPager = (ViewPager) view.findViewById(R.id.viewPager);
         llMoreFunctionContainer = (LinearLayout) view.findViewById(R.id.ll_more_function_container);
+        viewPhoto = (LinearLayout) view.findViewById(R.id.view_photo);
 
         lvMessages = (ListView) view.findViewById(R.id.lvMessages);
     }
@@ -216,7 +217,7 @@ public class ChatInputManager implements View.OnClickListener{
 								"isComingCall", false));*/
                 break;
             case R.id.view_photo:
-               // selectPicFromLocal(); // 点击图片图标
+                mChatActivity.selectPicFromLocal(); // 点击图片图标
                 break;
             case R.id.view_location:
                 break;

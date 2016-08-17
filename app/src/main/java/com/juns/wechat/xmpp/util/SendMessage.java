@@ -4,14 +4,20 @@ package com.juns.wechat.xmpp.util;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.InviteMsg;
 import com.juns.wechat.bean.chat.TextMsg;
+import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ThreadPoolUtil;
+import com.juns.wechat.xmpp.XmppConnUtil;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
+import java.io.File;
 import java.util.Date;
 
 /*******************************************************
@@ -47,6 +53,24 @@ public class SendMessage {
             }
         });
 
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void sendPictureMsg(final String otherName, final String filePath){
+        ThreadPoolUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                FileTransferManager fileTransferManager = FileTransferManager.getInstanceFor(XmppConnUtil.getXmppConnection());
+                OutgoingFileTransfer outgoingFileTransfer =
+                        fileTransferManager.createOutgoingFileTransfer(ConfigUtil.getXmppJid(otherName));
+                try {
+                    outgoingFileTransfer.sendFile(new File(filePath), null);
+                } catch (SmackException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     /**

@@ -3,6 +3,7 @@ package com.juns.wechat.xmpp;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.xmpp.extensionelement.TimeElement;
 import com.juns.wechat.xmpp.iq.IQUserInfo;
+import com.juns.wechat.xmpp.listener.FileTransferListenerImpl;
 import com.juns.wechat.xmpp.process.IQRouter;
 import com.juns.wechat.xmpp.process.IQUserInfoProcessor;
 import com.juns.wechat.xmpp.provider.TimeProvider;
@@ -18,6 +19,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.ping.android.ServerPingWithAlarmManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.time.packet.Time;
@@ -88,11 +90,13 @@ public class XmppConnUtil {
     }
 
     private static void initProvider() {
-       ProviderManager.addExtensionProvider(DelayInformation.ELEMENT, DelayInformation.NAMESPACE,
+        ProviderManager.addExtensionProvider(DelayInformation.ELEMENT, DelayInformation.NAMESPACE,
                DelayInformationProvider.INSTANCE);
 
-       ProviderManager.addExtensionProvider(TimeElement.ELEMENT, TimeElement.NAME_SPACE,
+        ProviderManager.addExtensionProvider(TimeElement.ELEMENT, TimeElement.NAME_SPACE,
                TimeProvider.INSTANCE);
+
+        FileTransferManager.getInstanceFor(xmppConnection).addFileTransferListener(new FileTransferListenerImpl());
     }
 
     private static void initIQProcessor(){
