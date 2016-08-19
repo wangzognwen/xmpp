@@ -33,7 +33,7 @@ public interface XmppManager {
     boolean isAuthenticated();
     boolean sendPacket(Stanza packet);
     boolean sendMessage(MessageBean messageBean);
-    boolean sendFile(File file);
+    boolean sendFile(File file, String otherName);
     boolean isFriends(int otherUserId);
     List<SearchResult> searchUser(String name);
 }

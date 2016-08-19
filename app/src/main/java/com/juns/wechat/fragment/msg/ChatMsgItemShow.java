@@ -9,11 +9,10 @@ import com.juns.wechat.activity.ChatActivity;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.dao.FriendDao;
-import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 
 /**
  * Created by 王者 on 2016/8/9.
@@ -46,18 +45,18 @@ public class ChatMsgItemShow extends MsgItemShow {
     public void loadUrl(final ImageView iv) {
         if(friendBean == null){
             if(stranger != null){
-                ImageUtil.loadImage(iv, stranger.getHeadUrl());
+                ImageLoader.loadImage(iv, stranger.getHeadUrl());
             }else {
                 UserRequest.queryUserData(msgItem.userName, new QueryUserCallBack() {
                     @Override
                     protected void handleSuccess(BaseResponse.QueryUserResponse result) {
                         stranger = result.userBean;
-                        ImageUtil.loadImage(iv, stranger.getHeadUrl());
+                        ImageLoader.loadImage(iv, stranger.getHeadUrl());
                     }
                 });
             }
         }else {
-            ImageUtil.loadImage(iv, friendBean.getHeadUrl());
+            ImageLoader.loadImage(iv, friendBean.getHeadUrl());
         }
 
     }

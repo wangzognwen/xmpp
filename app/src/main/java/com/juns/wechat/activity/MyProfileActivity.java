@@ -19,7 +19,7 @@ import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.database.UserTable;
 import com.juns.wechat.dialog.SelectPhotoDialog;
 import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.PhotoUtil;
 
 import org.simple.eventbus.EventBus;
@@ -78,7 +78,7 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     private void setData(){
         account = AccountManager.getInstance().getUser();
         tvNickName.setText(account.getNickName() == null ? "" : account.getNickName());
-        ImageUtil.loadImage(ivAvatar, account.getHeadUrl());
+        ImageLoader.loadImage(ivAvatar, account.getHeadUrl());
     }
 
     @Click(viewId = R.id.rlAvatar)

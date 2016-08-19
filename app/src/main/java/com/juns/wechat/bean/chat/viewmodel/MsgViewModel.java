@@ -11,7 +11,7 @@ import com.juns.wechat.activity.UserInfoActivity;
 import com.juns.wechat.bean.Flag;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.dao.MessageDao;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 
 /*******************************************************
  * Created by 王者 on 2015/11/30
@@ -79,7 +79,7 @@ public abstract class MsgViewModel implements Comparable<MsgViewModel> {
      * @param url
      */
     public void loadUrl(ImageView icon, String url){
-        ImageUtil.loadImage(icon, url);
+        ImageLoader.loadImage(icon, url);
     }
 
     public abstract View fillView(View convertView, ViewGroup viewGroup);

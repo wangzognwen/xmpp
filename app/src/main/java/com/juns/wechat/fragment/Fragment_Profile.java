@@ -22,7 +22,7 @@ import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.database.UserTable;
 import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.view.activity.PublicActivity;
 import com.juns.wechat.view.activity.SettingActivity;
 
@@ -74,7 +74,7 @@ public class Fragment_Profile extends BaseFragment implements OnClickListener {
         tvUserName.setText("微信号：" + account.getUserName());
         tvNickName.setText(account.getNickName() == null ? account.getUserName() : account.getNickName());
 
-        ImageUtil.loadImage(ivAvatar, account.getHeadUrl());
+        ImageLoader.loadImage(ivAvatar, account.getHeadUrl());
 	}
 
     @Subscriber(tag = UserTable.TABLE_NAME)

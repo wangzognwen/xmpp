@@ -21,10 +21,7 @@ import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.net.callback.BaseCallBack;
-import com.juns.wechat.net.request.UploadFileRequest;
-import com.juns.wechat.net.response.UploadFileResponse;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.widget.scalemageview.PhotoView;
@@ -70,7 +67,7 @@ public class ShowBigImage extends ToolbarActivity {
 
         String fileName = AccountManager.getInstance().getHeadUrl();
         LogUtil.i("fileName: " + fileName);
-        ImageUtil.loadImage(scaleImageView, fileName);
+        ImageLoader.loadImage(scaleImageView, fileName);
 
         scaleImageView.setOnClickListener(new OnClickListener() {
 			@Override

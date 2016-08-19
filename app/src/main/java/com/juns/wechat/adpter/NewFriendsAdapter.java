@@ -24,12 +24,11 @@ import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.request.FriendRequest;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.ToastUtil;
 import com.juns.wechat.xmpp.util.SendMessage;
 
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class NewFriendsAdapter extends BaseAdapter{
 	protected Context context;
@@ -78,7 +77,7 @@ public class NewFriendsAdapter extends BaseAdapter{
             UserRequest.queryUserData(messageBean.getOtherName(), queryUserCallBack);
             return convertView;
         }else {
-            ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
+            ImageLoader.loadImage(ivAvatar, userBean.getHeadUrl());
             txt_name.setText(userBean.getShowName());
         }
 

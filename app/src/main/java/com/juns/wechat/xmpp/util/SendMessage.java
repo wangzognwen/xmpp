@@ -1,21 +1,23 @@
 package com.juns.wechat.xmpp.util;
 
 
+import android.graphics.Bitmap;
+
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.InviteMsg;
+import com.juns.wechat.bean.chat.PictureMsg;
 import com.juns.wechat.bean.chat.TextMsg;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.xmpp.XmppConnUtil;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 
-import org.jivesoftware.smack.SmackException;
+
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
-import org.jivesoftware.smackx.filetransfer.FileTransferManager;
-import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import java.io.File;
 import java.util.Date;
@@ -56,19 +58,46 @@ public class SendMessage {
     }
 
     @SuppressWarnings("unchecked")
-    public static void sendPictureMsg(final String otherName, final String filePath){
+    public static void sendPictureMsg(final String otherName, final File file){
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
-                FileTransferManager fileTransferManager = FileTransferManager.getInstanceFor(XmppConnUtil.getXmppConnection());
-                OutgoingFileTransfer outgoingFileTransfer =
-                        fileTransferManager.createOutgoingFileTransfer(ConfigUtil.getXmppJid(otherName));
-                try {
-                    outgoingFileTransfer.sendFile(new File(filePath), null);
-                } catch (SmackException e) {
-                    e.printStackTrace();
-                }
+                if(file == null || !file.exists()) return;
+                Bitmap bitmap = ImageLoader.loadLocalImage(file.getPath());
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+                String imgName = file.getName();
+                final PictureMsg pictureMsg = new PictureMsg();
+                pictureMsg.imgName = imgName;
+                pictureMsg.progress = 0;
+                pictureMsg.width = width;
+                pictureMsg.height = height;
 
+                final MessageBean messageBean = new MessageBean();
+                messageBean.setMsg(pictureMsg.toJson());
+                messageBean.setOtherName(otherName);
+                messageBean.setType(MsgType.MSG_TYPE_PICTURE);
+                messageBean.setTypeDesc(MsgType.MSG_TYPE_PICTURE_DESC);
+                completeMessageEntityInfo(messageBean);
+                addMessageToDB(messageBean);
+
+                FileTransferManager.getInstance().sendFile(file, otherName, new FileTransferManager.FileTransferListener() {
+                    @Override
+                    public void progressUpdated(int progress) {
+                        pictureMsg.progress = progress;
+                        messageBean.setMsg(pictureMsg.toJson());
+                        MessageDao.getInstance().update(messageBean);
+                    }
+
+                    @Override
+                    public void transferFinished(boolean success) {
+                        if(success){
+                            sendMsg(messageBean);
+                        }else {
+                            updateMessageState(messageBean.getPacketId(), MessageBean.State.SEND_FAILED.value);
+                        }
+                    }
+                });
             }
         });
     }

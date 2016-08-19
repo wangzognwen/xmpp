@@ -16,7 +16,7 @@ import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.PinyinComparator;
 import com.juns.wechat.common.ViewHolder;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,7 +90,7 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
                 tvCatalog.setText(catalog);
             }
         }
-        ImageUtil.loadImage(ivAvatar, friendBean.getHeadUrl());
+        ImageLoader.loadImage(ivAvatar, friendBean.getHeadUrl());
         tvNick.setText(friendBean.getShowName());
 
         checkBox.setChecked(isCheckedArray[position]);

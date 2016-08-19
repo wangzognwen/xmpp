@@ -24,7 +24,7 @@ import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.ToastUtil;
 
 /**
@@ -82,7 +82,7 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
     private void setData(){
         tvNickName.setText(userBean.getShowName());
         tvUserName.setText("微信号：" + userBean.getUserName());
-        ImageUtil.loadImage(ivAvatar, userBean.getHeadUrl());
+        ImageLoader.loadImage(ivAvatar, userBean.getHeadUrl());
 
         if(userName.equals(account.getUserName())){
             findViewById(R.id.ivRightBtn).setVisibility(View.GONE); //隐藏右边按钮

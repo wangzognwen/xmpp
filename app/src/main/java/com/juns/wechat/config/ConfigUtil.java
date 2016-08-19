@@ -22,7 +22,7 @@ public class ConfigUtil {
 
 
     public static String REAL_XMPP_SERVER = "123.206.34.158";
-    private static String DEBUG_XMPP_SERVER = "192.168.199.55";
+    private static String DEBUG_XMPP_SERVER = "192.168.199.248";
 
     private final static String  DEBUG_XMPP_DOMAIN = "wangzhe";
     public final static String  REAL_XMPP_DOMAIN = "wangzhe";
@@ -50,6 +50,13 @@ public class ConfigUtil {
             return userName + "@" + DEBUG_XMPP_DOMAIN + "/" + RESOURCE;
         }
         return userName + "@" + REAL_XMPP_DOMAIN+ "/" + RESOURCE;
+    }
+
+    public static String getBaseJid(String userName){
+        if (isDebug){
+            return userName + "@" + DEBUG_XMPP_DOMAIN;
+        }
+        return userName + "@" + REAL_XMPP_DOMAIN;
     }
 
     public static String getUserName(String userJid){

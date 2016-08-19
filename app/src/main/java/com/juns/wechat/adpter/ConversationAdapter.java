@@ -8,10 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
-import com.juns.wechat.fragment.msg.MsgItem;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.fragment.msg.MsgItemShow;
-import com.juns.wechat.util.ImageUtil;
 
 /**
  * Created by 王者 on 2016/8/9.

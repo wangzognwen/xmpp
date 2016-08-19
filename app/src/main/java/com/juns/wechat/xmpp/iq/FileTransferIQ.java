@@ -15,11 +15,14 @@ public class FileTransferIQ extends IQ{
     public static final String ELEMENT = "transfer";
     public static final String NAMESPACE = "xmpp:custom:transfer";
 
+
     private static Random random = new Random();
 
     private String id;
 
     private String mimeType;
+
+    private String digest;
 
     private File file;
 
@@ -50,6 +53,14 @@ public class FileTransferIQ extends IQ{
 
     public File getFile() {
         return file;
+    }
+
+    public String getDigest() {
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
     }
 
     @Override
@@ -191,7 +202,7 @@ public class FileTransferIQ extends IQ{
         }
 
         public String getNamespace() {
-            return "http://jabber.org/protocol/si/profile/file-transfer";
+            return "xmpp:custom:transfer:file-desc";
         }
 
         public String toXML() {

@@ -2,6 +2,7 @@ package com.juns.wechat.xmpp;
 
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.config.ConfigUtil;
+import com.juns.wechat.util.FileUtil;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
 import com.juns.wechat.xmpp.event.XmppEvent;
@@ -13,29 +14,39 @@ import com.juns.wechat.xmpp.listener.XmppReceivePacketListener;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterLoadedListener;
+
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.search.UserSearchManager;
-import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xdata.Form;;
 import org.simple.eventbus.EventBus;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
+import java.net.Socket;
 import java.net.URLConnection;
 import java.nio.channels.NotYetConnectedException;
 import java.util.ArrayList;
@@ -209,15 +220,44 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     @Override
-    public boolean sendFile(File file) {
+    public boolean sendFile(File file, String otherName) {
         FileTransferIQ fileTransferIQ = new FileTransferIQ();
+        fileTransferIQ.setStanzaId(StanzaIdUtil.newStanzaId());
+        fileTransferIQ.setFrom(xmppConnection.getUser());
+        fileTransferIQ.setTo(ConfigUtil.getBaseJid(otherName));
         fileTransferIQ.setMimeType(URLConnection.guessContentTypeFromName(file.getName()));
+        fileTransferIQ.setFile(new FileTransferIQ.File(file.getName(), file.length()));
 
         try {
             connect();
-            FileTransferIQ fileTransferIQResponse =
-                    xmppConnection.createPacketCollectorAndSend(new StanzaIdFilter(fileTransferIQ.getStanzaId()),
-                            fileTransferIQ).nextResult(5000);
+
+            PacketCollector packetCollector = xmppConnection.createPacketCollectorAndSend(
+                    new StanzaIdFilter(fileTransferIQ.getStanzaId()), fileTransferIQ);
+            FileTransferIQ fileTransferIQResponse = packetCollector.nextResult(5000);
+
+           if(fileTransferIQResponse.getType().equals(IQ.Type.result)){
+                String digest = fileTransferIQResponse.getDigest();
+                Socket socket = new Socket(ConfigUtil.getXmppServer(), 7700);
+                OutputStream out = socket.getOutputStream();
+                out.write((byte) 5);  //version
+                out.write((byte) digest.length()); //digest length
+                out.write(digest.getBytes()); //digest
+                InputStream in = FileUtil.readFile(file);
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = in.read(buffer)) != -1){
+                    out.write(buffer, 0, len);
+                }
+                in.close();
+                out.flush();
+                socket.shutdownOutput();
+
+               InputStream socketIn = new DataInputStream(socket.getInputStream());
+               byte[] data = new byte[7];
+               socketIn.read(data);
+               String result = new String(data);
+               LogUtil.i("result: " + result);
+            }
         } catch (IOException e) {
         XmppExceptionHandler.handleIOException(e);
         } catch (XMPPException e) {

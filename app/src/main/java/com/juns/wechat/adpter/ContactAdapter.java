@@ -16,7 +16,7 @@ import com.juns.wechat.R;
 import com.juns.wechat.bean.FriendBean;
 import com.juns.wechat.common.PingYinUtil;
 import com.juns.wechat.common.ViewHolder;
-import com.juns.wechat.util.ImageUtil;
+import com.juns.wechat.util.ImageLoader;
 
 public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
@@ -82,7 +82,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 			}
 		}
 
-        ImageUtil.loadImage(ivAvatar, friendBean.getHeadUrl());
+        ImageLoader.loadImage(ivAvatar, friendBean.getHeadUrl());
 		tvNick.setText(friendBean.getContactName());
 		return convertView;
 	}
