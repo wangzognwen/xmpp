@@ -25,12 +25,16 @@ public class ImageLoader {
             .setFailureDrawableId(R.drawable.default_useravatar)
             .setLoadingDrawableId(R.drawable.default_useravatar).build();
 
-    public static void loadImage(ImageView imageView, String fileName){
+    public static void loadAvatar(ImageView imageView, String fileName){
         if(TextUtils.isEmpty(fileName)){
             imageView.setImageResource(R.drawable.default_useravatar);
         }else {
             x.image().bind(imageView, REMOTE_PATH  + fileName, OPTIONS);
         }
+    }
+
+    public static void loadLocalImage(ImageView imageView, String filePath){
+        x.image().bind(imageView, filePath, OPTIONS);
     }
 
     public static Bitmap loadLocalImage(String filePath){

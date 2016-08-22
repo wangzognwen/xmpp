@@ -110,11 +110,4 @@ public class FriendDao extends BaseDao<FriendBean>{
 
         return null;
     }
-
-    @Override
-    protected void addIdIfNeeded(FriendBean friendBean) {
-        if(friendBean.getId() == 0){
-            friendBean.setId(IdGenerator.nextId(FriendTable.TABLE_NAME));
-        }
-    }
 }

@@ -3,6 +3,7 @@ package com.juns.wechat.activity;
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
+import com.juns.wechat.bean.chat.viewmodel.PictureMsgViewModel;
 import com.juns.wechat.bean.chat.viewmodel.TextMsgViewModel;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.DbDataEvent;
@@ -53,7 +54,7 @@ public class ChatActivityHelper {
     public void loadMessagesFromDb(){
         List<MessageBean> messageBeen = getMessagesByIndexAndSize();
         if(messageBeen == null || messageBeen.isEmpty()) {
-            notifyActivityDataSetChanged();
+            notifyActivityDataSetChanged(false);
             return;
         }
 
@@ -62,11 +63,11 @@ public class ChatActivityHelper {
         List<MsgViewModel> msgViewModels = chatActivity.getMsgViewModels();
         addEntityToViewModel(msgViewModels, messageBeen);
 
-        notifyActivityDataSetChanged();
+        notifyActivityDataSetChanged(false);
     }
 
-    private void notifyActivityDataSetChanged(){
-        chatActivity.loadDataComplete();
+    private void notifyActivityDataSetChanged(boolean hasNewData){
+        chatActivity.loadDataComplete(hasNewData);
     }
 
     /**
@@ -90,12 +91,16 @@ public class ChatActivityHelper {
         switch (type){
             case MsgType.MSG_TYPE_TEXT:
                 viewModel = new TextMsgViewModel(chatActivity, entity);
-                viewModel.setInfo(account.getUserName(), account.getHeadUrl(), contactUser.getUserName(), contactUser.getHeadUrl());
-                viewModel.markAsRead();
-                msgViewModels.add(viewModel);
                 break;
+            case MsgType.MSG_TYPE_PICTURE:
+                viewModel = new PictureMsgViewModel(chatActivity, entity);
             default:
                 break;
+        }
+        if(viewModel != null){
+            viewModel.setInfo(account.getUserName(), account.getHeadUrl(), contactUser.getUserName(), contactUser.getHeadUrl());
+            viewModel.markAsRead();
+            msgViewModels.add(viewModel);
         }
     }
 

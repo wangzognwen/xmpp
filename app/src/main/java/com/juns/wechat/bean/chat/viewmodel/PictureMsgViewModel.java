@@ -1,7 +1,6 @@
 package com.juns.wechat.bean.chat.viewmodel;
 
 import android.content.Context;
-import android.text.Spannable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,11 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.bean.MessageBean;
-import com.juns.wechat.bean.chat.TextMsg;
-import com.juns.wechat.chat.utils.SmileUtils;
+import com.juns.wechat.bean.chat.PictureMsg;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.config.MsgType;
+import com.juns.wechat.util.ImageLoader;
+import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.util.TimeUtil;
 
 
@@ -25,16 +25,16 @@ import com.juns.wechat.util.TimeUtil;
  * @since 1.6
  * Created by 王宗文 on 2015/11/30
  *******************************************************/
-public class TextMsgViewModel extends MsgViewModel implements View.OnClickListener, View.OnLongClickListener {
-    private final Integer[] mResIds = {R.layout.chat_item_received_message, R.layout.chat_item_sent_message};
+public class PictureMsgViewModel extends MsgViewModel implements View.OnClickListener, View.OnLongClickListener {
+    private final Integer[] mResIds = {R.layout.chat_item_received_picture, R.layout.chat_item_sent_picture};
 
-    private TextMsg textMsg;
+    private PictureMsg pictureMsg;
 
     private long beginMicroSec;
 
-    public TextMsgViewModel(Context context, MessageBean messageBean) {
+    public PictureMsgViewModel(Context context, MessageBean messageBean) {
         super(context, messageBean);
-        textMsg = (TextMsg) messageBean.getMsgObj();
+        pictureMsg = (PictureMsg) messageBean.getMsgObj();
     }
 
     @Override
@@ -45,8 +45,11 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
         }
 
         TextView tvDate = ViewHolder.get(convertView, R.id.tv_date);
-        TextView tvContent = (TextView) convertView.findViewById(R.id.tv_chat_content);
         ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
+        ImageView ivSendPicture = (ImageView) convertView.findViewById(R.id.iv_sendPicture);
+        ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
+        TextView tvPercent = (TextView) convertView.findViewById(R.id.percentage);
+
 
         if(isShowTime()){
             tvDate.setVisibility(View.VISIBLE);
@@ -55,50 +58,29 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
             tvDate.setVisibility(View.GONE);
         }
 
-        Spannable spannable = SmileUtils.getSmiledText(mContext, textMsg.content);
-        tvContent.setText(spannable, TextView.BufferType.SPANNABLE);
-
         if(isShowMyself()){
             loadUrl(ivAvatar, myselfAvatar);
+            ImageLoader.loadLocalImage(ivSendPicture, PhotoUtil.PHOTO_PATH + "/" + pictureMsg.imgName);
             ImageView ivSendState = ViewHolder.get(convertView, R.id.iv_send_failed);
-            ProgressBar sendingProgress = ViewHolder.get(convertView, R.id.pb_sending);
             if(messageBean.getState() == MessageBean.State.SEND_FAILED.value){
                 ivSendState.setVisibility(View.VISIBLE);
-                sendingProgress.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                tvPercent.setVisibility(View.GONE);
             }else if(messageBean.getState() == MessageBean.State.SEND_SUCCESS.value){
                 ivSendState.setVisibility(View.GONE);
-                sendingProgress.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                tvPercent.setVisibility(View.GONE);
             } else {
                 ivSendState.setVisibility(View.GONE);
-                sendingProgress.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                tvPercent.setText(pictureMsg.progress + "%");
             }
+
         }else {
             loadUrl(ivAvatar, otherAvatar);
             ivAvatar.setOnClickListener(this);
         }
-        tvContent.setOnLongClickListener(this);
-        tvContent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        long upMicroSec = System.currentTimeMillis();
-                        if (upMicroSec - beginMicroSec > 150) {
-                            return true;
-                        }
-                        return false;
-                    case MotionEvent.ACTION_DOWN:
-                        beginMicroSec = System.currentTimeMillis();
-                        break;
-
-                    default:
-                        break;
-
-                }
-                return false;
-            }
-        });
         return convertView;
     }
 
@@ -126,6 +108,6 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
 
     @Override
     public int getType() {
-        return MsgType.MSG_TYPE_TEXT;
+        return MsgType.MSG_TYPE_PICTURE;
     }
 }

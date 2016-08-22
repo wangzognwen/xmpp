@@ -226,11 +226,4 @@ public class MessageDao extends BaseDao<MessageBean>{
         KeyValue keyValue = new KeyValue(MessageBean.STATE, MessageBean.State.READ.value);
         update(whereBuilder, keyValue);
     }
-
-    @Override
-    protected void addIdIfNeeded(MessageBean messageBean) {
-        if(messageBean.getId() == 0){
-            messageBean.setId(IdGenerator.nextId(ChatTable.TABLE_NAME));
-        }
-    }
 }

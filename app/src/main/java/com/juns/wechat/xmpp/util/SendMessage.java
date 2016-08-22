@@ -18,6 +18,8 @@ import com.juns.wechat.xmpp.XmppManagerImpl;
 
 
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+import org.xutils.common.util.KeyValue;
+import org.xutils.db.sqlite.WhereBuilder;
 
 import java.io.File;
 import java.util.Date;
@@ -58,14 +60,12 @@ public class SendMessage {
     }
 
     @SuppressWarnings("unchecked")
-    public static void sendPictureMsg(final String otherName, final File file){
+    public static void sendPictureMsg(final String otherName, final File file, final int width, final int height){
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
                 if(file == null || !file.exists()) return;
-                Bitmap bitmap = ImageLoader.loadLocalImage(file.getPath());
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
+
                 String imgName = file.getName();
                 final PictureMsg pictureMsg = new PictureMsg();
                 pictureMsg.imgName = imgName;
@@ -86,13 +86,15 @@ public class SendMessage {
                     public void progressUpdated(int progress) {
                         pictureMsg.progress = progress;
                         messageBean.setMsg(pictureMsg.toJson());
-                        MessageDao.getInstance().update(messageBean);
+                        WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.PACKET_ID, "=", messageBean.getPacketId());
+                        KeyValue keyValue = new KeyValue(MessageBean.MSG, messageBean.getMsg());
+                        messageDao.update(whereBuilder, keyValue);
                     }
 
                     @Override
                     public void transferFinished(boolean success) {
                         if(success){
-                            sendMsg(messageBean);
+                            sendMsgDirect(messageBean);
                         }else {
                             updateMessageState(messageBean.getPacketId(), MessageBean.State.SEND_FAILED.value);
                         }
@@ -170,7 +172,10 @@ public class SendMessage {
     public static void sendMsg(MessageBean message) {
         completeMessageEntityInfo(message);
         addMessageToDB(message);
+        sendMsgDirect(message);
+    }
 
+    public static void sendMsgDirect(MessageBean message){
         boolean send = XmppManagerImpl.getInstance().sendMessage(message);
         if(!send){  //如果未成功发送,
             updateMessageState(message.getPacketId(), MessageBean.State.SEND_FAILED.value);

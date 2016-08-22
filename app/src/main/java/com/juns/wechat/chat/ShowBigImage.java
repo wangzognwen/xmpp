@@ -67,7 +67,7 @@ public class ShowBigImage extends ToolbarActivity {
 
         String fileName = AccountManager.getInstance().getHeadUrl();
         LogUtil.i("fileName: " + fileName);
-        ImageLoader.loadImage(scaleImageView, fileName);
+        ImageLoader.loadAvatar(scaleImageView, fileName);
 
         scaleImageView.setOnClickListener(new OnClickListener() {
 			@Override

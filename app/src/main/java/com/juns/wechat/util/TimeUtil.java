@@ -110,13 +110,23 @@ public class TimeUtil {
 
     @SuppressLint("SimpleDateFormat")
     public static String getRecentTime(Date date) {
+
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         Date nowDate = new Date();
         int firstDayOfThisWeek = getFirstDayOfWeek(nowDate);
         int day = date.getDate();
+        LogUtil.i("first: " + firstDayOfThisWeek);
+        LogUtil.i("day: " + day);
         if(day >= firstDayOfThisWeek){
+
             if(nowDate.getDate() == day){
-                return format.format(date);
+                try{
+                    LogUtil.i("date : " + format(date, true));
+                    return format.format(date);
+                }catch (Exception e){
+                    return null;
+                }
+
             }else if(nowDate.getDate() - day == 1){
                 return "昨天";
             }else if(nowDate.getDate() - day == 2){
@@ -197,8 +207,13 @@ public class TimeUtil {
      */
     public static int getFirstDayOfWeek(Date date) {
         Calendar c = new GregorianCalendar();
-        c.setFirstDayOfWeek(Calendar.MONDAY);
         c.setTime(date);
+
+        int dayWeek = c.get(Calendar.DAY_OF_WEEK);//获得当前日期是一个星期的第几天
+        if(1 == dayWeek) {
+            c.add(Calendar.DAY_OF_MONTH, -1);
+        }
+        c.setFirstDayOfWeek(Calendar.MONDAY);
         c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Monday
         return c.get(Calendar.DAY_OF_MONTH);
     }

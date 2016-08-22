@@ -79,7 +79,7 @@ public abstract class MsgViewModel implements Comparable<MsgViewModel> {
      * @param url
      */
     public void loadUrl(ImageView icon, String url){
-        ImageLoader.loadImage(icon, url);
+        ImageLoader.loadAvatar(icon, url);
     }
 
     public abstract View fillView(View convertView, ViewGroup viewGroup);

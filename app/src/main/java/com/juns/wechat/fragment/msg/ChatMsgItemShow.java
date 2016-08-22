@@ -45,18 +45,18 @@ public class ChatMsgItemShow extends MsgItemShow {
     public void loadUrl(final ImageView iv) {
         if(friendBean == null){
             if(stranger != null){
-                ImageLoader.loadImage(iv, stranger.getHeadUrl());
+                ImageLoader.loadAvatar(iv, stranger.getHeadUrl());
             }else {
                 UserRequest.queryUserData(msgItem.userName, new QueryUserCallBack() {
                     @Override
                     protected void handleSuccess(BaseResponse.QueryUserResponse result) {
                         stranger = result.userBean;
-                        ImageLoader.loadImage(iv, stranger.getHeadUrl());
+                        ImageLoader.loadAvatar(iv, stranger.getHeadUrl());
                     }
                 });
             }
         }else {
-            ImageLoader.loadImage(iv, friendBean.getHeadUrl());
+            ImageLoader.loadAvatar(iv, friendBean.getHeadUrl());
         }
 
     }

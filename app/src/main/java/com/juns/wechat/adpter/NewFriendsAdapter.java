@@ -77,7 +77,7 @@ public class NewFriendsAdapter extends BaseAdapter{
             UserRequest.queryUserData(messageBean.getOtherName(), queryUserCallBack);
             return convertView;
         }else {
-            ImageLoader.loadImage(ivAvatar, userBean.getHeadUrl());
+            ImageLoader.loadAvatar(ivAvatar, userBean.getHeadUrl());
             txt_name.setText(userBean.getShowName());
         }
 

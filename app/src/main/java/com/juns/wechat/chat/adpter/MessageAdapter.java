@@ -147,8 +147,8 @@ public class MessageAdapter extends BaseAdapter {
 					.inflate(R.layout.row_sent_location, null);
 		case IMAGE:
 			return message.direct == EMMessage.Direct.RECEIVE ? inflater
-					.inflate(R.layout.row_received_picture, null) : inflater
-					.inflate(R.layout.row_sent_picture, null);
+					.inflate(R.layout.chat_item_received_picture, null) : inflater
+					.inflate(R.layout.chat_item_sent_picture, null);
 
 		case VOICE:
 			return message.direct == EMMessage.Direct.RECEIVE ? inflater

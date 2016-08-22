@@ -88,10 +88,4 @@ public class UserDao extends BaseDao<UserBean>{
         return lastModifyDate;
     }
 
-    @Override
-    protected void addIdIfNeeded(UserBean userBean) {
-        if(userBean.getId() == 0){
-            userBean.setId(IdGenerator.nextId(UserTable.TABLE_NAME));
-        }
-    }
 }

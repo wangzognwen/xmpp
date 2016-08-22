@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -46,9 +47,12 @@ import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.exception.UserNotFoundException;
 import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.util.BitmapUtil;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
+import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.util.ToolBarUtil;
+import com.juns.wechat.xmpp.iq.FileTransferIQ;
 import com.juns.wechat.xmpp.util.SendMessage;
 
 import org.simple.eventbus.Subscriber;
@@ -224,9 +228,11 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
     /**
      * {@link ChatActivityHelper#loadMessagesFromDb()}方法完成之后调用
      */
-    public void loadDataComplete(){
+    public void loadDataComplete(boolean hasNewData){
         ptRefresh.refreshComplete();
-        mAdapter.notifyDataSetChanged();  //ChatActivityHelper已经更新数据源
+        if(hasNewData){
+            mAdapter.notifyDataSetChanged();  //ChatActivityHelper已经更新数据源
+        }
         //第一次加载数据，listView要滚动到底部，下拉刷新加载出来的数据，不用滚动到底部
         if(mFirstLoad){
             scrollListViewToBottom();
@@ -579,7 +585,19 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * @param filePath
 	 */
 	private void sendPicture(final String filePath) {
-        SendMessage.sendPictureMsg(contactName, filePath);
+        ThreadPoolUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap compressedBitmap = BitmapUtil.compressImage(filePath);
+                File file = new File(filePath);
+                String fileName = file.getName();
+                PhotoUtil.saveBitmap(compressedBitmap, fileName);
+                int width = compressedBitmap.getWidth();
+                int height = compressedBitmap.getHeight();
+                compressedBitmap.recycle();
+                SendMessage.sendPictureMsg(contactName, new File(PhotoUtil.PHOTO_PATH, fileName), width, height);
+            }
+        });
 	}
 
 	/**

@@ -90,7 +90,7 @@ public class PickContactAdapter extends BaseAdapter implements SectionIndexer{
                 tvCatalog.setText(catalog);
             }
         }
-        ImageLoader.loadImage(ivAvatar, friendBean.getHeadUrl());
+        ImageLoader.loadAvatar(ivAvatar, friendBean.getHeadUrl());
         tvNick.setText(friendBean.getShowName());
 
         checkBox.setChecked(isCheckedArray[position]);

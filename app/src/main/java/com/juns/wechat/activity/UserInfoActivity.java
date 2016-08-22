@@ -82,7 +82,7 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
     private void setData(){
         tvNickName.setText(userBean.getShowName());
         tvUserName.setText("微信号：" + userBean.getUserName());
-        ImageLoader.loadImage(ivAvatar, userBean.getHeadUrl());
+        ImageLoader.loadAvatar(ivAvatar, userBean.getHeadUrl());
 
         if(userName.equals(account.getUserName())){
             findViewById(R.id.ivRightBtn).setVisibility(View.GONE); //隐藏右边按钮

@@ -22,6 +22,6 @@ public class MsgType {
     public final static int MSG_TYPE_REPLY_INVITE = MSG_TYPE_SEND_INVITE + 1; // 是否同意添加好友请求消息
 
     public static final String MSG_TYPE_VOICE_DESC = "[语音]";
-    public static final String MSG_TYPE_PICTURE_DESC = "[图片";
+    public static final String MSG_TYPE_PICTURE_DESC = "[图片]";
 
 }

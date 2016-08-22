@@ -68,25 +68,18 @@ public abstract class BaseDao<T> implements IDao<T> {
     @Override
     public void save(T t) {
         try {
-            addIdIfNeeded(t);
-            dbManager.save(t);
+            dbManager.saveBindingId(t);
             postDataChangedEvent(DbDataEvent.SAVE, t);
         } catch (DbException e) {
             e.printStackTrace();
         }
     }
-
-    protected abstract void addIdIfNeeded(T t);
+    ;
 
     @Override
     public void save(List<T> list) {
         try {
-            if(list != null){
-                for(T t : list){
-                    addIdIfNeeded(t);
-                }
-            }
-            dbManager.save(list);
+            dbManager.saveBindingId(list);
             postDataChangedEvent(DbDataEvent.SAVE, list);
         } catch (DbException e) {
             e.printStackTrace();

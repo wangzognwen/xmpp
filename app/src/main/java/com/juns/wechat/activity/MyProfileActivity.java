@@ -78,7 +78,7 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     private void setData(){
         account = AccountManager.getInstance().getUser();
         tvNickName.setText(account.getNickName() == null ? "" : account.getNickName());
-        ImageLoader.loadImage(ivAvatar, account.getHeadUrl());
+        ImageLoader.loadAvatar(ivAvatar, account.getHeadUrl());
     }
 
     @Click(viewId = R.id.rlAvatar)

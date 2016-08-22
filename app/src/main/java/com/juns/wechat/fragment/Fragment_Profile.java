@@ -74,7 +74,7 @@ public class Fragment_Profile extends BaseFragment implements OnClickListener {
         tvUserName.setText("微信号：" + account.getUserName());
         tvNickName.setText(account.getNickName() == null ? account.getUserName() : account.getNickName());
 
-        ImageLoader.loadImage(ivAvatar, account.getHeadUrl());
+        ImageLoader.loadAvatar(ivAvatar, account.getHeadUrl());
 	}
 
     @Subscriber(tag = UserTable.TABLE_NAME)
