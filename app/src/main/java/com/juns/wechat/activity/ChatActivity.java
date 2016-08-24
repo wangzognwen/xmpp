@@ -54,6 +54,7 @@ import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.util.ToolBarUtil;
 import com.juns.wechat.xmpp.iq.FileTransferIQ;
 import com.juns.wechat.xmpp.util.SendMessage;
+import com.wangzhe.photopicker.PhotoPicker;
 
 import org.simple.eventbus.Subscriber;
 
@@ -509,7 +510,11 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * 从图库获取图片
 	 */
 	public void selectPicFromLocal() {
-        PhotoUtil.openAlbum(this, REQUEST_CODE_LOCAL);
+        //PhotoUtil.openAlbum(this, REQUEST_CODE_LOCAL);
+        PhotoPicker.builder()
+                .setPhotoCount(9)
+                .setGridColumnCount(4)
+                .start(this);
 	}
 
 	/**

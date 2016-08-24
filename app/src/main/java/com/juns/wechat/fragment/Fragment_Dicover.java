@@ -1,6 +1,5 @@
 package com.juns.wechat.fragment;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -71,7 +70,7 @@ public class Fragment_Dicover extends BaseFragment implements OnClickListener {
 		case R.id.txt_saoyisao:// 扫一扫
 			CommonUtil.startActivity(getActivity(), CaptureActivity.class);
 			break;
-		case R.id.txt_yaoyiyao:
+		/*case R.id.txt_yaoyiyao:
 			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.shake)));
 			break;
@@ -90,7 +89,7 @@ public class Fragment_Dicover extends BaseFragment implements OnClickListener {
 		case R.id.txt_game:
 			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, getString(R.string.games)));
-			break;
+			break;*/
 		default:
 			break;
 		}

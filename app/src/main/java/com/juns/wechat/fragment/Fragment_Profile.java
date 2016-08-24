@@ -1,6 +1,5 @@
 package com.juns.wechat.fragment;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
@@ -97,7 +96,7 @@ public class Fragment_Profile extends BaseFragment implements OnClickListener {
 		case R.id.view_user:
 			CommonUtil.startActivity(getActivity(), MyProfileActivity.class);
 			break;
-		case R.id.txt_album:// 相册
+		/*case R.id.txt_album:// 相册
 			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.my_posts)));
@@ -121,7 +120,7 @@ public class Fragment_Profile extends BaseFragment implements OnClickListener {
 			CommonUtil.startActivity(getActivity(), PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME,
 							getString(R.string.expression)));
-			break;
+			break;*/
 		case R.id.txt_setting:// 设置
 			CommonUtil.startActivity(getActivity(), SettingActivity.class);
 			break;

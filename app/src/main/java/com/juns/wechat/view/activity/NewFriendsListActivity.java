@@ -1,6 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.os.Bundle;
 import android.view.View;
@@ -47,14 +46,14 @@ public class NewFriendsListActivity extends ToolbarActivity implements OnClickLi
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.tvRightText:
+	/*	case R.id.tvRightText:
 			CommonUtil.startActivity(this, PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, "添加朋友"));
 			break;
 		case R.id.txt_search:
 			CommonUtil.startActivity(this, PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, "搜索"));
-			break;
+			break;*/
 		default:
 			break;
 		}

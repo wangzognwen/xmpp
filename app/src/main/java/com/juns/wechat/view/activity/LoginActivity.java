@@ -1,6 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -75,10 +74,10 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
 			CommonUtil.finish(LoginActivity.this);
 			break;
 		case R.id.tv_wenti:
-			CommonUtil.startActivity(LoginActivity.this, WebViewActivity.class,
+			/*CommonUtil.startActivity(LoginActivity.this, WebViewActivity.class,
 					new BasicNameValuePair(Constants.Title, "帮助"),
 					new BasicNameValuePair(Constants.URL,
-							"http://weixin.qq.com/"));
+							"http://weixin.qq.com/"));*/
 			break;
 		case R.id.btn_register:
 			startActivity(new Intent(LoginActivity.this, RegisterActivity.class));

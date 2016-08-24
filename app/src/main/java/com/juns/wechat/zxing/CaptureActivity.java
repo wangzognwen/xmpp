@@ -3,7 +3,6 @@ package com.juns.wechat.zxing;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -258,7 +257,7 @@ public class CaptureActivity extends Activity implements Callback {
 				CommonUtil.showLongToast(CaptureActivity.this, "二维码信息错误！");
 				return;
 			} else {
-				if (resultString.startsWith("JUNS_WeChat@User")) {
+				/*if (resultString.startsWith("JUNS_WeChat@User")) {
 					String[] name = resultString.split(":");
 					Log.e("", "扫描到的好友为：" + name[1]);
 					CommonUtil.startActivity(CaptureActivity.this,
@@ -274,8 +273,8 @@ public class CaptureActivity extends Activity implements Callback {
 							SetMoneyActivity.class,
 							new BasicNameValuePair(Constants.User_ID,
 									money_msg[0]),
-							new BasicNameValuePair(Constants.NAME, money_msg[1]));
-				} else if (resultString.startsWith("http://")
+							new BasicNameValuePair(Constants.NAME, money_msg[1]));*//*
+				} else */if (resultString.startsWith("http://")
 						|| resultString.startsWith("https://")) {
 					Uri uri = Uri.parse(resultString);
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);

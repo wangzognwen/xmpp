@@ -1,6 +1,5 @@
 package com.juns.wechat.view;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.content.Context;
@@ -67,11 +66,9 @@ public abstract class BaseActivity extends Activity {
 	 * 
 	 * @param activity
 	 * @param cls
-	 * @param name
 	 */
-	public void start_Activity(Activity activity, Class<?> cls,
-			BasicNameValuePair... name) {
-		CommonUtil.startActivity(activity, cls, name);
+	public void start_Activity(Activity activity, Class<?> cls) {
+		CommonUtil.startActivity(activity, cls);
 	}
 
 	/**

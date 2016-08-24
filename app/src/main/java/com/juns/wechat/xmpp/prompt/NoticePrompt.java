@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.os.Vibrator;
 
 
@@ -134,10 +135,9 @@ public class NoticePrompt extends Prompt implements ISwitch {
             if (limit > 0)
                 messageSummary = message.substring(0, limit) + " [...]";
             ticker = title + ":\n" + messageSummary;
-        } else
+        } else {
             ticker = fromUserName;
-        mNotification = new Notification(R.drawable.icon, ticker,
-                System.currentTimeMillis());
+        }
 
         noticeIntent.putExtra(ChatActivity.ARG_USER_NAME, fromUserName);
         noticeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -146,7 +146,15 @@ public class NoticePrompt extends Prompt implements ISwitch {
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0,
                 noticeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mNotification.setLatestEventInfo(mContext, title, message, pendingIntent);
+        Notification.Builder builder = new Notification.Builder(mContext);
+        builder.setSmallIcon(R.drawable.icon);
+        builder.setTicker(ticker);
+        builder.setWhen(System.currentTimeMillis());
+        builder.setContentIntent(pendingIntent);
+        builder.setContentTitle(title);
+        builder.setContentInfo(message);
+
+        mNotification = builder.getNotification();
         if (mNotificationCounter > 1)
             mNotification.number = mNotificationCounter;
         mNotification.flags = Notification.FLAG_AUTO_CANCEL;

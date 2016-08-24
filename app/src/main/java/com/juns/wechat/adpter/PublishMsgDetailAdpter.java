@@ -1,6 +1,5 @@
 package com.juns.wechat.adpter;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.content.Context;
@@ -69,13 +68,7 @@ public class PublishMsgDetailAdpter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 
-			CommonUtil.startActivity(
-					(Activity) context,
-					WebViewActivity.class,
-					new BasicNameValuePair(Constants.Title, "人人都是产品经理"),
-					new BasicNameValuePair(
-							Constants.URL,
-							"http://mp.weixin.qq.com/s?__biz=MjM5NTMxNTU0MQ==&mid=212741823&idx=1&sn=8b865adff465b7ee2b4ce9339301b8e6#rd"));
+
 		}
 	};
 }

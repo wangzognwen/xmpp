@@ -1,6 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -87,10 +86,10 @@ public class PublishUserListActivity extends BaseActivity implements
 		case R.id.img_back:
 			CommonUtil.finish(PublishUserListActivity.this);
 			break;
-		case R.id.img_right:
+		/*case R.id.img_right:
 			CommonUtil.startActivity(this, PublicActivity.class,
 					new BasicNameValuePair(Constants.NAME, "查找公众号"));
-			break;
+			break;*/
 		default:
 			break;
 		}

@@ -1,6 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.os.Bundle;
 import android.view.View;
@@ -62,12 +61,12 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 		case R.id.img_back:
 			CommonUtil.finish(SettingActivity.this);
 			break;
-		case R.id.txt_about:
+	/*	case R.id.txt_about:
 			CommonUtil.startActivity(SettingActivity.this, WebViewActivity.class,
 					new BasicNameValuePair(Constants.Title, "关于微信"),
 					new BasicNameValuePair(Constants.URL,
 							"https://github.com/motianhuo/wechat"));
-			break;
+			break;*/
 
 		case R.id.btnexit:
             AccountManager.getInstance().logOut(this);

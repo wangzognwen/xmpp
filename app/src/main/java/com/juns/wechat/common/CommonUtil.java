@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.Manifest;
 import android.app.Activity;
@@ -50,16 +49,10 @@ public class CommonUtil {
 	 * 
 	 * @param activity
 	 * @param cls
-	 * @param name
 	 */
-	public static void startActivity(Activity activity, Class<?> cls,
-                                     BasicNameValuePair... name) {
+	public static void startActivity(Activity activity, Class<?> cls) {
 		Intent intent = new Intent();
 		intent.setClass(activity, cls);
-		if (name != null)
-			for (int i = 0; i < name.length; i++) {
-				intent.putExtra(name[i].getName(), name[i].getValue());
-			}
 		activity.startActivity(intent);
 
 	}

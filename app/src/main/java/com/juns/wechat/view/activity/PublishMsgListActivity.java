@@ -1,6 +1,5 @@
 package com.juns.wechat.view.activity;
 
-import org.apache.http.message.BasicNameValuePair;
 
 import android.os.Bundle;
 import android.view.View;
@@ -70,8 +69,8 @@ public class PublishMsgListActivity extends BaseActivity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		CommonUtil.startActivity(this, PublishMsgDetailActivity.class,
-				new BasicNameValuePair(Constants.NAME, "人人都是产品经理"));
+		/*CommonUtil.startActivity(this, PublishMsgDetailActivity.class,
+				new BasicNameValuePair(Constants.NAME, "人人都是产品经理"));*/
 	}
 
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.wangzhe.photopicker"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:allowBackup="true">
+
+        <activity
+            android:theme="@style/customTheme"
+            android:name=".PhotoPickerActivity"
+        />
+
+        <activity
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:name=".PhotoPagerActivity"
+        />
+
+    </application>
+
+</manifest>
