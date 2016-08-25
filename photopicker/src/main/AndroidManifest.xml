@@ -5,12 +5,10 @@
         android:allowBackup="true">
 
         <activity
-            android:theme="@style/customTheme"
             android:name=".PhotoPickerActivity"
         />
 
         <activity
-            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:name=".PhotoPagerActivity"
         />
 

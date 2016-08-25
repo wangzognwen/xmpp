@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wangzhe.photopicker.entity.Photo;
@@ -37,6 +38,8 @@ public class PhotoPickerActivity extends AppCompatActivity {
   private int columnNumber = PhotoPicker.DEFAULT_COLUMN_NUMBER;
   private ArrayList<String> originalPhotos = null;
 
+  private TextView tvSend; //发送按钮
+
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -51,15 +54,12 @@ public class PhotoPickerActivity extends AppCompatActivity {
 
     Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(mToolbar);
-    setTitle(R.string.__picker_title);
 
     ActionBar actionBar = getSupportActionBar();
 
-    assert actionBar != null;
-    actionBar.setDisplayHomeAsUpEnabled(true);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      actionBar.setElevation(25);
-    }
+    TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
+    tvTitle.setText(R.string.__picker_title);
+    tvSend = (TextView) findViewById(R.id.tvRightText);
 
     maxCount = getIntent().getIntExtra(PhotoPicker.EXTRA_MAX_COUNT, PhotoPicker.DEFAULT_MAX_COUNT);
     columnNumber = getIntent().getIntExtra(PhotoPicker.EXTRA_GRID_COLUMN, PhotoPicker.DEFAULT_COLUMN_NUMBER);
@@ -84,7 +84,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
 
         int total = selectedItemCount + (isCheck ? -1 : 1);
 
-        menuDoneItem.setEnabled(total > 0);
+        tvSend.setEnabled(total > 0);
 
         if (maxCount <= 1) {
           List<String> photos = pickerFragment.getPhotoGridAdapter().getSelectedPhotos();
@@ -100,7 +100,12 @@ public class PhotoPickerActivity extends AppCompatActivity {
               LENGTH_LONG).show();
           return false;
         }
-        menuDoneItem.setTitle(getString(R.string.__picker_done_with_count, total, maxCount));
+        if(total > 0){
+            tvSend.setText(getString(R.string.__picker_done_with_count, total, maxCount));
+        }else {
+            tvSend.setText(getString(R.string.__picker_done));
+        }
+
         return true;
       }
     });
@@ -136,7 +141,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
         .commit();
   }
 
-  @Override public boolean onCreateOptionsMenu(Menu menu) {
+  /*@Override public boolean onCreateOptionsMenu(Menu menu) {
     if (!menuIsInflated) {
       getMenuInflater().inflate(R.menu.__picker_menu_picker, menu);
       menuDoneItem = menu.findItem(R.id.done);
@@ -151,7 +156,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
       return true;
     }
     return false;
-  }
+  }*/
 
 
   @Override

@@ -513,7 +513,7 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
         //PhotoUtil.openAlbum(this, REQUEST_CODE_LOCAL);
         PhotoPicker.builder()
                 .setPhotoCount(9)
-                .setGridColumnCount(4)
+                .setGridColumnCount(3)
                 .start(this);
 	}
 

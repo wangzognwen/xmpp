@@ -3,8 +3,8 @@
 
   <string name="__picker_title">图片</string>
   <string name="__picker_delete">删除</string>
-  <string name="__picker_done">完成</string>
-  <string name="__picker_done_with_count">完成(%1$d/%2$d)</string>
+  <string name="__picker_done">发送</string>
+  <string name="__picker_done_with_count">发送(%1$d/%2$d)</string>
   <string name="__picker_image_index">%1$d/%2$d</string>
   <string name="__picker_undo">撤消</string>
   <string name="__picker_deleted_a_photo">删除了一张图片</string>
