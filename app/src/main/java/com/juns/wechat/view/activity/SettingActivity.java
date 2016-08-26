@@ -69,7 +69,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 			break;*/
 
 		case R.id.btnexit:
-            AccountManager.getInstance().logOut(this);
+            AccountManager.getInstance().logOut();
+            finish();
 			break;
 		default:
 			break;

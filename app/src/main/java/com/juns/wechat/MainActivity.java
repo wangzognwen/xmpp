@@ -1,7 +1,9 @@
 package com.juns.wechat;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -23,6 +25,7 @@ import com.juns.wechat.dialog.TitleMenu.TitlePopup.OnItemOnClickListener;
 import com.juns.wechat.service.XmppService;
 import com.juns.wechat.view.activity.AddGroupChatActivity;
 import com.juns.wechat.view.activity.GetMoneyActivity;
+import com.juns.wechat.view.activity.LoginActivity;
 import com.juns.wechat.zxing.CaptureActivity;
 
 @Content(R.layout.activity_main)
@@ -39,6 +42,7 @@ public class MainActivity extends BaseActivity{
 	private ImageView[] imagebuttons;
 	private TextView[] textviews;
 	private int index;
+    private static MainActivity mInstance;
 
 
 	private MainAdapter mainAdapter;
@@ -46,6 +50,7 @@ public class MainActivity extends BaseActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        mInstance = this;
 		initView();
 		setOnClickListener();
 		initPopWindow();
@@ -150,6 +155,16 @@ public class MainActivity extends BaseActivity{
         }
     }
 
+    public static void logout(){
+        Intent service = new Intent(mInstance, XmppService.class);
+        mInstance.stopService(service);
+
+        Intent intent  = new Intent(mInstance, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mInstance.startActivity(intent);
+        mInstance.finish();
+    }
+
 	private OnItemOnClickListener onItemClick = new OnItemOnClickListener() {
 
 		@Override
@@ -209,15 +224,9 @@ public class MainActivity extends BaseActivity{
         }
     };
 
-	private DialogInterface.OnClickListener onclick = new DialogInterface.OnClickListener() {
-
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			CommonUtil.showLongToast(MainActivity.this, "正在下载...");// TODO
-			Tipdialog.dismiss();
-		}
-	};
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInstance = null;
+    }
 }

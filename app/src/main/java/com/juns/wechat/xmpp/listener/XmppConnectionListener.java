@@ -43,7 +43,7 @@ public class XmppConnectionListener implements ConnectionListener {
             StreamError streamError = exception.getStreamError();
             StreamError.Condition condition = streamError.getCondition();
             if(condition.toString().equals("conflict")){
-                AccountManager.getInstance().logOut(App.getInstance());
+                AccountManager.getInstance().logOut();
             }
         }
     }

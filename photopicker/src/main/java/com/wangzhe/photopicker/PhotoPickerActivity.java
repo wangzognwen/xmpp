@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,6 +111,13 @@ public class PhotoPickerActivity extends AppCompatActivity {
       }
     });
 
+     tvSend.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+             selectPictureFinished();
+         }
+     });
+
   }
 
 
@@ -159,23 +167,12 @@ public class PhotoPickerActivity extends AppCompatActivity {
   }*/
 
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == android.R.id.home) {
-      super.onBackPressed();
-      return true;
-    }
-
-    if (item.getItemId() == R.id.done) {
+  private void selectPictureFinished() {
       Intent intent = new Intent();
       ArrayList<String> selectedPhotos = pickerFragment.getPhotoGridAdapter().getSelectedPhotoPaths();
       intent.putStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS, selectedPhotos);
       setResult(RESULT_OK, intent);
       finish();
-      return true;
-    }
-
-    return super.onOptionsItemSelected(item);
   }
 
   public PhotoPickerActivity getActivity() {

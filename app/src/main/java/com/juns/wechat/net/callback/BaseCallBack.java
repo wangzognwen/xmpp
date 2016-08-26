@@ -46,7 +46,7 @@ public abstract class BaseCallBack<T> implements Callback.CommonCallback<T>{
 
 
     private void handleTokenError(){
-        AccountManager.getInstance().logOut(App.getInstance());
+        AccountManager.getInstance().logOut();
     }
 
     protected abstract void handleFailed(T result);

@@ -60,7 +60,7 @@ public class FileTransferManager {
             toData = Arrays.copyOf(toData, 32);
             out.write(fromData);
             out.write(toData);
-            String mimeType = URLConnection.guessContentTypeFromName(file.getPath());
+            String mimeType = "image/*";
             byte[] mimeTypeData = Arrays.copyOf(mimeType.getBytes(), 16);
             out.write(mimeTypeData);
             int fileNameLength = file.getName().length();

@@ -1,7 +1,12 @@
 package com.juns.wechat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.os.Process;
 import android.text.TextUtils;
 
 import com.baidu.frontia.FrontiaApplication;
@@ -36,34 +42,50 @@ public class App extends FrontiaApplication {
         x.Ext.init(this);
         x.Ext.setDebug(BuildConfig.DEBUG); // 开启debug会影响性能
         SMSSDK.initSDK(this, Constants.MOB_SDK_KEY, Constants.MOB_SDK_SECRET);
-
+        Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
 	}
 
 
+    /**
+     * 自定义异常处理类
+     */
+    class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
+        /*
+         * @param thread the thread that has an uncaught exception
+         * @param ex the exception that was thrown
+         */
+        @Override
+        public void uncaughtException(Thread thread, Throwable ex) {
+            ex.printStackTrace();
+            String errorLogPath = Constants.ERROR_LOG_PATH;
+            if (errorLogPath != null) {
+                File file = new File(errorLogPath);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                try {
+                    FileOutputStream fos = new FileOutputStream(errorLogPath + "errorlog.txt", true);
+                    PrintStream ps = new PrintStream(fos);
+                    Date date = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String formatDate = sdf.format(date);
+                    ps.append("-------------------crash time ：");
+                    ps.append(formatDate);
+                    ps.append("-------------------\n");
+                    ex.printStackTrace(ps);
+                    ps.append("\n");
+                    ps.flush();
+                    fos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            Process.killProcess(Process.myPid());
+        }
+    }
 
-	private String getAppName(int pID) {
-		String processName = null;
-		ActivityManager am = (ActivityManager) this
-				.getSystemService(ACTIVITY_SERVICE);
-		List l = am.getRunningAppProcesses();
-		Iterator i = l.iterator();
-		PackageManager pm = this.getPackageManager();
-		while (i.hasNext()) {
-			ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i
-					.next());
-			try {
-				if (info.pid == pID) {
-					CharSequence c = pm.getApplicationLabel(pm
-							.getApplicationInfo(info.processName,
-									PackageManager.GET_META_DATA));
-					processName = info.processName;
-					return processName;
-				}
-			} catch (Exception e) {
-			}
-		}
-		return processName;
-	}
 
 	@Override
 	public void onLowMemory() {
@@ -80,33 +102,6 @@ public class App extends FrontiaApplication {
 		return _context;
 	}
 
-	// 运用list来保存们每一个activity是关键
-	private List<Activity> mList = new LinkedList<Activity>();
-	private static App instance;
-
-	// 构造方法
-	// 实例化一次
-	public synchronized static App getInstance2() {
-		if (null == instance) {
-			instance = new App();
-		}
-		return instance;
-	}
-
-	// 关闭每一个list内的activity
-	public void exit() {
-		try {
-			for (Activity activity : mList) {
-				if (activity != null)
-					activity.finish();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			System.exit(0);
-		}
-	}
-
 	public static String getHJYCacheDir() {
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED))
@@ -114,16 +109,6 @@ public class App extends FrontiaApplication {
 					+ "/Health/Cache";
 		else
 			return "/System/com.juns.Walk/Walk/Cache";
-	}
-
-	public static String getHJYDownLoadDir() {
-		if (Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED))
-			return Environment.getExternalStorageDirectory().toString()
-					+ "/Walk/Download";
-		else {
-			return "/System/com.Juns.Walk/Walk/Download";
-		}
 	}
 
 	public static void deleteCacheDirFile(String filePath,

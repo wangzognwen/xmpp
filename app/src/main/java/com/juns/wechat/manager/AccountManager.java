@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.juns.wechat.App;
 import com.juns.wechat.Constants;
+import com.juns.wechat.MainActivity;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.dao.UserDao;
 import com.juns.wechat.service.XmppService;
@@ -58,7 +59,7 @@ public class AccountManager {
         return user;
     }
 
-    public void logOut(Context context){
+    public void logOut(){
         setLogin(false);
         setToken(null);
         setUserName(null);
@@ -67,17 +68,7 @@ public class AccountManager {
 
         XmppManagerImpl.getInstance().shutDownConn();
 
-        if(context != null){
-            Intent service = new Intent(context, XmppService.class);
-            context.stopService(service);
-
-            Intent intent  = new Intent(context, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-            if(context instanceof  Activity){
-                ((Activity) context).finish();
-            }
-        }
+        MainActivity.logout();
     }
 
     public boolean isLogin(){

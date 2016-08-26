@@ -379,7 +379,13 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 						sendPicByUri(selectedImage);
 					}
 				}
-			} else if (requestCode == REQUEST_CODE_SELECT_FILE) { // 发送选择的文件
+			} else if(requestCode == PhotoPicker.REQUEST_CODE){
+                ArrayList<String> selectedPhotos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
+                for(String photoPath: selectedPhotos){
+                    sendPicture(photoPath);
+                }
+            }
+            else if (requestCode == REQUEST_CODE_SELECT_FILE) { // 发送选择的文件
 				if (data != null) {
 					Uri uri = data.getData();
 					if (uri != null) {
@@ -510,7 +516,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 	 * 从图库获取图片
 	 */
 	public void selectPicFromLocal() {
-        //PhotoUtil.openAlbum(this, REQUEST_CODE_LOCAL);
         PhotoPicker.builder()
                 .setPhotoCount(9)
                 .setGridColumnCount(3)
@@ -593,9 +598,12 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
+                long startTime = System.currentTimeMillis();
                 Bitmap compressedBitmap = BitmapUtil.compressImage(filePath);
+                long endTime = System.currentTimeMillis();
+                LogUtil.i("wasteTime: " + (endTime - startTime));
                 File file = new File(filePath);
-                String fileName = file.getName();
+                String fileName = file.getName() + ".image";
                 PhotoUtil.saveBitmap(compressedBitmap, fileName);
                 int width = compressedBitmap.getWidth();
                 int height = compressedBitmap.getHeight();

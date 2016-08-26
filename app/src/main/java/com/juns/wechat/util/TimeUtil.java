@@ -115,13 +115,9 @@ public class TimeUtil {
         Date nowDate = new Date();
         int firstDayOfThisWeek = getFirstDayOfWeek(nowDate);
         int day = date.getDate();
-        LogUtil.i("first: " + firstDayOfThisWeek);
-        LogUtil.i("day: " + day);
         if(day >= firstDayOfThisWeek){
-
             if(nowDate.getDate() == day){
                 try{
-                    LogUtil.i("date : " + format(date, true));
                     return format.format(date);
                 }catch (Exception e){
                     return null;
