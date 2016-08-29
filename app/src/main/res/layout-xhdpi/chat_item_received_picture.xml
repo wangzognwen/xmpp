@@ -37,12 +37,9 @@
              >
 
             <ImageView
-                android:background="@drawable/chatfrom_bg"
-                android:id="@+id/iv_sendPicture"
+                android:id="@+id/ivPicture"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                 android:padding="17dp"
-                android:scaleType="fitCenter" />
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:id="@+id/ll_loading"
@@ -56,10 +53,10 @@
                     android:id="@+id/progressBar"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                android:indeterminateDrawable="@drawable/small_prograssbar"
-				android:indeterminateOnly="true"
-				android:layout_gravity="center"
-				android:indeterminateBehavior="repeat"
+                    android:indeterminateDrawable="@drawable/small_prograssbar"
+				    android:indeterminateOnly="true"
+			    	android:layout_gravity="center"
+				    android:indeterminateBehavior="repeat"
                     android:visibility="visible" />
 
                 <TextView

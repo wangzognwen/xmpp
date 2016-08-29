@@ -1,33 +1,22 @@
 package com.juns.wechat.xmpp.util;
 
-import android.os.UserManager;
-
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.FileUtil;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.xmpp.XmppConnUtil;
 import com.juns.wechat.xmpp.XmppExceptionHandler;
-import com.juns.wechat.xmpp.XmppManager;
-import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.iq.FileTransferIQ;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.PacketCollector;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.StanzaIdFilter;
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.Socket;
-import java.net.URLConnection;
 import java.util.Arrays;
 
 /**
@@ -40,6 +29,9 @@ public class FileTransferManager {
     private final String account = AccountManager.getInstance().getUserName();
     private int lastProgress = 0;
 
+    public static final int ACTION_READ = 1;
+    public static final int ACTION_WRITE = 2;
+
     public static FileTransferManager getInstance(){
         return mInstance;
     }
@@ -48,11 +40,12 @@ public class FileTransferManager {
         xmppConnection = XmppConnUtil.getXmppConnection();
     }
 
-    public void sendFile(File file, String otherName, FileTransferListener listener) {
+    public void sendFile(File file, String otherName, ProgressListener listener) {
         try {
             Socket socket = new Socket(ConfigUtil.getXmppServer(), PORT);
             OutputStream out = socket.getOutputStream();
             out.write((byte) 5);  //version
+            out.write(ACTION_WRITE);
 
             byte[] fromData = ConfigUtil.getXmppJid(account).getBytes();
             fromData = Arrays.copyOf(fromData, 32);
@@ -86,10 +79,10 @@ public class FileTransferManager {
             socket.shutdownOutput();
 
             InputStream socketIn = new DataInputStream(socket.getInputStream());
-            byte[] data = new byte[7];
+            byte[] data = new byte[8];
             socketIn.read(data);
             socket.close();
-            String result = new String(data);
+            String result = new String(data).trim();
             if("success".equals(result)){
                 listener.transferFinished(true);
                 return;
@@ -101,7 +94,61 @@ public class FileTransferManager {
         listener.transferFinished(false);
     }
 
-    private void notifyProgressUpdated(FileTransferListener listener, int wrote, int amount){
+    public void downloadFile(String fileName, ProgressListener listener){
+        try {
+            Socket socket = new Socket(ConfigUtil.getXmppServer(), PORT);
+            OutputStream out = socket.getOutputStream();
+            out.write((byte) 5);  //version
+            out.write(ACTION_READ);
+            out.write(fileName.length());
+            out.write(fileName.getBytes());
+            out.flush();
+            socket.shutdownOutput();
+
+            InputStream socketIn = new DataInputStream(socket.getInputStream());
+            byte[] data = new byte[8];
+            socketIn.read(data);
+            String result = new String(data).trim();
+            if(!"success".equals(result)){
+                listener.transferFinished(false);
+                return;
+            }
+
+            byte[] fileSizeData = new byte[4];
+            socketIn.read(fileSizeData);
+            LogUtil.i("fileSizeData; " + new String(fileSizeData));
+            int fileSize = Integer.parseInt(new String(fileSizeData).trim());
+            File file = new File(PhotoUtil.PHOTO_PATH, fileName);
+          /*  if(file.exists()){  //由于文件名都是唯一的，说明这张图片是由同一个手机上发出并在本手机上接收。
+                listener.transferFinished(true);
+                return;
+            }*/
+            if(!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+
+            OutputStream fileOut = FileUtil.getOutputStream(file);
+            if(fileOut == null){
+                listener.transferFinished(false);
+                return;
+            }
+            byte[] buffer = new byte[1024];
+            int wrote = 0;
+            int len = 0;
+            while ((len = socketIn.read(buffer)) != -1){
+                out.write(buffer, 0, len);
+                wrote += len;
+                notifyProgressUpdated(listener, wrote, fileSize);
+            }
+            socket.close();
+            listener.transferFinished(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            listener.transferFinished(false);
+        }
+    }
+
+    private void notifyProgressUpdated(ProgressListener listener, int wrote, int amount){
         int progress = (int) ((((float) wrote) / amount) * 100);
         if(progress == 100 || (progress - lastProgress > 5 + 5 *Math.random())){
             lastProgress = progress;
@@ -109,7 +156,7 @@ public class FileTransferManager {
         }
     }
 
-    public interface FileTransferListener{
+    public interface ProgressListener {
         void progressUpdated(int progress);
         void transferFinished(boolean success);
     }

@@ -12,6 +12,7 @@ import android.graphics.Rect;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.juns.wechat.App;
+import com.juns.wechat.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -80,21 +81,35 @@ public class BitmapUtil {
         return compressImage(bitmap);//压缩好比例大小后再进行质量压缩
     }
 
-    public static Bitmap getRoundCornerImage(Bitmap bitmap_bg,Bitmap bitmap_in)
+    /**
+     * 生成带一个小三角的图形
+     * @param bitmap_in
+     * @return
+     */
+    public static Bitmap getTriangleImage(Bitmap bitmap_bg, Bitmap bitmap_in)
     {
-        Bitmap roundConcerImage = Bitmap.createBitmap(500,500, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(roundConcerImage);
+        int w = bitmap_in.getWidth();
+        int h = bitmap_in.getHeight();
+        Bitmap triangleImage = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(triangleImage);
         Paint paint = new Paint();
-        Rect rect = new Rect(0,0,500,500);
+        Rect rect = new Rect(0,0,w,h);
         Rect rectF = new Rect(0, 0, bitmap_in.getWidth(), bitmap_in.getHeight());
         paint.setAntiAlias(true);
         NinePatch patch = new NinePatch(bitmap_bg, bitmap_bg.getNinePatchChunk(), null);
         patch.draw(canvas, rect);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap_in, rectF, rect, paint);
-        return roundConcerImage;
+        return triangleImage;
     }
-    public static Bitmap getShardImage(Bitmap bitmap_bg,Bitmap bitmap_in)
+
+    /**
+     * 生成带三角以及边框的image
+     * @param bitmap_bg
+     * @param bitmap_in
+     * @return
+     */
+    public static Bitmap getCornerAndTriangleImage(Bitmap bitmap_bg, Bitmap bitmap_in)
     {
         Bitmap roundConcerImage = Bitmap.createBitmap(500,500, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(roundConcerImage);

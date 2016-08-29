@@ -1,19 +1,14 @@
 package com.juns.wechat.xmpp.util;
 
 
-import android.graphics.Bitmap;
-
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.InviteMsg;
 import com.juns.wechat.bean.chat.PictureMsg;
 import com.juns.wechat.bean.chat.TextMsg;
-import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
-import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.ThreadPoolUtil;
-import com.juns.wechat.xmpp.XmppConnUtil;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 
 
@@ -81,7 +76,7 @@ public class SendMessage {
                 completeMessageEntityInfo(messageBean);
                 addMessageToDB(messageBean);
 
-                FileTransferManager.getInstance().sendFile(file, otherName, new FileTransferManager.FileTransferListener() {
+                FileTransferManager.getInstance().sendFile(file, otherName, new FileTransferManager.ProgressListener() {
                     @Override
                     public void progressUpdated(int progress) {
                         pictureMsg.progress = progress;

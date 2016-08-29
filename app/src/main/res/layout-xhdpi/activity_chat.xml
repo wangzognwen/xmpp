@@ -33,7 +33,8 @@
                 android:layout_height="match_parent"
                 android:cacheColorHint="#00000000"
                 android:divider="@null"
-                android:scrollbars="none"/>
+                android:scrollbars="none"
+                android:fadingEdge="none"/>
 
         </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 

@@ -56,10 +56,10 @@ public class PhotoUtil {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void saveBitmap(Bitmap bitmap, String fileName) {
-        File f = new File(PHOTO_PATH, fileName);
+    public static void saveBitmap(Bitmap bitmap, String filePath) {
+        File f = new File(filePath);
         if (f.exists()) {
-            f.delete();
+            return;
         }
         try {
             FileOutputStream out = new FileOutputStream(f);

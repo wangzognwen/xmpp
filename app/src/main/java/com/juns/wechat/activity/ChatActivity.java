@@ -56,6 +56,7 @@ import com.juns.wechat.xmpp.iq.FileTransferIQ;
 import com.juns.wechat.xmpp.util.SendMessage;
 import com.wangzhe.photopicker.PhotoPicker;
 
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.simple.eventbus.Subscriber;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -598,13 +599,10 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
         ThreadPoolUtil.execute(new Runnable() {
             @Override
             public void run() {
-                long startTime = System.currentTimeMillis();
                 Bitmap compressedBitmap = BitmapUtil.compressImage(filePath);
-                long endTime = System.currentTimeMillis();
-                LogUtil.i("wasteTime: " + (endTime - startTime));
-                File file = new File(filePath);
-                String fileName = file.getName() + ".image";
-                PhotoUtil.saveBitmap(compressedBitmap, fileName);
+                //File file = new File(filePath);
+                String fileName = StanzaIdUtil.newStanzaId() + ".image"; //生成唯一文件名且不被系统扫描到
+                PhotoUtil.saveBitmap(compressedBitmap, PhotoUtil.PHOTO_PATH + "/" + fileName);
                 int width = compressedBitmap.getWidth();
                 int height = compressedBitmap.getHeight();
                 compressedBitmap.recycle();

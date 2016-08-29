@@ -82,7 +82,7 @@ public abstract class MsgViewModel implements Comparable<MsgViewModel> {
         ImageLoader.loadAvatar(icon, url);
     }
 
-    public abstract View fillView(View convertView, ViewGroup viewGroup);
+    public abstract View fillView(int position, View convertView, ViewGroup viewGroup);
 
     /**
      * 将该条消息标记为已读

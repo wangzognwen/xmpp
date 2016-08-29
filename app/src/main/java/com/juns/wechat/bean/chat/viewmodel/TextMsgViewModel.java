@@ -38,7 +38,7 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
     }
 
     @Override
-    public View fillView(View convertView, ViewGroup viewGroup) {
+    public View fillView(int position, View convertView, ViewGroup viewGroup) {
         if(convertView == null){
             int resId = !isShowMyself() ? mResIds[0] : mResIds[1];
             convertView =  mInflater.inflate(resId, viewGroup, false);

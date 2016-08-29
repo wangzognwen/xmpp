@@ -35,12 +35,9 @@
             android:layout_toLeftOf="@id/iv_avatar" >
 
             <ImageView
-                android:id="@+id/iv_sendPicture"
+                android:id="@+id/ivPicture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/chatto_bg"
-            	android:padding="17dp"
-                android:scaleType="fitCenter"
                 />
         </RelativeLayout>	
         <LinearLayout

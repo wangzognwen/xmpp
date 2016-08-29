@@ -90,6 +90,7 @@ public class ChatInputManager implements View.OnClickListener{
         viewPhoto = (LinearLayout) view.findViewById(R.id.view_photo);
 
         lvMessages = (ListView) view.findViewById(R.id.lvMessages);
+        lvMessages.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     public void onCreate(){

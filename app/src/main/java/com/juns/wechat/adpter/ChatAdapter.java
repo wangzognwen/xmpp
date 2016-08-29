@@ -23,7 +23,7 @@ public class ChatAdapter extends ListDataAdapter<MsgViewModel> {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         setPrevMsgTime(i);
-        return listData.get(i).fillView(view, viewGroup);
+        return listData.get(i).fillView(i, view, viewGroup);
     }
 
     /**

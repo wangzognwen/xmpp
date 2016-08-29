@@ -21,8 +21,8 @@ public class ConfigUtil {
     public static final String DEBUG_API_URL = DEBUG_SERVER + "/wechat_server";
 
 
-    public static String REAL_XMPP_SERVER = "123.206.34.158";
-    private static String DEBUG_XMPP_SERVER = "123.206.34.158";
+    public static String REAL_XMPP_SERVER = "192.168.1.2";
+    private static String DEBUG_XMPP_SERVER = "192.168.1.2";
 
     private final static String  DEBUG_XMPP_DOMAIN = "wangzhe";
     public final static String  REAL_XMPP_DOMAIN = "wangzhe";
