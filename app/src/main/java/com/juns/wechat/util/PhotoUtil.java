@@ -10,6 +10,8 @@ import android.provider.MediaStore;
 
 import com.juns.wechat.activity.CropImageActivity;
 
+import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -56,6 +58,14 @@ public class PhotoUtil {
         activity.startActivityForResult(intent, requestCode);
     }
 
+    /**
+     * 生成唯一文件名且防止被其他软件扫描到该文件
+     * @return
+     */
+    public static String getUniqueImgName(){
+        return StanzaIdUtil.newStanzaId() + ".image";
+    }
+
     public static void saveBitmap(Bitmap bitmap, String filePath) {
         File f = new File(filePath);
         if (f.exists()) {
@@ -75,9 +85,6 @@ public class PhotoUtil {
 
     public static File getFile(String imgName){
         File file = new File(PHOTO_PATH, imgName);
-        if(file.getParent().isEmpty()){
-            file.getParentFile().mkdirs();
-        }
         return file;
     }
 }

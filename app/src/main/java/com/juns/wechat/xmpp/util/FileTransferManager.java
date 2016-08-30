@@ -95,6 +95,12 @@ public class FileTransferManager {
     }
 
     public void downloadFile(String fileName, ProgressListener listener){
+        File file = new File(PhotoUtil.PHOTO_PATH, fileName);
+        if(file.exists()){  //由于文件名都是唯一的，说明这张图片是由同一个手机上发出并在本手机上接收。
+            listener.transferFinished(true);
+            return;
+        }
+
         try {
             Socket socket = new Socket(ConfigUtil.getXmppServer(), PORT);
             OutputStream out = socket.getOutputStream();
@@ -106,7 +112,7 @@ public class FileTransferManager {
             socket.shutdownOutput();
 
             InputStream socketIn = new DataInputStream(socket.getInputStream());
-            byte[] data = new byte[8];
+            byte[] data = new byte[8]; //字符串末位为'\0';
             socketIn.read(data);
             String result = new String(data).trim();
             if(!"success".equals(result)){
@@ -116,13 +122,8 @@ public class FileTransferManager {
 
             byte[] fileSizeData = new byte[4];
             socketIn.read(fileSizeData);
-            LogUtil.i("fileSizeData; " + new String(fileSizeData));
-            int fileSize = Integer.parseInt(new String(fileSizeData).trim());
-            File file = new File(PhotoUtil.PHOTO_PATH, fileName);
-          /*  if(file.exists()){  //由于文件名都是唯一的，说明这张图片是由同一个手机上发出并在本手机上接收。
-                listener.transferFinished(true);
-                return;
-            }*/
+            int fileSize = Integer.parseInt(new String(fileSizeData));
+
             if(!file.getParentFile().exists()){
                 file.getParentFile().mkdirs();
             }
@@ -136,7 +137,7 @@ public class FileTransferManager {
             int wrote = 0;
             int len = 0;
             while ((len = socketIn.read(buffer)) != -1){
-                out.write(buffer, 0, len);
+                fileOut.write(buffer, 0, len);
                 wrote += len;
                 notifyProgressUpdated(listener, wrote, fileSize);
             }

@@ -46,8 +46,8 @@ public class CropImageActivity extends ToolbarActivity {
     @Click(viewId = R.id.tvRightText)
     private void saveInfo(View v){
         Bitmap croppedBitmap = clipImageLayout.clip();
-        imageName = getNowTime() + ".jpeg";
-        PhotoUtil.saveBitmap(croppedBitmap, imageName);
+        imageName = getNowTime() + ".image";
+        PhotoUtil.saveBitmap(croppedBitmap, PhotoUtil.PHOTO_PATH + "/" + imageName);
 
         updateAvatarInServer(imageName);
     }

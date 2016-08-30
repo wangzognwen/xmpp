@@ -13,6 +13,7 @@ import com.juns.wechat.annotation.Click;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.UserBean;
+import com.juns.wechat.chat.ShowBigImage;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
@@ -87,6 +88,13 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
             selectPhotoDialog = SelectPhotoDialog.createDialog(this, this);
         }
         selectPhotoDialog.show();
+    }
+
+    @Click(viewId = R.id.ivAvatar)
+    private void showBigAvatar(View v){
+        Intent intent = new Intent(this, ShowBigImage.class);
+        intent.putExtra(ShowBigImage.ARG_IMG_NAME, account.getHeadUrl());
+        startActivity(intent);
     }
 
 

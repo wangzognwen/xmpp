@@ -9,6 +9,7 @@ import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ThreadPoolUtil;
+import com.juns.wechat.xmpp.XmppManager;
 import com.juns.wechat.xmpp.XmppManagerImpl;
 
 
@@ -76,6 +77,11 @@ public class SendMessage {
                 completeMessageEntityInfo(messageBean);
                 addMessageToDB(messageBean);
 
+                if(!XmppManagerImpl.getInstance().login()){
+                    updateMessageState(messageBean.getPacketId(), MessageBean.State.SEND_FAILED.value);
+                    return;
+                }
+
                 FileTransferManager.getInstance().sendFile(file, otherName, new FileTransferManager.ProgressListener() {
                     @Override
                     public void progressUpdated(int progress) {
@@ -125,7 +131,7 @@ public class SendMessage {
     }
 
     /**
-     * 发送添加好友消息
+     * 回复添加好友消息
      */
     public static void sendReplyInviteMsg(final String otherName, final int reply, final String reason){
         ThreadPoolUtil.execute(new Runnable() {

@@ -2,7 +2,6 @@ package com.juns.wechat.chat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -19,10 +18,9 @@ import android.widget.TextView;
 
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
+import com.juns.wechat.annotation.Extra;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.ImageLoader;
-import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.widget.scalemageview.PhotoView;
 import android.app.AlertDialog;
@@ -33,21 +31,19 @@ import android.app.AlertDialog;
  */
 @Content(R.layout.activity_show_big_image)
 public class ShowBigImage extends ToolbarActivity {
+    public static final String ARG_IMG_NAME = "img_name";
 
 	private ProgressDialog pd;
 	private PhotoView scaleImageView;
-	private int default_res = R.drawable.default_image;
-	private String localFilePath;
-	private Bitmap bitmap;
-	private boolean isDownloaded;
 	private ProgressBar loadLocalPb;
-    private String imageName;
+    @Extra(name = ARG_IMG_NAME)
+    private String imgName;
 
     private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
-    private static final int UPDATE_FXID = 4;// 结果
-    private static final int UPDATE_NICK = 5;// 结果
+
+    private String tempImageName; //拍照临时保存的图片名字
 
 
     @SuppressLint("NewApi")
@@ -58,16 +54,8 @@ public class ShowBigImage extends ToolbarActivity {
         setToolbarRight(2, R.drawable.icon_more);
         scaleImageView = (PhotoView) findViewById(R.id.image);
 		loadLocalPb = (ProgressBar) findViewById(R.id.pb_load_local);
-		default_res = getIntent().getIntExtra("default_image", R.drawable.default_useravatar);
-		Uri uri = getIntent().getParcelableExtra("uri");
-		String remotepath = getIntent().getExtras().getString("remotepath");
-		String secret = getIntent().getExtras().getString("secret");
-		System.err.println("show big image uri:" + uri + " remotepath:"
-				+ remotepath);
 
-        String fileName = AccountManager.getInstance().getHeadUrl();
-        LogUtil.i("fileName: " + fileName);
-        ImageLoader.loadAvatar(scaleImageView, fileName);
+        ImageLoader.loadAvatar(scaleImageView, imgName);
 
         scaleImageView.setOnClickListener(new OnClickListener() {
 			@Override
@@ -99,8 +87,8 @@ public class ShowBigImage extends ToolbarActivity {
             @SuppressLint("SdCardPath")
             public void onClick(View v) {
 
-                imageName = getNowTime() + ".png";
-                PhotoUtil.takePhoto(ShowBigImage.this, PHOTO_REQUEST_TAKEPHOTO, imageName);
+                tempImageName = getNowTime() + ".png";
+                PhotoUtil.takePhoto(ShowBigImage.this, PHOTO_REQUEST_TAKEPHOTO, tempImageName);
                 dlg.cancel();
             }
         });
@@ -108,7 +96,7 @@ public class ShowBigImage extends ToolbarActivity {
         tv_xiangce.setText("相册");
         tv_xiangce.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                imageName = getNowTime() + ".png";
+                tempImageName = getNowTime() + ".png";
                 PhotoUtil.openAlbum(ShowBigImage.this, PHOTO_REQUEST_GALLERY);
                 dlg.cancel();
             }
@@ -122,16 +110,14 @@ public class ShowBigImage extends ToolbarActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PHOTO_REQUEST_TAKEPHOTO:
-                 /*   startPhotoZoom(
-                            Uri.fromFile(PhotoUtil.getFile(imageName)),
-                            480);*/
-                    Uri uri = Uri.fromFile(PhotoUtil.getFile(imageName));
-                    PhotoUtil.cropView(uri, 480, ShowBigImage.this, PHOTO_REQUEST_CUT, imageName);
+
+                    Uri uri = Uri.fromFile(PhotoUtil.getFile(tempImageName));
+                    PhotoUtil.cropView(uri, 480, ShowBigImage.this, PHOTO_REQUEST_CUT, tempImageName);
                     break;
 
                 case PHOTO_REQUEST_GALLERY:
                     if (data != null)
-                        PhotoUtil.cropView(data.getData(), 480, ShowBigImage.this, PHOTO_REQUEST_CUT, imageName);
+                        PhotoUtil.cropView(data.getData(), 480, ShowBigImage.this, PHOTO_REQUEST_CUT, tempImageName);
                     break;
 
                 case PHOTO_REQUEST_CUT:
@@ -144,7 +130,7 @@ public class ShowBigImage extends ToolbarActivity {
                     // */
                     // options.inJustDecodeBounds = true;
                     Bitmap bitmap = BitmapFactory.decodeFile(PhotoUtil.PHOTO_PATH + "/"
-                            + imageName);
+                            + tempImageName);
                     scaleImageView.setImageBitmap(bitmap);
                     break;
 
@@ -159,46 +145,4 @@ public class ShowBigImage extends ToolbarActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMddHHmmssSS");
         return dateFormat.format(date);
     }
-
-
-	/**
-	 * 通过远程URL，确定下本地下载后的localurl
-	 * 
-	 * @param remoteUrl
-	 * @return
-	 */
-	public String getLocalFilePath(String remoteUrl) {
-		String localPath = null;
-		/*if (remoteUrl.contains("/")) {
-			localPath = PathUtil.getDbManager().getImagePath().getAbsolutePath()
-					+ "/" + remoteUrl.substring(remoteUrl.lastIndexOf("/") + 1);
-		} else {
-			localPath = PathUtil.getDbManager().getImagePath().getAbsolutePath()
-					+ "/" + remoteUrl;
-		}*/
-		return localPath;
-	}
-
-	/**
-	 * 下载图片
-	 * 
-	 * @param remoteFilePath
-	 */
-	private void downloadImage(final String remoteFilePath,
-			final Map<String, String> headers) {
-		String str1 = getResources().getString(R.string.Download_the_pictures);
-		pd = new ProgressDialog(this);
-		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		pd.setCanceledOnTouchOutside(false);
-		pd.setMessage(str1);
-		pd.show();
-		localFilePath = getLocalFilePath(remoteFilePath);
-	}
-
-	@Override
-	public void onBackPressed() {
-		if (isDownloaded)
-			setResult(RESULT_OK);
-		finish();
-	}
 }

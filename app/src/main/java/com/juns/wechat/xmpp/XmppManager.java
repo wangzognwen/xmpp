@@ -24,6 +24,7 @@ import java.util.Set;
  *******************************************************/
 public interface XmppManager {
     boolean connect() throws IOException, XMPPException, SmackException;
+    boolean login();
     boolean login(String accountName, String passWord);
     void regNewUser(String accountName, String passWord);
     Set<RosterEntry> getRoster(String userName);
@@ -33,7 +34,6 @@ public interface XmppManager {
     boolean isAuthenticated();
     boolean sendPacket(Stanza packet);
     boolean sendMessage(MessageBean messageBean);
-    boolean sendFile(File file, String otherName);
     boolean isFriends(int otherUserId);
     List<SearchResult> searchUser(String name);
 }

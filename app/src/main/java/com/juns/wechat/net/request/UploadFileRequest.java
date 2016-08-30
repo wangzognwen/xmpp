@@ -31,8 +31,6 @@ public class UploadFileRequest {
                // FileBody fileBody = new FileBody(file, "multipart/form-data");
                 setRequestBody(multipartBody);
                // LogUtil.i("conetentType:" + fileBody.getContentType());
-
-
         }
     }
 

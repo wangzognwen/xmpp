@@ -79,15 +79,10 @@ public class XmppService extends Service {
      * 更多详情请查看{@link XmppManagerImpl#login(String, String)}
      */
     public void login(){
-        if(!AccountManager.getInstance().isLogin()){
-            return;
-        }
-        if(!TextUtils.isEmpty(AccountManager.getInstance().getToken())){
-            if(AccountManager.getInstance().getTokenRefreshTime() + REFRESH_TIME < System.currentTimeMillis()){
-               init();
-            }else {
-                TokenRequest.refreshToken(callBack);
-            }
+        if(AccountManager.getInstance().getTokenRefreshTime() + REFRESH_TIME > System.currentTimeMillis()){
+           init();
+        }else {
+            TokenRequest.refreshToken(callBack);
         }
     }
 

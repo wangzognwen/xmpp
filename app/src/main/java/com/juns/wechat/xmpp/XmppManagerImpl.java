@@ -1,6 +1,7 @@
 package com.juns.wechat.xmpp;
 
 import com.juns.wechat.bean.MessageBean;
+import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.config.ConfigUtil;
 import com.juns.wechat.util.FileUtil;
 import com.juns.wechat.util.LogUtil;
@@ -69,7 +70,8 @@ public class XmppManagerImpl implements XmppManager {
 
     private static XmppManagerImpl mInstance;
     private Roster mRoster;
-    private MultiUserChatManager multiUserChatManager;
+    private String userName;
+    private String passWord;
 
     private XmppManagerImpl() {
         init();
@@ -78,7 +80,8 @@ public class XmppManagerImpl implements XmppManager {
     private void init(){
         xmppConnection = XmppConnUtil.getXmppConnection();
         mRoster = Roster.getInstanceFor(xmppConnection);
-        multiUserChatManager = MultiUserChatManager.getInstanceFor(xmppConnection);
+        userName = com.juns.wechat.manager.AccountManager.getInstance().getUserName();
+        passWord = com.juns.wechat.manager.AccountManager.getInstance().getUserPassWord();
 
         connectionListener = new XmppConnectionListener();
         packetListener = new XmppReceivePacketListener();
@@ -109,6 +112,11 @@ public class XmppManagerImpl implements XmppManager {
         return true;
     }
 
+    @Override
+    public boolean login() {
+        return login(userName, passWord);
+    }
+
     /**
      * 有以下几种情况会触发登录到XMPP
      * 1：用户首次进入
@@ -121,13 +129,11 @@ public class XmppManagerImpl implements XmppManager {
     public boolean login(String accountName, String passWord){
         try {
             connect();
-            XmppEvent xmppEvent = new XmppEvent(0, null);
             if(xmppConnection.isAuthenticated()){
-                EventBus.getDefault().post(xmppEvent);
                 return true;
             }
             xmppConnection.login(accountName, passWord);
-            EventBus.getDefault().post(xmppEvent);
+            return true;
         } catch (IOException e) {
             XmppExceptionHandler.handleIOException(e);
         } catch (XMPPException e) {
@@ -153,18 +159,9 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     public Set<RosterEntry> getRoster(String userName){
-        try {
-            connect();
-            Roster roster = Roster.getInstanceFor(xmppConnection);
-            return roster.getEntries();
-        }catch (IOException e) {
-            XmppExceptionHandler.handleIOException(e);
-        } catch (XMPPException e) {
-            XmppExceptionHandler.handleXmppExecption(e);
-        } catch (SmackException e) {
-            XmppExceptionHandler.handleSmackException(e);
-        }
-        return null;
+        login(userName, passWord);
+        Roster roster = Roster.getInstanceFor(xmppConnection);
+        return roster.getEntries();
     }
 
     @Override
@@ -194,14 +191,12 @@ public class XmppManagerImpl implements XmppManager {
     @Override
     public boolean sendPacket(Stanza packet){
         try {
-            connect();
+            if(!login(userName, passWord)){
+                return false;
+            }
             xmppConnection.sendStanza(packet);
             return true;
-        } catch (IOException e) {
-            XmppExceptionHandler.handleIOException(e);
-        } catch (XMPPException e) {
-            XmppExceptionHandler.handleXmppExecption(e);
-        } catch (SmackException e) {
+        }  catch (SmackException e) {
             XmppExceptionHandler.handleSmackException(e);
         }
         return false;
@@ -220,55 +215,6 @@ public class XmppManagerImpl implements XmppManager {
     }
 
     @Override
-    public boolean sendFile(File file, String otherName) {
-        FileTransferIQ fileTransferIQ = new FileTransferIQ();
-        fileTransferIQ.setStanzaId(StanzaIdUtil.newStanzaId());
-        fileTransferIQ.setFrom(xmppConnection.getUser());
-        fileTransferIQ.setTo(ConfigUtil.getBaseJid(otherName));
-        fileTransferIQ.setMimeType(URLConnection.guessContentTypeFromName(file.getName()));
-        fileTransferIQ.setFile(new FileTransferIQ.File(file.getName(), file.length()));
-
-        try {
-            connect();
-
-            PacketCollector packetCollector = xmppConnection.createPacketCollectorAndSend(
-                    new StanzaIdFilter(fileTransferIQ.getStanzaId()), fileTransferIQ);
-            FileTransferIQ fileTransferIQResponse = packetCollector.nextResult(5000);
-
-           if(fileTransferIQResponse.getType().equals(IQ.Type.result)){
-                String digest = fileTransferIQResponse.getDigest();
-                Socket socket = new Socket(ConfigUtil.getXmppServer(), 7700);
-                OutputStream out = socket.getOutputStream();
-                out.write((byte) 5);  //version
-                out.write((byte) digest.length()); //digest length
-                out.write(digest.getBytes()); //digest
-                InputStream in = FileUtil.readFile(file);
-                byte[] buffer = new byte[1024];
-                int len = 0;
-                while ((len = in.read(buffer)) != -1){
-                    out.write(buffer, 0, len);
-                }
-                in.close();
-                out.flush();
-                socket.shutdownOutput();
-
-               InputStream socketIn = new DataInputStream(socket.getInputStream());
-               byte[] data = new byte[7];
-               socketIn.read(data);
-               String result = new String(data);
-               LogUtil.i("result: " + result);
-            }
-        } catch (IOException e) {
-        XmppExceptionHandler.handleIOException(e);
-        } catch (XMPPException e) {
-        XmppExceptionHandler.handleXmppExecption(e);
-        } catch (SmackException e) {
-        XmppExceptionHandler.handleSmackException(e);
-        }
-        return false;
-    }
-
-    @Override
     public boolean isFriends(int OtherUserId) {
         String otherJid = ConfigUtil.getXmppJid(OtherUserId + "");
         return mRoster.getEntry(otherJid) == null ? false : true;
@@ -277,7 +223,7 @@ public class XmppManagerImpl implements XmppManager {
     @Override
     public List<SearchResult> searchUser(String search){
         try {
-            connect();
+            login(userName, passWord);
             UserSearchManager userSearchManager = new UserSearchManager(xmppConnection);
             Form searchForm = userSearchManager.getSearchForm("search." + xmppConnection.getServiceName());
             Form answerForm = searchForm.createAnswerForm();
@@ -314,9 +260,7 @@ public class XmppManagerImpl implements XmppManager {
                 searchResults.add(searchResult);
             }
             return searchResults;
-        } catch (IOException e) {
-            XmppExceptionHandler.handleIOException(e);
-        } catch (XMPPException e) {
+        }  catch (XMPPException e) {
             XmppExceptionHandler.handleXmppExecption(e);
         } catch (SmackException e) {
             XmppExceptionHandler.handleSmackException(e);

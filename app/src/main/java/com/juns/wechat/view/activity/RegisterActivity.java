@@ -3,6 +3,7 @@ package com.juns.wechat.view.activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
@@ -25,13 +27,12 @@ import com.juns.wechat.net.callback.LoginCallBack;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.NetWorkUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.view.annotation.ViewInject;
-
-import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.RegisterPage;
 
 
 /**
@@ -53,6 +54,13 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 
     private String userName;
     private String passWord;
+    private String verifyCode;
+    private int validCodeResult = 0; //校验二维码结果
+    private static final int VALID_CODE_SUCCESS = 1;
+    private static final int VALID_CODE_FAILED = -1;
+
+    private EventHandler eventHandler; //短信验证码的事件监听
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +82,37 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 		btn_register.setOnClickListener(this);
 		etInputName.addTextChangedListener(new TelTextChange());
 		etPassword.addTextChangedListener(new TextChange());
+        eventHandler = new EventHandler() {
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    //回调完成
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //提交验证码成功
+                        validCodeResult = VALID_CODE_SUCCESS;
+                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                        //获取验证码成功
+                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
+                        //返回支持发送验证码的国家列表
+                    }
+                } else {
+                    Throwable throwable = (Throwable) data;
+                    throwable.printStackTrace();
+                    try {
+                        JSONObject object = new JSONObject(throwable.getMessage());
+                        String des = object.optString("detail");//错误描述
+                        int status = object.optInt("status");//错误代码
+                        if(status == 468){ //验证码错误
+                            validCodeResult = VALID_CODE_FAILED;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        };
+        SMSSDK.registerEventHandler(eventHandler);
 	}
 
 	@Override
@@ -91,7 +130,7 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 			break;
 
 		case R.id.btnRegister:
-			getRegister();
+			checkInput();
 			break;
 		default:
 			break;
@@ -99,32 +138,23 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 	}
 
     private void sendVerifyCode(){
-        RegisterPage registerPage = new RegisterPage();
-        registerPage.setRegisterCallback(new EventHandler() {
-            @Override
-            public void afterEvent(int i, int i1, Object result) {
-                // 解析注册结果
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    @SuppressWarnings("unchecked")
-                    HashMap<String, Object> phoneMap = (HashMap<String, Object>) result;
-                    String country = (String) phoneMap.get("country");
-                    String phone = (String) phoneMap.get("phone");
-                    LogUtil.i("countty: " + country + ", phone: "+ phone);
-                }
-            }
-        });
-        registerPage.show(this);
+        userName = etInputName.getText().toString().trim();
+        if (!CommonUtil.isMobileNO(userName)) {
+            CommonUtil.showLongToast(RegisterActivity.this, "请使用手机号码注册账户！ ");
+            return;
+        }
+        SMSSDK.getVerificationCode("86", userName);
     }
 
-	private void getRegister() {
+	private void checkInput() {
 		userName = etInputName.getText().toString().trim();
 		passWord = etPassword.getText().toString();
-		String code = et_code.getText().toString();
+		verifyCode = et_code.getText().toString().trim();
 		if (!CommonUtil.isMobileNO(userName)) {
 			CommonUtil.showLongToast(RegisterActivity.this, "请使用手机号码注册账户！ ");
 			return;
 		}
-		if (TextUtils.isEmpty(code)) {
+		if (TextUtils.isEmpty(verifyCode)) {
 			CommonUtil.showLongToast(RegisterActivity.this, "请填写手机号码，并获取验证码！");
 			return;
 		}
@@ -132,9 +162,24 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 			CommonUtil.showLongToast(RegisterActivity.this, "密码不能少于6位！");
 			return;
 		}
-		getLoadingDialog("正在注册...  ").show();
-		/*btn_register.setEnabled(false);
-		btn_send.setEnabled(false);*/
+
+        getLoadingDialog("正在注册...  ").show();
+
+        validCodeResult = 0;
+        SMSSDK.submitVerificationCode("86", userName, verifyCode);
+        while (validCodeResult == 0){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+         if(validCodeResult == VALID_CODE_FAILED){
+           CommonUtil.showLongToast(RegisterActivity.this, "验证码错误！");
+           getLoadingDialog("正在注册...").dismiss();
+           return;
+        }
+
         register(userName, passWord);
 	}
 
@@ -302,4 +347,9 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
 		}
 	}
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SMSSDK.unregisterEventHandler(eventHandler);
+    }
 }

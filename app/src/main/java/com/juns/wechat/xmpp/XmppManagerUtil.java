@@ -30,16 +30,6 @@ public class XmppManagerUtil {
         });
     }
 
-    public static void regNewUser(final String accountName, final String passWord, final XmppManagerListener listener){
-        ThreadPoolUtil.execute(new Runnable() {
-            @Override
-            public void run() {
-                XMPP_MANAGER.regNewUser(accountName, passWord);
-                listener.onRegisterSuccess();
-            }
-        });
-    }
-
     public static void search(final String name){
         Future<List<SearchResult>> future = ThreadPoolUtil.submit(new Callable<List<SearchResult>>() {
             @Override

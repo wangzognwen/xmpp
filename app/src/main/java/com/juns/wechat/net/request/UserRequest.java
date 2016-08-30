@@ -38,7 +38,7 @@ public class UserRequest extends RequestParams {
         }
     }
 
-    @HttpRequest(host = ConfigUtil.REAL_API_URL, path = "login")
+    @HttpRequest(host = URL, path = "login")
     public static class LoginParams extends RequestParams{
         private String userName;
         private String passWord;

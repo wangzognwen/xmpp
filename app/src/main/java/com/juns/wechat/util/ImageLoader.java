@@ -46,7 +46,7 @@ public class ImageLoader {
         if(bitmapCache == null){
             bitmapCache = new LruCache<>(30);
         }
-        Bitmap cache = bitmapCache.get(filePath);
+        Bitmap cache = bitmapCache.get(filePath + "_" + direction);
         if(cache != null){
             imageView.setImageBitmap(cache);
         }else {
@@ -67,7 +67,7 @@ public class ImageLoader {
                 source.recycle();
                 int bgResId = 0;
                 if(direction == 0){
-                    bgResId = R.drawable.chat_adapter_to_bg_left;
+                    bgResId = R.drawable.chat_adapter_to_bg;
                 }else {
                     bgResId = R.drawable.chat_adapter_to_bg;
                 }
@@ -77,7 +77,7 @@ public class ImageLoader {
             }else {
                 wantToLoad = BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.aex);
             }
-            bitmapCache.put(filePath, wantToLoad);
+            bitmapCache.put(filePath + "_" + direction, wantToLoad);
             imageView.setImageBitmap(wantToLoad);
         }
     }
