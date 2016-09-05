@@ -26,9 +26,13 @@ import com.juns.wechat.chat.utils.SmileUtils;
 import com.juns.wechat.chat.widght.ExpandGridView;
 import com.juns.wechat.chat.widght.PasteEditText;
 import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.ToastUtil;
+import com.juns.wechat.view.AudioRecordButton;
 import com.juns.wechat.xmpp.util.SendMessage;
+import com.wangzhe.photopicker.PhotoPicker;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +42,10 @@ import java.util.List;
 public class ChatInputManager implements View.OnClickListener{
     private static final int EMOTICONS_COUNT = 62;
 
-    private LinearLayout llRecordContainer; //录音动画界面
-    private ImageView ivRecord; //录音动画图片
-    private final TextView tvRecordHint; //录音提示文字
     private Button btnSetModeVoice; //输入语音按钮
     private Button btnSetModeKeyBoard; //输入文字按钮
     private LinearLayout llPressToSpeak; //按住说话
+    private AudioRecordButton btnRecord; //录音按钮
     private RelativeLayout rlInputText; //输入文字区域
     private PasteEditText etInputText; //输入文本框
     private ImageView ivEmoticonsNormal; //表情按钮
@@ -58,7 +60,7 @@ public class ChatInputManager implements View.OnClickListener{
 
     private ListView lvMessages;  //消息列表
     private List<String> emoticonsFileNames;
-    private AnimationDrawable animationDrawable;
+  //  private AnimationDrawable animationDrawable;
 
     private ChatActivity mChatActivity;
 
@@ -67,14 +69,10 @@ public class ChatInputManager implements View.OnClickListener{
         View view = chatActivity.getWindow().getDecorView();
         mChatActivity = chatActivity;
 
-        llRecordContainer = (LinearLayout) view.findViewById(R.id.ll_record_animation);
-        ivRecord = (ImageView) view.findViewById(R.id.ivRecord);
-        tvRecordHint = (TextView) view.findViewById(R.id.tvRecordHint);
-        animationDrawable = (AnimationDrawable) ivRecord.getBackground();
-
         btnSetModeVoice = (Button) view.findViewById(R.id.btn_set_mode_voice);
         btnSetModeKeyBoard = (Button) view.findViewById(R.id.btn_set_mode_keyboard);
         llPressToSpeak = (LinearLayout) view.findViewById(R.id.ll_press_to_speak);
+        btnSend = (AudioRecordButton) view.findViewById(R.id.btn_record);
 
         rlInputText = (RelativeLayout) view.findViewById(R.id.rl_input_text);
         etInputText = (PasteEditText) view.findViewById(R.id.et_input_text);
@@ -119,7 +117,6 @@ public class ChatInputManager implements View.OnClickListener{
     }
 
     private void setListener(){
-        llPressToSpeak.setOnTouchListener(new PressToSpeakListener());
         etInputText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -163,6 +160,13 @@ public class ChatInputManager implements View.OnClickListener{
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        btnRecord.setAudioFinishRecorderListener(new AudioRecordButton.AudioFinishRecorderListener() {
+            @Override
+            public void onFinished(float seconds, String filePath) {
+                sendVoice(mChatActivity.getContactName(), (int) seconds, filePath);
+            }
         });
 
         lvMessages.setOnTouchListener(new View.OnTouchListener() {
@@ -218,7 +222,7 @@ public class ChatInputManager implements View.OnClickListener{
 								"isComingCall", false));*/
                 break;
             case R.id.view_photo:
-                mChatActivity.selectPicFromLocal(); // 点击图片图标
+                selectPicFromLocal(); // 点击图片图标
                 break;
             case R.id.view_location:
                 break;
@@ -272,6 +276,30 @@ public class ChatInputManager implements View.OnClickListener{
         }
     }
 
+    /**
+     * 从图库获取图片
+     */
+    private void selectPicFromLocal() {
+        PhotoPicker.builder()
+                .setPhotoCount(9)
+                .setGridColumnCount(3)
+                .start(mChatActivity);
+    }
+
+    /***
+     * 发送语音消息
+     * @param seconds
+     * @param filePath
+     */
+    private void sendVoice(String otherUserName, int seconds, String filePath){
+        File file = new File(filePath);
+        if(!file.exists()){
+            LogUtil.e("filePath is invalid!");
+            return;
+        }
+        SendMessage.sendVoiceMsg(otherUserName, seconds, filePath);
+    }
+
 
 
     /**
@@ -322,7 +350,7 @@ public class ChatInputManager implements View.OnClickListener{
      */
     public void more(View view) {
         if (llMore.getVisibility() == View.GONE) {
-            CommonUtil.hideKeyboard((ChatActivity) mChatActivity);
+            CommonUtil.hideKeyboard(mChatActivity);
             llMore.setVisibility(View.VISIBLE);
             llMoreFunctionContainer.setVisibility(View.VISIBLE);
             llEmoticonContainer.setVisibility(View.GONE);
@@ -412,102 +440,6 @@ public class ChatInputManager implements View.OnClickListener{
             }
         });
         return view;
-    }
-
-    /**
-     * 按住说话listener
-     */
-    class PressToSpeakListener implements View.OnTouchListener {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    animationDrawable.start();
-                    if (!CommonUtils.isExitsSdcard()) {
-                        String st4 = mChatActivity.getResources().getString(
-                                R.string.Send_voice_need_sdcard_support);
-                        ToastUtil.showToast(st4, Toast.LENGTH_SHORT);
-                        return false;
-                    }
-                    try {
-                        v.setPressed(true);
-                        if (VoicePlayClickListener.isPlaying)
-                            VoicePlayClickListener.currentPlayListener
-                                    .stopPlayVoice();
-                        llRecordContainer.setVisibility(View.VISIBLE);
-                        tvRecordHint.setText(mChatActivity.getString(R.string.move_up_to_cancel));
-                        tvRecordHint.setBackgroundColor(Color.TRANSPARENT);
-					/*voiceRecorder.startRecording(null, toChatUsername,
-							getApplicationContext());*/
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        v.setPressed(false);
-//					if (voiceRecorder != null)
-//						voiceRecorder.discardRecording();
-                        llRecordContainer.setVisibility(View.INVISIBLE);
-                        ToastUtil.showToast(R.string.recoding_fail,
-                                Toast.LENGTH_SHORT);
-                        return false;
-                    }
-
-                    return true;
-                case MotionEvent.ACTION_MOVE: {
-                    if (event.getY() < 0) {
-                        tvRecordHint.setText(mChatActivity.getString(R.string.release_to_cancel));
-                        tvRecordHint.setBackgroundResource(R.drawable.recording_text_hint_bg);
-                    } else {
-                        tvRecordHint.setText(mChatActivity.getString(R.string.move_up_to_cancel));
-                        tvRecordHint.setBackgroundColor(Color.TRANSPARENT);
-                        animationDrawable.start();
-                    }
-                    return true;
-                }
-                case MotionEvent.ACTION_UP:
-                    if (animationDrawable.isRunning()) {
-                        animationDrawable.stop();
-                    }
-                    v.setPressed(false);
-                    llRecordContainer.setVisibility(View.INVISIBLE);
-                    if (event.getY() < 0) {
-                        // discard the recorded audio.
-                        //voiceRecorder.discardRecording();
-
-                    } else {
-                        // stop recording and send voice file
-                        String st1 = mChatActivity.getResources().getString(
-                                R.string.Recording_without_permission);
-                        String st2 = mChatActivity.getResources().getString(
-                                R.string.The_recording_time_is_too_short);
-                        String st3 = mChatActivity.getResources().getString(
-                                R.string.send_failure_please);
-                        try {
-					/*	int length = voiceRecorder.stopRecoding();
-						if (length > 0) {
-							sendVoice(voiceRecorder.getVoiceFilePath(),
-									voiceRecorder
-											.getVoiceFileName(toChatUsername),
-									Integer.toString(length), false);
-						} else if (length == EMError.INVALID_FILE) {
-							Toast.makeText(getApplicationContext(), st1,
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Toast.makeText(getApplicationContext(), st2,
-									Toast.LENGTH_SHORT).show();
-						}*/
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            ToastUtil.showToast(st3, Toast.LENGTH_SHORT);
-                        }
-
-                    }
-                    return true;
-                default:
-                    llRecordContainer.setVisibility(View.INVISIBLE);
-				/*if (voiceRecorder != null)
-					voiceRecorder.discardRecording();*/
-                    return false;
-            }
-        }
     }
 
 }

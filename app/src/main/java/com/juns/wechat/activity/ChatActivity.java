@@ -65,7 +65,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 
 //聊天页面
 @Content(R.layout.activity_chat)
-public class ChatActivity extends ToolbarActivity implements OnClickListener {
+public class ChatActivity extends ToolbarActivity{
     public static final String ARG_USER_NAME = "user_name";
 
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
@@ -131,7 +131,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
         ToolBarUtil.setToolBar(this);
 		initData();
 		setUpView();
-		setListener();
 	}
 
 	/**
@@ -210,15 +209,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 
 	}
 
-	protected void setListener() {
-		findViewById(R.id.view_camera).setOnClickListener(this);
-		findViewById(R.id.view_file).setOnClickListener(this);
-		findViewById(R.id.view_video).setOnClickListener(this);
-		findViewById(R.id.view_photo).setOnClickListener(this);
-		findViewById(R.id.view_location).setOnClickListener(this);
-		findViewById(R.id.view_audio).setOnClickListener(this);
-	}
-
     public String getContactName(){
         return contactName;
     }
@@ -257,7 +247,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
     }
 
     private void scrollListViewToBottom(){
-        LogUtil.i("scrollToBottom!");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -421,60 +410,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 		}
 	}
 
-
-	/**
-	 * 消息图标点击事件
-	 * 
-	 * @param view
-	 */
-	@Override
-	public void onClick(View view) {
-		int id = view.getId();
-		switch (id) {
-		case R.id.img_back:
-			CommonUtil.finish(ChatActivity.this);
-			break;
-		case R.id.img_right:
-
-			break;
-		case R.id.view_camera:
-			selectPicFromCamera();// 点击照相图标
-			break;
-		case R.id.view_file:
-			// 发送文件
-			selectFileFromLocal();
-			break;
-		case R.id.view_video:
-			// 视频通话
-			/*if (!EMChatManager.getDbManager().isConnected())
-				Toast.makeText(this, Constants.NET_ERROR, 0).show();
-			else
-				startActivity(new Intent(this, VideoCallActivity.class)
-						.putExtra("username", toChatUsername).putExtra(
-								"isComingCall", false));*/
-			break;
-		case R.id.view_photo:
-			selectPicFromLocal(); // 点击图片图标
-			break;
-		case R.id.view_location:
-			// TODO 位置
-			startActivityForResult(new Intent(this, BaiduMapActivity.class),
-					REQUEST_CODE_MAP);
-			break;
-		case R.id.view_audio:
-			// 语音通话
-		/*	if (!EMChatManager.getDbManager().isConnected())
-				Toast.makeText(this, Constants.NET_ERROR, 0).show();
-			else
-				startActivity(new Intent(ChatActivity.this,
-						VoiceCallActivity.class).putExtra("username",
-						toChatUsername).putExtra("isComingCall", false));*/
-			break;
-		default:
-			break;
-		}
-	}
-
 	/**
 	 * 照相获取图片
 	 */
@@ -511,16 +446,6 @@ public class ChatActivity extends ToolbarActivity implements OnClickListener {
 					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		}
 		startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
-	}
-
-	/**
-	 * 从图库获取图片
-	 */
-	public void selectPicFromLocal() {
-        PhotoPicker.builder()
-                .setPhotoCount(9)
-                .setGridColumnCount(3)
-                .start(this);
 	}
 
 	/**

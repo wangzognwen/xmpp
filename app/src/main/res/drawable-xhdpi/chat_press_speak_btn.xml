@@ -4,7 +4,6 @@
     <item android:state_pressed="true"><shape>
             <corners android:radius="3dp" />
 
-            <padding android:bottom="5dp" android:left="5dp" android:right="5dp" android:top="5dp" />
 
             <solid android:color="#d3d3d3" />
 
@@ -13,7 +12,6 @@
     <item><shape>
             <corners android:radius="3dp" />
 
-            <padding android:bottom="5dp" android:left="5dp" android:right="5dp" android:top="5dp" />
 
             <solid android:color="#00000000" />
 

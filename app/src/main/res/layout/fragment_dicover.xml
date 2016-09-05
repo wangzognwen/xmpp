@@ -26,7 +26,7 @@
 					android:paddingRight="16dp"
 					android:layout_marginTop="20dp"
 					android:drawablePadding="10dp"
-					android:drawableLeft="@drawable/v2"
+					android:drawableLeft="@drawable/ic_friends_circle"
 					android:drawableRight="@drawable/right"
 					android:text="@string/moments" />
 		<View

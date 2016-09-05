@@ -5,6 +5,7 @@ import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.InviteMsg;
 import com.juns.wechat.bean.chat.PictureMsg;
 import com.juns.wechat.bean.chat.TextMsg;
+import com.juns.wechat.bean.chat.VoiceMsg;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
@@ -41,15 +42,13 @@ public class SendMessage {
                 MessageBean messageBean = new MessageBean();
                 TextMsg textMsg = new TextMsg();
                 textMsg.content = content;
-                try {
-                    messageBean.setMsg(textMsg.toJson());
-                    messageBean.setOtherName(otherName);
-                    messageBean.setType(MsgType.MSG_TYPE_TEXT);
-                    messageBean.setTypeDesc(content);
-                    sendMsg(messageBean);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                messageBean.setMsg(textMsg.toJson());
+                messageBean.setOtherName(otherName);
+                messageBean.setType(MsgType.MSG_TYPE_TEXT);
+                messageBean.setTypeDesc(content);
+                sendMsg(messageBean);
+
             }
         });
 
@@ -101,6 +100,25 @@ public class SendMessage {
                         }
                     }
                 });
+            }
+        });
+    }
+
+    public static void sendVoiceMsg(final String otherName, final int seconds, final String filePath){
+        ThreadPoolUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                MessageBean messageBean = new MessageBean();
+                VoiceMsg voiceMsg = new VoiceMsg();
+                voiceMsg.seconds = seconds;
+                voiceMsg.fileName = new File(filePath).getName();
+                voiceMsg.encodeStr = new MsgCode().encode(filePath);
+
+                messageBean.setMsg(voiceMsg.toJson());
+                messageBean.setOtherName(otherName);
+                messageBean.setType(MsgType.MSG_TYPE_VOICE);
+                messageBean.setTypeDesc(MsgType.MSG_TYPE_VOICE_DESC);
+                sendMsg(messageBean);
             }
         });
     }

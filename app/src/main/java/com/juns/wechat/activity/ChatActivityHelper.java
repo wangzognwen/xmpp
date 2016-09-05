@@ -5,6 +5,7 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
 import com.juns.wechat.bean.chat.viewmodel.PictureMsgViewModel;
 import com.juns.wechat.bean.chat.viewmodel.TextMsgViewModel;
+import com.juns.wechat.bean.chat.viewmodel.VoiceMsgViewModel;
 import com.juns.wechat.config.MsgType;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.MessageDao;
@@ -94,6 +95,10 @@ public class ChatActivityHelper {
                 break;
             case MsgType.MSG_TYPE_PICTURE:
                 viewModel = new PictureMsgViewModel(chatActivity, entity);
+                break;
+            case MsgType.MSG_TYPE_VOICE:
+                viewModel = new VoiceMsgViewModel(chatActivity, entity);
+                break;
             default:
                 break;
         }
