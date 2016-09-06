@@ -23,30 +23,32 @@
             android:layout_height="@dimen/size_avatar"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="2dp"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:background="@drawable/head"
+            android:background="@drawable/default_useravatar"
             android:scaleType="fitXY" />
 
-           <TextView
-            android:id="@+id/tv_userid"
-              android:layout_marginLeft="15dp" 
-            android:layout_toRightOf="@id/iv_avatar"
-            style="@style/chat_text_name_style"
+        <RelativeLayout
+            android:id="@+id/rl_voice"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"    />
-        
-        <ImageView
-            android:id="@+id/iv_voice"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
+            android:background="@drawable/chatfrom_bg"
             android:layout_marginLeft="10dp"
             android:layout_below="@+id/tv_userid"
             android:layout_toRightOf="@id/iv_avatar"
-            android:background="@drawable/chatfrom_bg"
-            android:clickable="true"
-            android:paddingLeft="27dp"
-            android:paddingRight="27dp"
-            android:src="@drawable/chatfrom_voice_playing" />
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp">
+            <ImageView
+                android:id="@+id/iv_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/chatfrom_voice_playing"
+                android:layout_centerInParent="true"/>
+            <TextView
+                android:id="@+id/tv_voice_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_length"
@@ -54,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/iv_voice"
+            android:layout_toRightOf="@id/rl_voice"
             android:layout_below="@+id/tv_userid"
             android:gravity="center"
             android:text="3&apos;&apos;" />

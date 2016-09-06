@@ -1,20 +1,21 @@
 package com.juns.wechat.bean.chat.viewmodel;
 
 import android.content.Context;
-import android.text.Spannable;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juns.wechat.R;
+import com.juns.wechat.activity.ChatMediaPlayer;
 import com.juns.wechat.bean.MessageBean;
-import com.juns.wechat.bean.chat.TextMsg;
-import com.juns.wechat.chat.utils.SmileUtils;
+import com.juns.wechat.bean.chat.VoiceMsg;
 import com.juns.wechat.common.ViewHolder;
 import com.juns.wechat.config.MsgType;
+import com.juns.wechat.util.AudioManager;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.TimeUtil;
 
 
@@ -28,13 +29,12 @@ import com.juns.wechat.util.TimeUtil;
 public class VoiceMsgViewModel extends MsgViewModel implements View.OnClickListener, View.OnLongClickListener {
     private final Integer[] mResIds = {R.layout.row_received_voice, R.layout.row_sent_voice};
 
-    private TextMsg textMsg;
-
-    private long beginMicroSec;
+    private VoiceMsg voiceMsg;
+    private ImageView ivVoice; //声音图标
 
     public VoiceMsgViewModel(Context context, MessageBean messageBean) {
         super(context, messageBean);
-        textMsg = (TextMsg) messageBean.getMsgObj();
+        voiceMsg = (VoiceMsg) messageBean.getMsgObj();
     }
 
     @Override
@@ -44,8 +44,12 @@ public class VoiceMsgViewModel extends MsgViewModel implements View.OnClickListe
             convertView =  mInflater.inflate(resId, viewGroup, false);
         }
 
+        LogUtil.i("start initView!");
+
         TextView tvDate = ViewHolder.get(convertView, R.id.tv_date);
-        ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
+        ImageView ivAvatar = ViewHolder.get(convertView, R.id.iv_avatar);
+        RelativeLayout rlVoiceContaincer = ViewHolder.get(convertView, R.id.rl_voice);
+        ivVoice = ViewHolder.get(convertView, R.id.iv_voice);
 
         if(isShowTime()){
             tvDate.setVisibility(View.VISIBLE);
@@ -70,19 +74,29 @@ public class VoiceMsgViewModel extends MsgViewModel implements View.OnClickListe
             }
         }else {
             loadUrl(ivAvatar, otherAvatar);
-            ivAvatar.setOnClickListener(this);
         }
+
+        ivAvatar.setOnClickListener(this);
+        rlVoiceContaincer.setOnClickListener(this);
 
         return convertView;
     }
 
     @Override
     public void onClick(View v) {
-        if(isShowMyself()){
-            super.onUserPhotoClick(myselfName);
-        }else {
-            super.onUserPhotoClick(otherName);
+        if(v.getId() == R.id.iv_avatar){
+            if(isShowMyself()){
+                super.onUserPhotoClick(myselfName);
+            }else {
+                super.onUserPhotoClick(otherName);
+            }
+        }else if(v.getId() == R.id.rl_voice){
+            ChatMediaPlayer chatMediaPlayer = ChatMediaPlayer.getInstance();
+            chatMediaPlayer.setVoiceView(ivVoice);
+            chatMediaPlayer.setVoiceDir(isShowMyself());
+            chatMediaPlayer.playVoice(AudioManager.RECORD_PATH + "/" + voiceMsg.fileName);
         }
+
     }
 
     @Override
@@ -100,6 +114,6 @@ public class VoiceMsgViewModel extends MsgViewModel implements View.OnClickListe
 
     @Override
     public int getType() {
-        return MsgType.MSG_TYPE_TEXT;
+        return MsgType.MSG_TYPE_VOICE;
     }
 }

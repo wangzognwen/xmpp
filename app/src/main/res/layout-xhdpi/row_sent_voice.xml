@@ -24,18 +24,33 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/margin_chat_activity"
-            android:background="@drawable/head"
-            android:scaleType="fitXY" />
+            android:background="@drawable/default_useravatar"
+            android:scaleType="fitXY"
+            android:layout_marginTop="8dp"/>
 
-        <ImageView
-            android:id="@+id/iv_voice"
+        <RelativeLayout
+            android:id="@+id/rl_voice"
             android:layout_width="wrap_content"
-            android:layout_height="54dp"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/iv_avatar"
-            android:padding="17dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/chatto_bg"
-            android:src="@drawable/chatto_voice_playing" />
+            android:layout_marginRight="10dp"
+            android:layout_below="@+id/tv_userid"
+            android:layout_toLeftOf="@id/iv_avatar"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+            <ImageView
+                android:id="@+id/iv_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/chatto_voice_playing"
+                android:layout_centerInParent="true"/>
+            <TextView
+                android:id="@+id/tv_voice_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_length"
@@ -43,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/iv_voice"
+            android:layout_toLeftOf="@id/rl_voice"
             android:gravity="center" />
         
         <ImageView

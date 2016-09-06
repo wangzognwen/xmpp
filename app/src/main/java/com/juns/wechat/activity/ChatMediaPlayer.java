@@ -65,7 +65,7 @@ public class ChatMediaPlayer {
         mPlayer = new MediaPlayer();
     }
 
-    public static ChatMediaPlayer getInstace(){
+    public static ChatMediaPlayer getInstance(){
         if (null == mChatMediaPlayer){
             mChatMediaPlayer = new ChatMediaPlayer();
         }

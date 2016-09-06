@@ -67,7 +67,7 @@ public class ImageLoader {
                 source.recycle();
                 int bgResId = 0;
                 if(direction == 0){
-                    bgResId = R.drawable.chat_adapter_to_bg;
+                    bgResId = R.drawable.chat_adapter_to_bg_left;
                 }else {
                     bgResId = R.drawable.chat_adapter_to_bg;
                 }

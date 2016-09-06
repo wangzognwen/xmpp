@@ -15,6 +15,7 @@ import com.juns.wechat.xmpp.process.PictureMessageProcess;
 import com.juns.wechat.xmpp.process.ReplyInviteMessageProcess;
 import com.juns.wechat.xmpp.process.TextMessageProcess;
 import com.juns.wechat.xmpp.process.UnknownTypeMessageProcess;
+import com.juns.wechat.xmpp.process.VoiceMessageProcess;
 import com.juns.wechat.xmpp.util.ConvertUtil;
 
 import org.jivesoftware.smack.SmackException;
@@ -28,11 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*******************************************************
- * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>
- * description ：接受到的xmpp包监听事件
- *
- * @since 1.6
- * Created by 王宗文 on 2015/11/19
+ * Created by 王者 on 2015/11/19
  *******************************************************/
 public class XmppReceivePacketListener implements StanzaListener {
     private Map<Integer, MessageProcess> processMap = new HashMap<>();
@@ -108,6 +105,9 @@ public class XmppReceivePacketListener implements StanzaListener {
                 switch (type){
                     case MsgType.MSG_TYPE_TEXT:
                         messageProcess = new TextMessageProcess(App.getInstance());
+                        break;
+                    case MsgType.MSG_TYPE_VOICE:
+                        messageProcess = new VoiceMessageProcess(App.getInstance());
                         break;
                     case MsgType.MSG_TYPE_PICTURE:
                         messageProcess = new PictureMessageProcess(App.getInstance());

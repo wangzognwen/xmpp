@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.juns.wechat.R;
+import com.juns.wechat.activity.ChatMediaPlayer;
 import com.juns.wechat.util.AudioManager;
 
 
@@ -144,6 +145,7 @@ public class AudioRecordButton extends Button implements AudioManager.AudioStage
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
+            ChatMediaPlayer.getInstance().stopVoice(); //先停止播放语音，这个很重要
 			changeState(STATE_RECORDING);
 			break;
 		case MotionEvent.ACTION_MOVE:
@@ -172,8 +174,12 @@ public class AudioRecordButton extends Button implements AudioManager.AudioStage
 				mAudioManager.cancel();
 				mhandler.sendEmptyMessageDelayed(MSG_DIALOG_DIMISS, 1300);// 持续1.3s
 			} else if (mCurrentState == STATE_RECORDING) {//正常录制结束
-
-				mDialogManager.dimissDialog();
+                mhandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialogManager.dimissDialog();
+                    }
+                });
 				
 				mAudioManager.release();// release释放一个mediarecorder
 				

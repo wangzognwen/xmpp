@@ -45,8 +45,8 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
         }
 
         TextView tvDate = ViewHolder.get(convertView, R.id.tv_date);
-        TextView tvContent = (TextView) convertView.findViewById(R.id.tv_chat_content);
-        ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
+        TextView tvContent = ViewHolder.get(convertView, R.id.tv_chat_content);
+        ImageView ivAvatar = ViewHolder.get(convertView, R.id.iv_avatar);
 
         if(isShowTime()){
             tvDate.setVisibility(View.VISIBLE);
@@ -74,8 +74,9 @@ public class TextMsgViewModel extends MsgViewModel implements View.OnClickListen
             }
         }else {
             loadUrl(ivAvatar, otherAvatar);
-            ivAvatar.setOnClickListener(this);
         }
+
+        ivAvatar.setOnClickListener(this);
         tvContent.setOnLongClickListener(this);
         tvContent.setOnTouchListener(new View.OnTouchListener() {
             @Override

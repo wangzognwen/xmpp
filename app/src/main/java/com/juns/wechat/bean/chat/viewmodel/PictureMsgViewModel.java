@@ -44,11 +44,10 @@ public class PictureMsgViewModel extends MsgViewModel implements View.OnClickLis
         }
 
         TextView tvDate = ViewHolder.get(convertView, R.id.tv_date);
-        ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
-        ImageView ivSendPicture = (ImageView) convertView.findViewById(R.id.ivPicture);
-        ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
-        TextView tvPercent = (TextView) convertView.findViewById(R.id.percentage);
-
+        ImageView ivAvatar = ViewHolder.get(convertView, R.id.iv_avatar);
+        ImageView ivSendPicture = ViewHolder.get(convertView, R.id.ivPicture);
+        ProgressBar progressBar = ViewHolder.get(convertView, R.id.progressBar);
+        TextView tvPercent = ViewHolder.get(convertView, R.id.percentage);
 
         if(isShowTime()){
             tvDate.setVisibility(View.VISIBLE);

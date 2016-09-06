@@ -72,7 +72,7 @@ public class ChatInputManager implements View.OnClickListener{
         btnSetModeVoice = (Button) view.findViewById(R.id.btn_set_mode_voice);
         btnSetModeKeyBoard = (Button) view.findViewById(R.id.btn_set_mode_keyboard);
         llPressToSpeak = (LinearLayout) view.findViewById(R.id.ll_press_to_speak);
-        btnSend = (AudioRecordButton) view.findViewById(R.id.btn_record);
+        btnRecord = (AudioRecordButton) view.findViewById(R.id.btn_record);
 
         rlInputText = (RelativeLayout) view.findViewById(R.id.rl_input_text);
         etInputText = (PasteEditText) view.findViewById(R.id.et_input_text);
@@ -165,6 +165,7 @@ public class ChatInputManager implements View.OnClickListener{
         btnRecord.setAudioFinishRecorderListener(new AudioRecordButton.AudioFinishRecorderListener() {
             @Override
             public void onFinished(float seconds, String filePath) {
+                lvMessages.postInvalidate();
                 sendVoice(mChatActivity.getContactName(), (int) seconds, filePath);
             }
         });

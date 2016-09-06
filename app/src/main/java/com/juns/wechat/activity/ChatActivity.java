@@ -19,7 +19,6 @@ import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
@@ -36,12 +35,9 @@ import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
 import com.juns.wechat.chat.AlertDialog;
-import com.juns.wechat.chat.BaiduMapActivity;
 import com.juns.wechat.chat.adpter.MessageAdapter;
-import com.juns.wechat.chat.adpter.VoicePlayClickListener;
 import com.juns.wechat.chat.utils.CommonUtils;
 import com.juns.wechat.common.ToolbarActivity;
-import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.FriendDao;
 import com.juns.wechat.database.ChatTable;
@@ -52,7 +48,6 @@ import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.util.ToolBarUtil;
-import com.juns.wechat.xmpp.iq.FileTransferIQ;
 import com.juns.wechat.xmpp.util.SendMessage;
 import com.wangzhe.photopicker.PhotoPicker;
 
@@ -782,20 +777,7 @@ public class ChatActivity extends ToolbarActivity{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (VoicePlayClickListener.isPlaying
-				&& VoicePlayClickListener.currentPlayListener != null) {
-			// 停止语音播放
-			VoicePlayClickListener.currentPlayListener.stopPlayVoice();
-		}
-
-		try {
-			// 停止录音
-		/*	if (voiceRecorder.isRecording()) {
-				voiceRecorder.discardRecording();
-				recordingContainer.setVisibility(View.INVISIBLE);
-			}*/
-		} catch (Exception e) {
-		}
+		ChatMediaPlayer.getInstance().release();
 	}
 
 	/**
