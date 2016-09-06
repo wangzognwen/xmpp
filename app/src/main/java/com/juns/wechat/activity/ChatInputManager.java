@@ -165,7 +165,6 @@ public class ChatInputManager implements View.OnClickListener{
         btnRecord.setAudioFinishRecorderListener(new AudioRecordButton.AudioFinishRecorderListener() {
             @Override
             public void onFinished(float seconds, String filePath) {
-                lvMessages.postInvalidate();
                 sendVoice(mChatActivity.getContactName(), (int) seconds, filePath);
             }
         });

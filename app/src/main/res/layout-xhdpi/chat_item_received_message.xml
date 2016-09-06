@@ -24,32 +24,21 @@
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:layout_marginTop="2dp"
             android:background="@drawable/default_useravatar"
             android:scaleType="fitXY" />
 
-       <TextView
-            android:maxWidth="240.0dip"
-            android:id="@+id/tv_chat_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:layout_toRightOf="@id/iv_avatar"
-            android:background="@drawable/chatfrom_bg"
-            android:layout_below="@+id/tv_userid"
-            android:autoLink="web"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingTop="11dp"
-            android:paddingBottom="11dp"
-            android:paddingLeft="14dp"
-            android:paddingRight="11dp"
-            android:gravity="center"
-            android:lineSpacingExtra="2dp"
-            android:textColor="#252424"
-            android:textSize="15sp"
-            tools:text="成都但是三顿饭三顿饭对的的"
-            android:minHeight="40dp"/>
+        <RelativeLayout
+            android:id="@+id/rl_content_container"
+            style="@style/chat_item_from_content_container"
+            android:layout_toRightOf="@+id/iv_avatar">
+            <TextView
+                android:id="@+id/tv_chat_content"
+                style="@style/chat_item_text_content"
+                android:autoLink="web"
+                android:lineSpacingExtra="2dp"
+                tools:text="测试对的地方的但是是否飞是"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
         
     </RelativeLayout>
 

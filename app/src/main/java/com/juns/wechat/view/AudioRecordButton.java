@@ -257,10 +257,5 @@ public class AudioRecordButton extends Button implements AudioManager.AudioStage
 
 	}
 
-	@Override
-	public boolean onPreDraw() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

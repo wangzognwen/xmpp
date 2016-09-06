@@ -46,7 +46,7 @@
 
             <TextView
                 android:id="@+id/tv_chat_content"
-                style="@style/chat_content_date_style"
+                style="@style/chat_item_text_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

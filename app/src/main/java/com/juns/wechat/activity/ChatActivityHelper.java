@@ -134,7 +134,7 @@ public class ChatActivityHelper {
                 }
                 addEntityToViewModel(msgViewModels, entity);
                 Collections.sort(msgViewModels);
-                chatActivity.refreshOneData(true);
+                chatActivity.refreshOneData(false);
                 break;
             case DbDataEvent.DELETE:
                 if(position != -1){

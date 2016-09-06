@@ -152,8 +152,8 @@ public class MessageAdapter extends BaseAdapter {
 
 		case VOICE:
 			return message.direct == EMMessage.Direct.RECEIVE ? inflater
-					.inflate(R.layout.row_received_voice, null) : inflater
-					.inflate(R.layout.row_sent_voice, null);
+					.inflate(R.layout.chat_item_received_voice, null) : inflater
+					.inflate(R.layout.chat_item_sent_voice, null);
 		case VIDEO:
 			return message.direct == EMMessage.Direct.RECEIVE ? inflater
 					.inflate(R.layout.row_received_video, null) : inflater

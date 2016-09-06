@@ -122,11 +122,11 @@ public class FileTransferManager {
 
             byte[] fileSizeData = new byte[4];
             socketIn.read(fileSizeData);
-            int fileSize = Integer.parseInt(new String(fileSizeData));
-
-            if(!file.getParentFile().exists()){
-                file.getParentFile().mkdirs();
+            for(int i = 0; i < fileSizeData.length; i++){
+                System.out.println(fileSizeData[i]);
             }
+            int fileSize = Integer.parseInt(new String(fileSizeData));
+            LogUtil.i("fileSize: " + fileSize);
 
             OutputStream fileOut = FileUtil.getOutputStream(file);
             if(fileOut == null){

@@ -9,6 +9,12 @@ import java.util.UUID;
 
 public class AudioManager {
     public static final String RECORD_PATH = SDCardUtil.getSDCardRootPath() + "/wechat/record";
+    static {
+        File file = new File(RECORD_PATH);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+    }
 
 	private MediaRecorder mRecorder;
 	private String mDirString;

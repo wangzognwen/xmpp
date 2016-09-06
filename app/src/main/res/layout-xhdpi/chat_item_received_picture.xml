@@ -23,7 +23,6 @@
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:layout_marginTop="2dp"
             android:background="@drawable/default_useravatar"
             android:scaleType="fitXY" />
 
@@ -34,6 +33,7 @@
             android:layout_below="@+id/tv_userid"
             android:layout_marginLeft="@dimen/margin_chat_activity"
             android:layout_toRightOf="@id/iv_avatar"
+            android:layout_alignTop="@+id/iv_avatar"
              >
 
             <ImageView

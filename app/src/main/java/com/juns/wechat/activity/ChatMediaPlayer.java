@@ -20,7 +20,8 @@ public class ChatMediaPlayer {
     private ImageView mVoiceView;
     private int mVoiceShowCnt = 0;
     private static ChatMediaPlayer mChatMediaPlayer= null;
-    private boolean mIsOutVoice, mIsRunning;
+    private boolean mIsOutVoice;
+    private volatile boolean mIsRunning = false;
 
     private Handler mVoicePlayHandler = new Handler(){
         @Override
@@ -85,8 +86,6 @@ public class ChatMediaPlayer {
                 }else{
                     mVoiceView.setImageResource(R.drawable.chatfrom_voice_playing);
                 }
-
-                Log.d(TAG, "setOnCompleteListener onCompletion IN");
             }
         });
     }
@@ -119,7 +118,7 @@ public class ChatMediaPlayer {
 
     public void playVoice(String voicePath){
         try {
-
+            mIsRunning = true;
             if (null == mPlayer){
                 mPlayer  = new MediaPlayer();
             }else{
@@ -137,7 +136,6 @@ public class ChatMediaPlayer {
             //播放动画启动
             setOnCompleteListener();
             mVoiceShowCnt = 0;
-            mIsRunning = true;
             Thread thread = new Thread(mVoiceplayRunnable);
             thread.start();
         } catch (IOException e) {
@@ -159,6 +157,10 @@ public class ChatMediaPlayer {
                 mVoiceView.setImageResource(R.drawable.chatfrom_voice_playing);
             }
         }
+    }
+
+    public boolean isRunning(){
+        return mIsRunning;
     }
 
 }
