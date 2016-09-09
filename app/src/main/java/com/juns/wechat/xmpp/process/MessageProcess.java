@@ -49,7 +49,7 @@ public abstract class MessageProcess {
             return;
         }
         saveMessageToDB(messageBean);
-        ringDone();
+        //ringDone();
         noticeShow(messageBean);
     }
 
@@ -62,16 +62,6 @@ public abstract class MessageProcess {
 
     protected void saveMessageToDB(MessageBean messageBean){
         messageDao.save(messageBean);
-    }
-
-    public void ringDone(){
-        ringDone(R.raw.office);
-    }
-
-    public void ringDone(int resId){
-        mSoundPrompt = new SoundPrompt(mContext);
-        mSoundPrompt.setRingRes(resId);
-        mSoundPrompt.ringDone();
     }
 
     public void noticeShow(MessageBean entity){

@@ -64,7 +64,7 @@ public class ChatActivityHelper {
         List<MsgViewModel> msgViewModels = chatActivity.getMsgViewModels();
         addEntityToViewModel(msgViewModels, messageBeen);
 
-        notifyActivityDataSetChanged(false);
+        notifyActivityDataSetChanged(true);
     }
 
     private void notifyActivityDataSetChanged(boolean hasNewData){
@@ -134,16 +134,7 @@ public class ChatActivityHelper {
                 }
                 addEntityToViewModel(msgViewModels, entity);
                 Collections.sort(msgViewModels);
-                chatActivity.refreshOneData(false);
-                break;
-            case DbDataEvent.DELETE:
-                if(position != -1){
-                    msgViewModels.remove(position);
-                }
-                if(mQueryIndex != 0){
-                    mQueryIndex--;
-                }
-                chatActivity.refreshOneData(false);
+                chatActivity.refreshOneData(true);
                 break;
             default:
                 break;

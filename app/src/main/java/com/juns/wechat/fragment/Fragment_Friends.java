@@ -11,6 +11,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.adpter.ContactAdapter;
 import com.juns.wechat.bean.FriendBean;
@@ -88,6 +89,8 @@ public class Fragment_Friends extends BaseFragment implements OnClickListener,
         }else {
             tvUnreadInviteMsgCount.setVisibility(View.GONE);
         }
+
+        ((MainActivity) getActivity()).setUnreadMsgLabel(R.id.unread_contact_number, count);
     }
 
 	private void setFriendData() {

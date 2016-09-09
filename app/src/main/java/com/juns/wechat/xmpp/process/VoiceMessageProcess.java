@@ -29,6 +29,5 @@ public class VoiceMessageProcess extends MessageProcess {
         }
         saveMessageToDB(messageBean);
         noticeShow(messageBean);
-        ringDone();
     }
 }

@@ -1,11 +1,13 @@
 package com.juns.wechat.xmpp.prompt;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -14,6 +16,7 @@ import android.os.Vibrator;
 import com.juns.wechat.App;
 import com.juns.wechat.R;
 import com.juns.wechat.activity.ChatActivity;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.SharedPreferencesUtil;
 
 import java.util.HashMap;
@@ -86,6 +89,8 @@ public class NoticePrompt extends Prompt implements ISwitch {
             return;
         }
 
+        LogUtil.i("isOnForeGround:" + isOnForeGround());
+
         mWakeLock.acquire();
         setNotification(fromUserName, message, noticeIntent);
         setLEDNotification();
@@ -109,6 +114,7 @@ public class NoticePrompt extends Prompt implements ISwitch {
         mWakeLock.release();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setNotification(String fromUserName,
                                  String message, Intent noticeIntent) {
 
@@ -152,9 +158,10 @@ public class NoticePrompt extends Prompt implements ISwitch {
         builder.setWhen(System.currentTimeMillis());
         builder.setContentIntent(pendingIntent);
         builder.setContentTitle(title);
-        builder.setContentInfo(message);
+        builder.setContentText(message);
+        builder.setDefaults(Notification.DEFAULT_SOUND);
 
-        mNotification = builder.getNotification();
+        mNotification = builder.build();
         if (mNotificationCounter > 1)
             mNotification.number = mNotificationCounter;
         mNotification.flags = Notification.FLAG_AUTO_CANCEL;

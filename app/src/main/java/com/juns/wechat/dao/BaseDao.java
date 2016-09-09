@@ -2,6 +2,7 @@ package com.juns.wechat.dao;
 
 import android.database.Cursor;
 
+import com.juns.wechat.annotation.Id;
 import com.juns.wechat.bean.Flag;
 import com.juns.wechat.database.DbUtil;
 import com.juns.wechat.util.LogUtil;
@@ -16,8 +17,10 @@ import org.xutils.db.table.ColumnEntity;
 import org.xutils.db.table.TableEntity;
 import org.xutils.ex.DbException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -26,10 +29,16 @@ import java.util.List;
 public abstract class BaseDao<T> implements IDao<T> {
     protected DbManager dbManager;
     private Class<T> clazz;
+    private TableEntity<T> tableEntity;
 
     public BaseDao(){
         dbManager = DbUtil.getDbManager();
         clazz = getEntityClass();
+        try {
+            tableEntity = dbManager.getTable(clazz);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -90,6 +99,7 @@ public abstract class BaseDao<T> implements IDao<T> {
     public boolean replace(T t) {
         try {
             dbManager.replace(t);
+
             postDataChangedEvent(DbDataEvent.REPLACE, t);
             return true;
         } catch (DbException e) {
@@ -129,7 +139,6 @@ public abstract class BaseDao<T> implements IDao<T> {
      */
     @Override
     public boolean delete(Integer id) {
-        T t = findById(id);
         try {
             TableEntity<T> tableEntity = dbManager.getTable(clazz);
             ColumnEntity idColumn = tableEntity.getId();
@@ -139,7 +148,6 @@ public abstract class BaseDao<T> implements IDao<T> {
             KeyValue keyValue = new KeyValue("flag", Flag.INVALID.value());
             update(whereBuilder, keyValue);
 
-            postDataChangedEvent(DbDataEvent.DELETE, t);
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -148,11 +156,21 @@ public abstract class BaseDao<T> implements IDao<T> {
 
     @Override
     public boolean update(WhereBuilder whereBuilder, KeyValue... keyValuePairs) {
+        List<T> list = findAllByParams(whereBuilder);
         try {
             int updatedRow = dbManager.update(clazz, whereBuilder, keyValuePairs);
             LogUtil.i("updatedRow: " + updatedRow);
-            if(updatedRow >= 1){
-                List<T> list = findAllByParams(whereBuilder);
+
+            if(updatedRow >= 1){  //需要将更新后的数据查询出来
+                WhereBuilder builder = WhereBuilder.b();
+                ColumnEntity idColumn = tableEntity.getId();
+                String idName = idColumn.getName();
+                for(T t : list){
+                    int id = (int) idColumn.getFieldValue(t);
+                    builder.and(idName, "=", id);
+                }
+
+                list = findAllByParams(builder);
                 postDataChangedEvent(DbDataEvent.UPDATE, list);
             }
             return true;
@@ -177,13 +195,7 @@ public abstract class BaseDao<T> implements IDao<T> {
     }
 
     private String getTableName(){
-        try {
-            TableEntity<T> tableEntity = dbManager.getTable(clazz);
-            return tableEntity.getName();
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return tableEntity.getName();
     }
 
     public Class<T> getEntityClass() {

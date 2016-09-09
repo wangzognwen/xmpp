@@ -1,7 +1,9 @@
 package com.juns.wechat.activity;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -26,7 +28,10 @@ import com.juns.wechat.chat.utils.SmileUtils;
 import com.juns.wechat.chat.widght.ExpandGridView;
 import com.juns.wechat.chat.widght.PasteEditText;
 import com.juns.wechat.common.CommonUtil;
+import com.juns.wechat.util.BitmapUtil;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.util.PhotoUtil;
+import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.util.ToastUtil;
 import com.juns.wechat.view.AudioRecordButton;
 import com.juns.wechat.xmpp.util.SendMessage;
@@ -35,6 +40,7 @@ import com.wangzhe.photopicker.PhotoPicker;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by 王者 on 2016/8/7.
@@ -63,6 +69,8 @@ public class ChatInputManager implements View.OnClickListener{
   //  private AnimationDrawable animationDrawable;
 
     private ChatActivity mChatActivity;
+
+    static Handler mHandler = new Handler();
 
 
     public ChatInputManager(ChatActivity chatActivity){
@@ -300,6 +308,41 @@ public class ChatInputManager implements View.OnClickListener{
         SendMessage.sendVoiceMsg(otherUserName, seconds, filePath);
     }
 
+    /**
+     * 发送图片
+     *
+     * @param filePaths
+     */
+    public void sendPicture(final String otherUserName, ArrayList<String> filePaths) {
+        if(filePaths == null || filePaths.isEmpty()){
+            throw new NullPointerException("filePaths should not be empty");
+        }
+
+        for(final String filePath : filePaths){
+            ThreadPoolUtil.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap compressedBitmap = BitmapUtil.compressImage(filePath);
+                    if(compressedBitmap == null){
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.showToast("选择图片无效，请重新选择", Toast.LENGTH_SHORT);
+                            }
+                        });
+                       return;
+                    }
+                    String fileName = PhotoUtil.getUniqueImgName(); //生成唯一文件名且不被系统扫描到
+                    PhotoUtil.saveBitmap(compressedBitmap, PhotoUtil.PHOTO_PATH + "/" + fileName);
+                    int width = compressedBitmap.getWidth();
+                    int height = compressedBitmap.getHeight();
+                    compressedBitmap.recycle();
+                    SendMessage.sendPictureMsg(otherUserName, new File(PhotoUtil.PHOTO_PATH, fileName), width, height);
+                }
+            });
+        }
+
+    }
 
 
     /**

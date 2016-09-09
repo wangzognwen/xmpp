@@ -74,10 +74,16 @@ public class ImageLoader {
                 Bitmap bitmap_bg = BitmapFactory.decodeResource(App.getInstance().getResources(), bgResId);
                 wantToLoad = BitmapUtil.getTriangleImage(bitmap_bg, bitmap);
 
+                bitmapCache.put(filePath + "_" + direction, wantToLoad); //未成功加载可能是图片尚未下载下来，不要放进缓存
+
             }else {
-                wantToLoad = BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.aex);
+                if(direction == 0){
+                    wantToLoad = BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.aev);
+                }else {
+                    wantToLoad = BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.aex);
+                }
             }
-            bitmapCache.put(filePath + "_" + direction, wantToLoad);
+
             imageView.setImageBitmap(wantToLoad);
         }
     }

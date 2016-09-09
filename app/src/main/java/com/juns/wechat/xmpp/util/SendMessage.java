@@ -67,6 +67,7 @@ public class SendMessage {
                 pictureMsg.progress = 0;
                 pictureMsg.width = width;
                 pictureMsg.height = height;
+                pictureMsg.size = (int) file.length();
 
                 final MessageBean messageBean = new MessageBean();
                 messageBean.setMsg(pictureMsg.toJson());
@@ -81,7 +82,9 @@ public class SendMessage {
                     return;
                 }
 
-                FileTransferManager.getInstance().sendFile(file, otherName, new FileTransferManager.ProgressListener() {
+                FileTransferManager fileTransferManager = new FileTransferManager();
+
+                fileTransferManager.sendFile(file, otherName, new FileTransferManager.ProgressListener() {
                     @Override
                     public void progressUpdated(int progress) {
                         pictureMsg.progress = progress;

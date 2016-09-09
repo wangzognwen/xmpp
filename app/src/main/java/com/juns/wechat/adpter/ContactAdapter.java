@@ -83,7 +83,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 		}
 
         ImageLoader.loadAvatar(ivAvatar, friendBean.getHeadUrl());
-		tvNick.setText(friendBean.getContactName());
+		tvNick.setText(friendBean.getShowName());
 		return convertView;
 	}
 

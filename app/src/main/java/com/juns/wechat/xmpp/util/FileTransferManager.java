@@ -23,22 +23,12 @@ import java.util.Arrays;
  * Created by 王者 on 2016/8/19.
  */
 public class FileTransferManager {
-    private static final FileTransferManager mInstance = new FileTransferManager();
-    private AbstractXMPPConnection xmppConnection;
     private static final int PORT = 7700;
     private final String account = AccountManager.getInstance().getUserName();
     private int lastProgress = 0;
 
     public static final int ACTION_READ = 1;
     public static final int ACTION_WRITE = 2;
-
-    public static FileTransferManager getInstance(){
-        return mInstance;
-    }
-
-    private FileTransferManager(){
-        xmppConnection = XmppConnUtil.getXmppConnection();
-    }
 
     public void sendFile(File file, String otherName, ProgressListener listener) {
         try {
@@ -94,7 +84,8 @@ public class FileTransferManager {
         listener.transferFinished(false);
     }
 
-    public void downloadFile(String fileName, ProgressListener listener){
+    public void downloadFile(String fileName, int fileSize,  ProgressListener listener){
+        LogUtil.i("fileName: " + fileName);
         File file = new File(PhotoUtil.PHOTO_PATH, fileName);
         if(file.exists()){  //由于文件名都是唯一的，说明这张图片是由同一个手机上发出并在本手机上接收。
             listener.transferFinished(true);
@@ -111,22 +102,17 @@ public class FileTransferManager {
             out.flush();
             socket.shutdownOutput();
 
+            LogUtil.i("socket write finished!");
+
             InputStream socketIn = new DataInputStream(socket.getInputStream());
-            byte[] data = new byte[8]; //字符串末位为'\0';
+            byte[] data = new byte[7]; //字符串末位为'\0';
             socketIn.read(data);
             String result = new String(data).trim();
+            LogUtil.i("result: " + result);
             if(!"success".equals(result)){
                 listener.transferFinished(false);
                 return;
             }
-
-            byte[] fileSizeData = new byte[4];
-            socketIn.read(fileSizeData);
-            for(int i = 0; i < fileSizeData.length; i++){
-                System.out.println(fileSizeData[i]);
-            }
-            int fileSize = Integer.parseInt(new String(fileSizeData));
-            LogUtil.i("fileSize: " + fileSize);
 
             OutputStream fileOut = FileUtil.getOutputStream(file);
             if(fileOut == null){
@@ -141,6 +127,7 @@ public class FileTransferManager {
                 wrote += len;
                 notifyProgressUpdated(listener, wrote, fileSize);
             }
+            fileOut.close();
             socket.close();
             listener.transferFinished(true);
         } catch (IOException e) {
@@ -151,7 +138,7 @@ public class FileTransferManager {
 
     private void notifyProgressUpdated(ProgressListener listener, int wrote, int amount){
         int progress = (int) ((((float) wrote) / amount) * 100);
-        if(progress == 100 || (progress - lastProgress > 5 + 5 *Math.random())){
+        if(progress == 100 || (progress - lastProgress > 10 + 10 *Math.random())){
             lastProgress = progress;
             listener.progressUpdated(progress);
         }

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.juns.wechat.dialog.TitleMenu.ActionItem;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup;
 import com.juns.wechat.dialog.TitleMenu.TitlePopup.OnItemOnClickListener;
 import com.juns.wechat.service.XmppService;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.view.activity.AddGroupChatActivity;
 import com.juns.wechat.view.activity.GetMoneyActivity;
 import com.juns.wechat.view.activity.LoginActivity;
@@ -43,7 +45,6 @@ public class MainActivity extends BaseActivity{
 	private TextView[] textviews;
 	private int index;
     private static MainActivity mInstance;
-
 
 	private MainAdapter mainAdapter;
 
@@ -163,6 +164,26 @@ public class MainActivity extends BaseActivity{
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mInstance.startActivity(intent);
         mInstance.finish();
+    }
+
+    public void setUnreadMsgLabel(int viewId, int unreadNum){
+        TextView textView;
+        if(viewId == unreaMsgdLabel.getId()){
+            textView = unreaMsgdLabel;
+        }else if(viewId == unreadAddressLable.getId()){
+            textView = unreadAddressLable;
+        }else if(viewId == unreadFindLable.getId()){
+            textView = unreadFindLable;
+        }else {
+            return;
+        }
+
+        if(unreadNum > 0){
+            textView.setText(unreadNum + "");
+            textView.setVisibility(View.VISIBLE);
+        }else {
+            textView.setVisibility(View.GONE);
+        }
     }
 
 	private OnItemOnClickListener onItemClick = new OnItemOnClickListener() {

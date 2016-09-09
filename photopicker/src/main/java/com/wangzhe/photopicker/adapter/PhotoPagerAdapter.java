@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import java.util.List;
  * Created by donglua on 15/6/21.
  */
 public class PhotoPagerAdapter extends PagerAdapter {
+    private static final String TAG = PhotoPagerAdapter.class.getSimpleName();
 
   private List<String> paths = new ArrayList<>();
   private RequestManager mGlide;
@@ -39,6 +41,7 @@ public class PhotoPagerAdapter extends PagerAdapter {
     final ImageView imageView = (ImageView) itemView.findViewById(R.id.iv_pager);
 
     final String path = paths.get(position);
+      Log.i(TAG, "path: " + path);
     final Uri uri;
     if (path.startsWith("http")) {
       uri = Uri.parse(path);

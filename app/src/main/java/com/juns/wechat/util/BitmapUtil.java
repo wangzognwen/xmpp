@@ -55,6 +55,10 @@ public class BitmapUtil {
         newOpts.inJustDecodeBounds = false;
         int w = newOpts.outWidth;
         int h = newOpts.outHeight;
+
+        if(w <= 0 || h <= 0){ //无效图片
+            return null;
+        }
         float screenW = DisplayUtil.getScreenMetrics(App.getInstance()).x;
         float screenY = DisplayUtil.getScreenMetrics(App.getInstance()).y;
 

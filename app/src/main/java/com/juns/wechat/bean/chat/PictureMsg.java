@@ -11,11 +11,13 @@ public class PictureMsg extends Msg {
     public static final String PROGRESS = "progress";
     public static final String WIDTH =  "width";
     public static final String HEIGHT = "height";
+    public static final String SIZE = "size";
 
     public String imgName;
     public int progress;
     public int width;
     public int height;
+    public int size;
 
     @Override
     public JSONObject toSendJsonObject() {
@@ -24,6 +26,7 @@ public class PictureMsg extends Msg {
             jsonObject.put(IMG_NAME, imgName);
             jsonObject.put(WIDTH, width);
             jsonObject.put(HEIGHT, height);
+            jsonObject.put(SIZE, size);
         } catch (JSONException e) {
             e.printStackTrace();
         }

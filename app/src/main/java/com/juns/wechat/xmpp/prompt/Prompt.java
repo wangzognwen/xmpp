@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.juns.wechat.App;
+
 import java.util.List;
 
 /*******************************************************
@@ -28,12 +30,17 @@ public abstract class Prompt {
      * @return
      */
     public final boolean isOnForeGround(){
-        ActivityManager activityManager = ((ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE));
-        List<ActivityManager.RunningTaskInfo> taskInfos = activityManager.getRunningTasks(1);
-        if (taskInfos.size() > 0
-                && TextUtils.equals(mContext.getPackageName(),
-                taskInfos.get(0).topActivity.getPackageName())) {
-            return true;
+        ActivityManager activityManager =(ActivityManager) App.getInstance().getSystemService(
+                Context.ACTIVITY_SERVICE);
+        String packageName = App.getInstance().getPackageName();
+        List<ActivityManager.RunningAppProcessInfo>appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null)
+            return false;
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(packageName)
+                    && appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                return true;
+            }
         }
         return false;
     }

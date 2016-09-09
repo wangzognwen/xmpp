@@ -13,6 +13,7 @@ import com.juns.wechat.database.CursorUtil;
 import com.juns.wechat.database.IdGenerator;
 
 import org.xutils.common.util.KeyValue;
+import org.xutils.db.Selector;
 import org.xutils.db.sqlite.SqlInfo;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
@@ -109,6 +110,27 @@ public class MessageDao extends BaseDao<MessageBean>{
             e.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     * 获取用户未读消息总数
+     * @param myselfName
+     * @return
+     */
+    public int getAllUnreadMsgNum(String myselfName){
+        int unreadNum = 0;
+
+        WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.MYSELF_NAME, "=", myselfName);
+        whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
+        whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
+        whereBuilder.and(MessageBean.FLAG, "!=", Flag.INVALID.value());
+        whereBuilder.and(MessageBean.FLAG, "<", MsgType.MSG_TYPE_SEND_INVITE);
+        List<MessageBean> results = findAllByParams(whereBuilder);
+        if(results != null) {
+            unreadNum = results.size();
+        }
+
+        return unreadNum;
     }
 
 
@@ -224,6 +246,21 @@ public class MessageDao extends BaseDao<MessageBean>{
         whereBuilder.and(MessageBean.TYPE, "=", type);
 
         KeyValue keyValue = new KeyValue(MessageBean.STATE, MessageBean.State.READ.value);
+        update(whereBuilder, keyValue);
+    }
+
+    /**
+     * 将用户正在发送中的消息标记为失败
+     * @param myselfName
+     */
+    public void markAsSendFailed(String myselfName){
+        WhereBuilder whereBuilder = WhereBuilder.b();
+        whereBuilder.and(MessageBean.MYSELF_NAME, "=", myselfName);
+        whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.OUTGOING.value);
+        whereBuilder.and(MessageBean.FLAG, "!=", Flag.INVALID.value());
+        whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
+
+        KeyValue keyValue = new KeyValue(MessageBean.STATE, MessageBean.State.SEND_FAILED.value);
         update(whereBuilder, keyValue);
     }
 }

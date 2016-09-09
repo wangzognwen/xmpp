@@ -4,11 +4,7 @@ import android.content.Context;
 
 import com.juns.wechat.bean.MessageBean;
 import com.juns.wechat.bean.chat.PictureMsg;
-import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.xmpp.util.FileTransferManager;
-
-import org.xutils.common.util.KeyValue;
-import org.xutils.db.sqlite.WhereBuilder;
 
 
 /*******************************************************
@@ -20,38 +16,43 @@ public class PictureMessageProcess extends MessageProcess {
         super(context);
     }
 
+    /**
+     * 先下载图片，无论下载成功还是失败都会保存进数据库
+     * @param messageBean
+     */
     @Override
     public void processMessage(MessageBean messageBean) {
-        super.processMessage(messageBean);
         PictureMsg pictureMsg = (PictureMsg) messageBean.getMsgObj();
-        FileTransferManager.getInstance().downloadFile(pictureMsg.imgName, new MyProgressListener(messageBean));
+        FileTransferManager fileTransferManager = new FileTransferManager();
+        fileTransferManager.downloadFile(pictureMsg.imgName, pictureMsg.size, new MyProgressListener(messageBean));
     }
 
     class MyProgressListener implements FileTransferManager.ProgressListener{
         private MessageBean messageBean;
+        private int progress = 0;
         public MyProgressListener(MessageBean messageBean){
             this.messageBean = messageBean;
         }
 
         @Override
         public void progressUpdated(int progress) {
-           updateProgress(progress);
+            this.progress = progress;
         }
 
         @Override
         public void transferFinished(boolean success) {
             if(success){
-                updateProgress(100);
+                progress = 100;
             }
+            saveMessage(progress);
+            noticeShow(messageBean);
         }
 
-        private void updateProgress(int progress){
+        private void saveMessage(int progress){
             PictureMsg pictureMsg = (PictureMsg) messageBean.getMsgObj();
             pictureMsg.progress = progress;
             messageBean.setMsg(pictureMsg.toJson());
-            WhereBuilder whereBuilder = WhereBuilder.b(MessageBean.PACKET_ID, "=", messageBean.getPacketId());
-            KeyValue keyValue = new KeyValue(MessageBean.MSG, messageBean.getMsg());
-            MessageDao.getInstance().update(whereBuilder, keyValue);
+            saveMessageToDB(messageBean);
         }
     }
 }

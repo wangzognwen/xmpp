@@ -4,8 +4,11 @@ package com.juns.wechat.xmpp.listener;
 import android.text.TextUtils;
 
 import com.juns.wechat.App;
+import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.util.LogUtil;
+import com.juns.wechat.xmpp.XmppConnUtil;
+import com.juns.wechat.xmpp.XmppManagerImpl;
 import com.juns.wechat.xmpp.util.UserInfoManager;
 
 import org.jivesoftware.smack.ConnectionListener;
@@ -38,6 +41,9 @@ public class XmppConnectionListener implements ConnectionListener {
         if(e != null && !TextUtils.isEmpty(e.getMessage())){
             LogUtil.i("connectionClose!OnError : " + e.getMessage());
         }
+
+        MessageDao.getInstance().markAsSendFailed(AccountManager.getInstance().getUserName());
+
         if(e instanceof XMPPException.StreamErrorException){
             XMPPException.StreamErrorException exception = (XMPPException.StreamErrorException) e;
             StreamError streamError = exception.getStreamError();

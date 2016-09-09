@@ -23,8 +23,10 @@ import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.database.ChatTable;
 import com.juns.wechat.database.UserTable;
 import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.util.LogUtil;
 
 import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
 
 //消息
 public class Fragment_Msg extends BaseFragment{
@@ -73,6 +75,8 @@ public class Fragment_Msg extends BaseFragment{
             layout.findViewById(R.id.txt_nochat).setVisibility(View.GONE);
             assembleData(msgItems);
         }
+
+        setUnreadMsgNum();
     }
 
     /**
@@ -90,6 +94,11 @@ public class Fragment_Msg extends BaseFragment{
             msgItemShowList.add(msgItemShow);
         }
         mAdapter.setData(msgItemShowList);
+    }
+
+    private void setUnreadMsgNum(){
+        int unreadNum = MessageDao.getInstance().getAllUnreadMsgNum(account);
+        ((MainActivity) getActivity()).setUnreadMsgLabel(R.id.tv_unread_msg_number, unreadNum);
     }
 
     @Subscriber(tag = ChatTable.TABLE_NAME)

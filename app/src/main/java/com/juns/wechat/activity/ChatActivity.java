@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import com.juns.wechat.bean.chat.viewmodel.MsgViewModel;
 import com.juns.wechat.chat.AlertDialog;
 import com.juns.wechat.chat.adpter.MessageAdapter;
 import com.juns.wechat.chat.utils.CommonUtils;
+import com.juns.wechat.chat.widght.PasteEditText;
 import com.juns.wechat.common.ToolbarActivity;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.dao.FriendDao;
@@ -140,6 +142,7 @@ public class ChatActivity extends ToolbarActivity{
             finish();
             return;
         }
+
         ToolBarUtil.setTitle(this, friendBean.getShowName());
         ToolBarUtil.setToolbarRightImage(this, R.drawable.icon_single_setting);
         chatInputManager = new ChatInputManager(this);
@@ -150,7 +153,6 @@ public class ChatActivity extends ToolbarActivity{
         lvMessages.setAdapter(mAdapter);
         mAdapter.setData(msgViewModels);
         chatActivityHelper.loadMessagesFromDb();
-
 
         ptRefresh.setLastUpdateTimeKey(contactUser.getUserName());
         ptRefresh.setPtrHandler(new PtrDefaultHandler() {
@@ -171,9 +173,7 @@ public class ChatActivity extends ToolbarActivity{
             }
         });
 
-
-		// 初始化表情viewpager
-		//voiceRecorder = new VoiceRecorder(micImageHandler);
+        hideKeyboard(); //隐藏软键盘
 
 	}
 
@@ -182,7 +182,6 @@ public class ChatActivity extends ToolbarActivity{
 
 		// position = getIntent().getIntExtra("position", -1);
 		clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		// 判断单聊还是群聊
 		chatType = getIntent().getIntExtra(Constants.TYPE, CHATTYPE_SINGLE);
@@ -357,18 +356,10 @@ public class ChatActivity extends ToolbarActivity{
 				}
 				sendVideo(videoPath, file.getAbsolutePath(), duration / 1000);
 
-			} */else if (requestCode == REQUEST_CODE_LOCAL) { // 发送本地图片
-				if (data != null) {
-					Uri selectedImage = data.getData();
-					if (selectedImage != null) {
-						sendPicByUri(selectedImage);
-					}
-				}
-			} else if(requestCode == PhotoPicker.REQUEST_CODE){
+			} */else if(requestCode == PhotoPicker.REQUEST_CODE){  //发送本地图片
                 ArrayList<String> selectedPhotos = data.getStringArrayListExtra(PhotoPicker.KEY_SELECTED_PHOTOS);
-                for(String photoPath: selectedPhotos){
-                    sendPicture(photoPath);
-                }
+
+                sendPicture(selectedPhotos);
             }
             else if (requestCode == REQUEST_CODE_SELECT_FILE) { // 发送选择的文件
 				if (data != null) {
@@ -397,7 +388,7 @@ public class ChatActivity extends ToolbarActivity{
 					String pasteText = clipboard.getText().toString();
 					if (pasteText.startsWith(COPY_IMAGE)) {
 						// 把图片前缀去掉，还原成正常的path
-						sendPicture(pasteText.replace(COPY_IMAGE, ""));
+						//sendPicture(pasteText.replace(COPY_IMAGE, ""));
 					}
 
 				}
@@ -405,130 +396,19 @@ public class ChatActivity extends ToolbarActivity{
 		}
 	}
 
-	/**
-	 * 照相获取图片
-	 */
-	public void selectPicFromCamera() {
-		if (!CommonUtils.isExitsSdcard()) {
-			String st = getResources().getString(
-					R.string.sd_card_does_not_exist);
-			//Toast.makeText(getApplicationContext(), st, 0).show();
-			return;
-		}
-
-		/*cameraFile = new File(PathUtil.getDbManager().getImagePath(), "Walk"
-				+ System.currentTimeMillis() + ".jpg");*/
-		cameraFile.getParentFile().mkdirs();
-		startActivityForResult(
-				new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(
-						MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
-				REQUEST_CODE_CAMERA);
-	}
-
-	/**
-	 * 选择文件
-	 */
-	private void selectFileFromLocal() {
-		Intent intent = null;
-		if (Build.VERSION.SDK_INT < 19) {
-			intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.setType("*/*");
-			intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-		} else {
-			intent = new Intent(
-					Intent.ACTION_PICK,
-					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		}
-		startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
-	}
-
-	/**
-	 * 发送文本消息
-	 * 
-	 * @param content
-	 *            message content
-	 *            boolean resend
-	 */
-	public void sendText(String content) {
-
-		if (content.length() > 0) {
-		/*	EMMessage message = EMMessage.createSendMessage(EMMessage.Type.TXT);
-			// 如果是群聊，设置chattype,默认是单聊
-			if (chatType == CHATTYPE_GROUP)
-				message.setChatType(ChatType.GroupChat);
-			TextMessageBody txtBody = new TextMessageBody(content);
-			// 设置消息body
-			message.addBody(txtBody);
-			// 设置要发给谁,用户username或者群聊groupid
-			message.setReceipt(toChatUsername);
-			// 把messgage加到conversation中
-			conversation.addMessage(message);*/
-			// 通知adapter有消息变动，adapter会根据加入的这条message显示消息和调用sdk的发送方法
-			adapter.refresh();
-			//listView.setSelection(listView.getCount() - 1);
-			//mEditTextContent.setText("");
-
-			setResult(RESULT_OK);
-
-		}
-	}
-
-	/**
-	 * 发送语音
-	 * 
-	 * @param filePath
-	 * @param fileName
-	 * @param length
-	 * @param isResend
-	 */
-	private void sendVoice(String filePath, String fileName, String length,
-			boolean isResend) {
-		if (!(new File(filePath).exists())) {
-			return;
-		}
-		try {
-		/*	final EMMessage message = EMMessage
-					.createSendMessage(EMMessage.Type.VOICE);
-			// 如果是群聊，设置chattype,默认是单聊
-			if (chatType == CHATTYPE_GROUP)
-				message.setChatType(ChatType.GroupChat);
-			message.setReceipt(toChatUsername);
-			int len = Integer.parseInt(length);
-			VoiceMessageBody body = new VoiceMessageBody(new File(filePath),
-					len);
-			message.addBody(body);
-
-			conversation.addMessage(message);*/
-			adapter.refresh();
-			//listView.setSelection(listView.getCount() - 1);
-			setResult(RESULT_OK);
-			// send file
-			// sendVoiceSub(filePath, fileName, message);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private void sendPicture(String filePath){
+        ArrayList<String> filePaths = new ArrayList<>();
+        filePaths.add(filePath);
+        sendPicture(filePaths);
+    }
 
 	/**
 	 * 发送图片
 	 * 
-	 * @param filePath
+	 * @param filePaths
 	 */
-	private void sendPicture(final String filePath) {
-        ThreadPoolUtil.execute(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap compressedBitmap = BitmapUtil.compressImage(filePath);
-                //File file = new File(filePath);
-                String fileName = StanzaIdUtil.newStanzaId() + ".image"; //生成唯一文件名且不被系统扫描到
-                PhotoUtil.saveBitmap(compressedBitmap, PhotoUtil.PHOTO_PATH + "/" + fileName);
-                int width = compressedBitmap.getWidth();
-                int height = compressedBitmap.getHeight();
-                compressedBitmap.recycle();
-                SendMessage.sendPictureMsg(contactName, new File(PhotoUtil.PHOTO_PATH, fileName), width, height);
-            }
-        });
+	private void sendPicture(ArrayList<String> filePaths) {
+        chatInputManager.sendPicture(contactName, filePaths);
 	}
 
 	/**
@@ -558,43 +438,6 @@ public class ChatActivity extends ToolbarActivity{
 			setResult(RESULT_OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * 根据图库图片uri发送图片
-	 * 
-	 * @param selectedImage
-	 */
-	private void sendPicByUri(Uri selectedImage) {
-		// String[] filePathColumn = { MediaStore.Images.Media.DATA };
-		Cursor cursor = getContentResolver().query(selectedImage, null, null,
-				null, null);
-		String st8 = getResources().getString(R.string.cant_find_pictures);
-		if (cursor != null) {
-			cursor.moveToFirst();
-			int columnIndex = cursor.getColumnIndex("_data");
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-
-			if (picturePath == null || picturePath.equals("null")) {
-				Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
-				return;
-			}
-			sendPicture(picturePath);
-		} else {
-			File file = new File(selectedImage.getPath());
-			if (!file.exists()) {
-				Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
-				return;
-
-			}
-			sendPicture(file.getAbsolutePath());
 		}
 
 	}
@@ -731,47 +574,12 @@ public class ChatActivity extends ToolbarActivity{
 		}
 	};
 
-	/**
-	 * 消息送达BroadcastReceiver
-	 */
-	private BroadcastReceiver deliveryAckMessageReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			abortBroadcast();
-
-			String msgid = intent.getStringExtra("msgid");
-			String from = intent.getStringExtra("from");
-		/*	EMConversation conversation = EMChatManager.getDbManager()
-					.getConversation(from);
-			if (conversation != null) {
-				// 把message设为已读
-				EMMessage msg = conversation.getMessage(msgid);
-				if (msg != null) {
-					msg.isDelivered = true;
-				}
-			}*/
-
-			adapter.notifyDataSetChanged();
-		}
-	};
-
-
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
         chatInputManager.onDestroy();
 
-		activityInstance = null;
-
-		try {
-			unregisterReceiver(ackMessageReceiver);
-			ackMessageReceiver = null;
-			unregisterReceiver(deliveryAckMessageReceiver);
-			deliveryAckMessageReceiver = null;
-		} catch (Exception e) {
-		}
 	}
 
 	@Override
@@ -784,11 +592,13 @@ public class ChatActivity extends ToolbarActivity{
 	 * 隐藏软键盘
 	 */
 	private void hideKeyboard() {
+        manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-			if (getCurrentFocus() != null)
-				manager.hideSoftInputFromWindow(getCurrentFocus()
+            EditText etInputText = (EditText) findViewById(R.id.et_input_text);
+				manager.hideSoftInputFromWindow(etInputText
 						.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
+
 	}
 
 
