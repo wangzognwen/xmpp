@@ -65,14 +65,10 @@ public class CropImageActivity extends ToolbarActivity {
 
     private UpdateUserCallBack callBack = new UpdateUserCallBack() {
         @Override
-        protected void handleSuccess(UpdateUserResponse result) {
-            super.handleSuccess(result);
+        protected void handleResponse(UpdateUserResponse result) {
+            super.handleResponse(result);
             CommonUtil.finish(CropImageActivity.this);
         }
 
-        @Override
-        protected void handleFailed(UpdateUserResponse result) {
-
-        }
     };
 }

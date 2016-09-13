@@ -10,7 +10,6 @@ import com.juns.wechat.dao.MessageDao;
 import com.juns.wechat.net.callback.QueryUserCallBack;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.response.BaseResponse;
-import com.juns.wechat.xmpp.util.SendMessage;
 
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 
@@ -32,14 +31,8 @@ public class ReplyInviteMessageProcess extends MessageProcess {
         if(inviteMsg.reply != InviteMsg.Reply.ACCEPT.value) return;  //非法状态
         UserRequest.queryUserData(messageBean.getOtherName(), new QueryUserCallBack() {
             @Override
-            protected void handleSuccess(BaseResponse.QueryUserResponse result) {
-                super.handleSuccess(result);  //将用户信息存到数据库
-                saveMessageToDB(messageBean);
-                noticeShow(messageBean, null);
-            }
-
-            @Override
-            protected void handleFailed(BaseResponse.QueryUserResponse result) {
+            protected void handleResponse(BaseResponse.QueryUserResponse result) {
+                super.handleResponse(result);  //将用户信息存到数据库
                 saveMessageToDB(messageBean);
                 noticeShow(messageBean, null);
             }

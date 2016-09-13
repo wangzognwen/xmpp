@@ -9,6 +9,7 @@ import com.juns.wechat.manager.AccountManager;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.request.FriendRequest;
 import com.juns.wechat.net.request.UserRequest;
+import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.response.SyncFriendResponse;
 import com.juns.wechat.net.response.UserListResponse;
 
@@ -27,18 +28,16 @@ public class SyncDataUtil {
         long lastModifyDate = FriendDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
         FriendRequest.syncFriendData(lastModifyDate, new BaseCallBack<SyncFriendResponse>() {
             @Override
-            protected void handleSuccess(SyncFriendResponse result) {
-                List<FriendBean> friendBeen = result.friendBeans;
-                if(friendBeen != null && !friendBeen.isEmpty()){
-                    FriendDao.getInstance().replace(friendBeen);
+            protected void handleResponse(SyncFriendResponse result) {
+                if(result.code == BaseResponse.SUCCESS){
+                    List<FriendBean> friendBeen = result.friendBeans;
+                    if(friendBeen != null && !friendBeen.isEmpty()){
+                        FriendDao.getInstance().replace(friendBeen);
+                    }
+                    syncUserData();
                 }
-                syncUserData();
             }
 
-            @Override
-            protected void handleFailed(SyncFriendResponse result) {
-
-            }
         });
     }
 
@@ -47,16 +46,13 @@ public class SyncDataUtil {
         long lastModifyDate = UserDao.getInstance().getLastModifyDate(AccountManager.getInstance().getUserName());
         UserRequest.syncUserData(userNames, lastModifyDate, new BaseCallBack<UserListResponse>() {
             @Override
-            protected void handleSuccess(UserListResponse result) {
-                List<UserBean> userBeen = result.userBeans;
-                if(userBeen != null && !userBeen.isEmpty()){
-                    UserDao.getInstance().replace(userBeen);
+            protected void handleResponse(UserListResponse result) {
+                if(result.code == BaseResponse.SUCCESS){
+                    List<UserBean> userBeen = result.userBeans;
+                    if(userBeen != null && !userBeen.isEmpty()){
+                        UserDao.getInstance().replace(userBeen);
+                    }
                 }
-            }
-
-            @Override
-            protected void handleFailed(UserListResponse result) {
-
             }
         });
     }

@@ -3,7 +3,6 @@ package com.juns.wechat.view.activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
@@ -24,7 +22,6 @@ import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.request.UserRequest;
 import com.juns.wechat.net.callback.LoginCallBack;
-import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.NetWorkUtil;
 
 import org.json.JSONException;
@@ -195,11 +192,15 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
     private BaseCallBack<BaseResponse.RegisterResponse> registerCallBack = new BaseCallBack<BaseResponse.RegisterResponse>(){
 
         @Override
-        protected void handleSuccess(BaseResponse.RegisterResponse result) {
-            login();
+        protected void handleResponse(BaseResponse.RegisterResponse result) {
+            if(result.code == BaseResponse.SUCCESS){
+                login();
+            }else {
+                handleFailed(result);
+            }
+
         }
 
-        @Override
         protected void handleFailed(BaseResponse.RegisterResponse result) {
             if(result.code == 1){  //参数错误
                 getLoadingDialog("正在注册...").dismiss();
@@ -228,14 +229,17 @@ public class RegisterActivity extends ToolbarActivity implements OnClickListener
     private LoginCallBack loginCallBack = new LoginCallBack() {
 
         @Override
-        protected void handleSuccess(BaseResponse.LoginResponse result) {
-            super.handleSuccess(result);
-            AccountManager.getInstance().setUserPassWord(passWord);
-            CommonUtil.startActivity(RegisterActivity.this, MainActivity.class);
-            CommonUtil.finish(RegisterActivity.this);
+        protected void handleResponse(BaseResponse.LoginResponse result) {
+            super.handleResponse(result);
+            if(result.code == BaseResponse.SUCCESS){
+                AccountManager.getInstance().setUserPassWord(passWord);
+                CommonUtil.startActivity(RegisterActivity.this, MainActivity.class);
+                CommonUtil.finish(RegisterActivity.this);
+            }else {
+                handleFailed(result);
+            }
         }
 
-        @Override
         protected void handleFailed(BaseResponse.LoginResponse result) {
             showToast("用户名或密码错误");
             getLoadingDialog("正在注册...").dismiss();

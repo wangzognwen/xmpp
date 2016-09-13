@@ -9,14 +9,10 @@ import com.juns.wechat.net.response.BaseResponse;
  */
 public abstract class QueryUserCallBack extends BaseCallBack<BaseResponse.QueryUserResponse>{
     @Override
-    protected void handleSuccess(BaseResponse.QueryUserResponse result) {
-        if(result.userBean  != null){
+    protected void handleResponse(BaseResponse.QueryUserResponse result) {
+        if(result.code == 0 && result.userBean  != null){
             UserDao.getInstance().replace(result.userBean);
         }
     }
 
-    @Override
-    protected void handleFailed(BaseResponse.QueryUserResponse result) {
-
-    }
 }

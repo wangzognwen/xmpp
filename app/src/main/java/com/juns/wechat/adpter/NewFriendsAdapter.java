@@ -137,18 +137,22 @@ public class NewFriendsAdapter extends BaseAdapter{
         }
 
         @Override
-        protected void handleSuccess(BaseResponse result) {
-            super.handleSuccess(result);
-            InviteMsg inviteMsg = (InviteMsg) messageBean.getMsgObj();
-            int reply = InviteMsg.Reply.ACCEPT.value;
-            inviteMsg.reply = reply;
-            messageBean.setMsg(inviteMsg.toJson());
-            MessageDao.getInstance().update(messageBean);
-            notifyDataSetChanged();
-            sendMessageToOther(messageBean.getOtherName(), reply);
+        protected void handleResponse(BaseResponse result) {
+            super.handleResponse(result);
+            if(result.code == BaseResponse.SUCCESS){
+                InviteMsg inviteMsg = (InviteMsg) messageBean.getMsgObj();
+                int reply = InviteMsg.Reply.ACCEPT.value;
+                inviteMsg.reply = reply;
+                messageBean.setMsg(inviteMsg.toJson());
+                MessageDao.getInstance().update(messageBean);
+                notifyDataSetChanged();
+                sendMessageToOther(messageBean.getOtherName(), reply);
+            }else {
+                handleFailed(result);
+            }
+
         }
 
-        @Override
         protected void handleFailed(BaseResponse result) {
             ToastUtil.showToast("添加好友失败，请稍后重试", Toast.LENGTH_SHORT);
         }
@@ -156,8 +160,8 @@ public class NewFriendsAdapter extends BaseAdapter{
 
     private QueryUserCallBack queryUserCallBack = new QueryUserCallBack() {
         @Override
-        protected void handleSuccess(BaseResponse.QueryUserResponse result) {
-            super.handleSuccess(result);  //在本地数据库保存起来
+        protected void handleResponse(BaseResponse.QueryUserResponse result) {
+            super.handleResponse(result);  //在本地数据库保存起来
             notifyDataSetChanged();
         }
     };

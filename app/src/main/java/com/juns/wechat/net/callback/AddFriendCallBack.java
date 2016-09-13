@@ -8,8 +8,10 @@ import com.juns.wechat.util.SyncDataUtil;
  */
 public abstract class AddFriendCallBack extends BaseCallBack<BaseResponse> {
     @Override
-    protected void handleSuccess(BaseResponse result) {
-        SyncDataUtil.syncData();
+    protected void handleResponse(BaseResponse result) {
+        if(result.code == BaseResponse.SUCCESS){
+            SyncDataUtil.syncData();
+        }
     }
 
 }

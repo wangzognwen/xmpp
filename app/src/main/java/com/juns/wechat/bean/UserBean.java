@@ -59,6 +59,32 @@ public class UserBean implements Parcelable {
 
     }
 
+    public enum Sex{
+        MAN("M"), WOMAN("W");
+
+        public String value;
+
+        Sex(String s){
+            this.value = s;
+        }
+
+        public static boolean isMan(String male){
+            if(TextUtils.isEmpty(male)){
+                return true;
+            }
+            if(MAN.value.equals(male)){
+                return true;
+            }else {
+                return false;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
 	public String getType() {
 		return type;
 	}

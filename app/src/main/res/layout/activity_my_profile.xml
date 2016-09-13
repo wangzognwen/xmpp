@@ -112,7 +112,6 @@
             android:ellipsize="end"
             android:gravity="right"
             android:singleLine="true"
-            android:text="tingyi_tech"
             android:textColor="#AAAAAA"
             android:textSize="14sp" />
 

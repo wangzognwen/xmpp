@@ -98,12 +98,16 @@ public class UserInfoActivity extends ToolbarActivity implements OnClickListener
 
 	private QueryUserCallBack queryUserCallBack = new QueryUserCallBack() {
         @Override
-        protected void handleSuccess(BaseResponse.QueryUserResponse result) {
-            userBean = result.userBean;
-            setData();
+        protected void handleResponse(BaseResponse.QueryUserResponse result) {
+            if(result.code == 0){
+                userBean = result.userBean;
+                setData();
+            }else {
+                handleFailed(result);
+            }
+
         }
 
-        @Override
         protected void handleFailed(BaseResponse.QueryUserResponse result) {
             ToastUtil.showToast("该用户不存在", Toast.LENGTH_SHORT);
         }

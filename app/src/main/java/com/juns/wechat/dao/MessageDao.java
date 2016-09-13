@@ -124,7 +124,7 @@ public class MessageDao extends BaseDao<MessageBean>{
         whereBuilder.and(MessageBean.DIRECTION, "=", MessageBean.Direction.INCOMING.value);
         whereBuilder.and(MessageBean.STATE, "=", MessageBean.State.NEW.value);
         whereBuilder.and(MessageBean.FLAG, "!=", Flag.INVALID.value());
-        whereBuilder.and(MessageBean.FLAG, "<", MsgType.MSG_TYPE_SEND_INVITE);
+        whereBuilder.and(MessageBean.TYPE, "<", MsgType.MSG_TYPE_SEND_INVITE);
         List<MessageBean> results = findAllByParams(whereBuilder);
         if(results != null) {
             unreadNum = results.size();

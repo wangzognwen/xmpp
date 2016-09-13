@@ -17,6 +17,7 @@ import com.juns.wechat.bean.UserBean;
 import com.juns.wechat.common.BaseActivity;
 import com.juns.wechat.net.callback.BaseCallBack;
 import com.juns.wechat.net.request.UserRequest;
+import com.juns.wechat.net.response.BaseResponse;
 import com.juns.wechat.net.response.SearchUserResponse;
 import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.xmpp.bean.SearchResult;
@@ -97,15 +98,12 @@ public class SearchActivity extends BaseActivity {
 
     private BaseCallBack<SearchUserResponse> callBack = new BaseCallBack<SearchUserResponse>() {
         @Override
-        protected void handleSuccess(SearchUserResponse result) {
+        protected void handleResponse(SearchUserResponse result) {
             progressDialog.dismiss();
-            ArrayList<UserBean> userBeans = result.userBeans;
-            showSearchResult(userBeans);
-        }
-
-        @Override
-        protected void handleFailed(SearchUserResponse result) {
-            progressDialog.dismiss();
+            if(result.code == BaseResponse.SUCCESS){
+                ArrayList<UserBean> userBeans = result.userBeans;
+                showSearchResult(userBeans);
+            }
         }
 
         @Override

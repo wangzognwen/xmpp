@@ -8,11 +8,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,10 +24,14 @@ import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
 import com.juns.wechat.annotation.Extra;
 import com.juns.wechat.common.ToolbarActivity;
+import com.juns.wechat.util.DisplayUtil;
 import com.juns.wechat.util.ImageLoader;
+import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.widget.scalemageview.PhotoView;
 import android.app.AlertDialog;
+
+import org.xutils.common.Callback;
 
 /**
  * 下载显示大图
@@ -53,9 +61,34 @@ public class ShowBigImage extends ToolbarActivity {
         setToolbarTitle("我的头像");
         setToolbarRight(2, R.drawable.icon_more);
         scaleImageView = (PhotoView) findViewById(R.id.image);
+        Point point = DisplayUtil.getScreenMetrics(this);
+        ViewGroup.LayoutParams lp = scaleImageView.getLayoutParams();
+        lp.width = point.x;
+        lp.height = point.x;
+        scaleImageView.setLayoutParams(lp);
 		loadLocalPb = (ProgressBar) findViewById(R.id.pb_load_local);
 
-        ImageLoader.loadAvatar(scaleImageView, imgName);
+        ImageLoader.loadAvatar(scaleImageView, imgName, new Callback.CommonCallback<Drawable>() {
+            @Override
+            public void onSuccess(Drawable result) {
+                LogUtil.i("success!");
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
 
         scaleImageView.setOnClickListener(new OnClickListener() {
 			@Override

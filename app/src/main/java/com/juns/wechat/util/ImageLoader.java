@@ -2,6 +2,7 @@ package com.juns.wechat.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -32,13 +33,22 @@ public class ImageLoader {
 
     private static final ImageOptions OPTIONS = new ImageOptions.Builder()
             .setFailureDrawableId(R.drawable.default_useravatar)
-            .setLoadingDrawableId(R.drawable.default_useravatar).build();
+            .setLoadingDrawableId(R.drawable.default_useravatar)
+            .build();
 
     public static void loadAvatar(ImageView imageView, String fileName){
         if(TextUtils.isEmpty(fileName)){
             imageView.setImageResource(R.drawable.default_useravatar);
         }else {
             x.image().bind(imageView, REMOTE_PATH  + fileName, OPTIONS);
+        }
+    }
+
+    public static void loadAvatar(ImageView imageView, String fileName, Callback.CommonCallback<Drawable> callback){
+        if(TextUtils.isEmpty(fileName)){
+            imageView.setImageResource(R.drawable.default_useravatar);
+        }else {
+            x.image().bind(imageView, REMOTE_PATH  + fileName, OPTIONS, callback);
         }
     }
 

@@ -63,12 +63,11 @@
         <ImageView
             android:id="@+id/ivRightBtn"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:visibility="visible"
             android:padding="10dip"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
             android:src="@drawable/icon_more"/>
 
     </RelativeLayout>

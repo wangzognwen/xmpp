@@ -9,8 +9,10 @@ import com.juns.wechat.net.response.BaseResponse;
  */
 public abstract class LoginCallBack extends BaseCallBack<BaseResponse.LoginResponse>{
     @Override
-    protected void handleSuccess(BaseResponse.LoginResponse result) {
-        saveUserInfo(result.userBean, result.token);
+    protected void handleResponse(BaseResponse.LoginResponse result) {
+        if(result.code == BaseResponse.SUCCESS){
+            saveUserInfo(result.userBean, result.token);
+        }
     }
 
     private void saveUserInfo(UserBean userBean, String token){

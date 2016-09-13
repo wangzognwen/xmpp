@@ -93,15 +93,12 @@ public class XmppService extends Service {
 
     private RefreshTokenCallBack callBack = new RefreshTokenCallBack() {
         @Override
-        protected void handleSuccess(TokenResponse result) {
-            super.handleSuccess(result);
+        protected void handleResponse(TokenResponse result) {
+            super.handleResponse(result);
             init();
         }
 
-        @Override
-        protected void handleFailed(TokenResponse result) {
 
-        }
     };
 
     public static void login(Context context){

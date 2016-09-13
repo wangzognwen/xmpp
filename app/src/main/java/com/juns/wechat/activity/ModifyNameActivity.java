@@ -29,6 +29,7 @@ public class ModifyNameActivity extends ToolbarActivity {
         super.onCreate(savedInstanceState);
         nickName = AccountManager.getInstance().getUser().getNickName();
         etInputNick.setText(nickName == null ? "" : nickName);
+        etInputNick.setSelection(nickName == null ? 0 : nickName.length());
     }
 
     /**
@@ -48,14 +49,9 @@ public class ModifyNameActivity extends ToolbarActivity {
 
     private UpdateUserCallBack updateUserCallBack = new UpdateUserCallBack() {
         @Override
-        protected void handleSuccess(UpdateUserResponse result) {
-            super.handleSuccess(result);
+        protected void handleResponse(UpdateUserResponse result) {
+            super.handleResponse(result);
             CommonUtil.finish(ModifyNameActivity.this);
-        }
-
-        @Override
-        protected void handleFailed(UpdateUserResponse result) {
-
         }
 
         @Override

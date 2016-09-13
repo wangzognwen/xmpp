@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.juns.wechat.Constants;
 import com.juns.wechat.MainActivity;
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
@@ -113,14 +112,18 @@ public class LoginActivity extends ToolbarActivity implements OnClickListener {
     private LoginCallBack loginCallBack = new LoginCallBack() {
 
         @Override
-        protected void handleSuccess(BaseResponse.LoginResponse result) {
-            super.handleSuccess(result);
-            AccountManager.getInstance().setUserPassWord(password);
-            CommonUtil.startActivity(LoginActivity.this, MainActivity.class);
-            CommonUtil.finish(LoginActivity.this);
+        protected void handleResponse(BaseResponse.LoginResponse result) {
+            super.handleResponse(result);
+            if(result.code == 0){
+                AccountManager.getInstance().setUserPassWord(password);
+                CommonUtil.startActivity(LoginActivity.this, MainActivity.class);
+                CommonUtil.finish(LoginActivity.this);
+            }else {
+                handleFailed(result);
+            }
+
         }
 
-        @Override
         protected void handleFailed(BaseResponse.LoginResponse result) {
             showToast("用户名或密码错误");
             getLoadingDialog("正在登录...").dismiss();

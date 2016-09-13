@@ -19,7 +19,11 @@ import com.juns.wechat.common.CommonUtil;
 import com.juns.wechat.dao.DbDataEvent;
 import com.juns.wechat.database.UserTable;
 import com.juns.wechat.dialog.SelectPhotoDialog;
+import com.juns.wechat.dialog.SelectSexDialog;
 import com.juns.wechat.manager.AccountManager;
+import com.juns.wechat.net.callback.UpdateUserCallBack;
+import com.juns.wechat.net.request.UserRequest;
+import com.juns.wechat.net.response.UpdateUserResponse;
 import com.juns.wechat.util.ImageLoader;
 import com.juns.wechat.util.PhotoUtil;
 
@@ -67,6 +71,7 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     private UserBean account;
 
     private SelectPhotoDialog selectPhotoDialog;
+    private SelectSexDialog selectSexDialog;
     private String imageName;
 
     @Override
@@ -79,6 +84,9 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
     private void setData(){
         account = AccountManager.getInstance().getUser();
         tvNickName.setText(account.getNickName() == null ? "" : account.getNickName());
+        tvUserName.setText(account.getUserName());
+        String sex = account.getSex();
+        tvSex.setText(UserBean.Sex.isMan(sex) ? "男" : "女");
         ImageLoader.loadAvatar(ivAvatar, account.getHeadUrl());
     }
 
@@ -103,6 +111,26 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
         CommonUtil.startActivity(this, ModifyNameActivity.class);
     }
 
+    @Click(viewId = R.id.rlSex)
+    private void modifySex(View v){
+        final String sex = account.getSex();
+        int position = UserBean.Sex.isMan(sex) ? 0 : 1;
+        selectSexDialog = SelectSexDialog.createDialog(this, position);
+        selectSexDialog.setOnItemClickListener(new SelectSexDialog.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int oldPosition, int newPosition) {
+                if(oldPosition == newPosition){
+                    selectSexDialog.dismiss();
+                }else {
+                    String sex = newPosition == 0 ? UserBean.Sex.MAN.value : UserBean.Sex.WOMAN.value;
+                    modifySexToServer(sex);
+                }
+            }
+        });
+
+        selectSexDialog.show();
+    }
+
     @Subscriber(tag = UserTable.TABLE_NAME)
     private void onDbDataChanged(DbDataEvent<UserBean> event){
         if(event.action == DbDataEvent.REPLACE || event.action == DbDataEvent.UPDATE){
@@ -115,6 +143,22 @@ public class MyProfileActivity extends ToolbarActivity implements SelectPhotoDia
                 }
             }
         }
+    }
+
+    private void modifySexToServer(String sex){
+        UserRequest.updateUser(account.getUserName(), UserBean.SEX, sex, new UpdateUserCallBack() {
+            @Override
+            protected void handleResponse(UpdateUserResponse result) {
+                super.handleResponse(result);
+                selectSexDialog.dismiss();
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                super.onError(ex, isOnCallback);
+                selectSexDialog.dismiss();
+            }
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

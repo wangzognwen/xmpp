@@ -33,7 +33,7 @@ public class ChatMsgItemShow extends MsgItemShow {
         }else {  //陌生人
             UserRequest.queryUserData(msgItem.userName, new QueryUserCallBack() {
                 @Override
-                protected void handleSuccess(BaseResponse.QueryUserResponse result) {
+                protected void handleResponse(BaseResponse.QueryUserResponse result) {
                     stranger = result.userBean;
                     textView.setText(stranger.getShowName());
                 }
@@ -49,7 +49,7 @@ public class ChatMsgItemShow extends MsgItemShow {
             }else {
                 UserRequest.queryUserData(msgItem.userName, new QueryUserCallBack() {
                     @Override
-                    protected void handleSuccess(BaseResponse.QueryUserResponse result) {
+                    protected void handleResponse(BaseResponse.QueryUserResponse result) {
                         stranger = result.userBean;
                         ImageLoader.loadAvatar(iv, stranger.getHeadUrl());
                     }
