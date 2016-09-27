@@ -49,9 +49,11 @@
     <string name="label_activity_crop_image">剪切图片</string>
     <string name="label_activity_send_invite_message">微信</string>
 
-    <string  name="normal">按住 说话</string>
-    <string  name="recording">松开 结束</string>
-    <string  name="want_to_cancle">松开手指，取消发送</string>
+    <string name="normal">按住 说话</string>
+    <string name="recording">松开 结束</string>
+    <string name="want_to_cancle">松开手指，取消发送</string>
     <string name="shouzhishanghua">手指上滑，取消发送</string>
     <string name="tooshort">录音时间过短</string>
+
+    <string name="instruction">当设计的UI与地图部分重叠时，设置地图的padding值,以防止UI遮挡</string>
 </resources>

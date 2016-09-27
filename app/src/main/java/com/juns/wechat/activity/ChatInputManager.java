@@ -1,5 +1,6 @@
 package com.juns.wechat.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -233,6 +234,7 @@ public class ChatInputManager implements View.OnClickListener{
                 selectPicFromLocal(); // 点击图片图标
                 break;
             case R.id.view_location:
+                sendLocation(); //发送位置
                 break;
             case R.id.view_audio:
                 // 语音通话
@@ -342,6 +344,11 @@ public class ChatInputManager implements View.OnClickListener{
             });
         }
 
+    }
+
+    private void sendLocation(){
+        Intent intent = new Intent(mChatActivity, SendLocationActivity.class);
+        mChatActivity.startActivity(intent);
     }
 
 
