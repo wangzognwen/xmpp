@@ -2,26 +2,46 @@ package com.juns.wechat.activity;
 
 import android.graphics.Color;
 import android.graphics.Point;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MapViewLayoutParams;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.UiSettings;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.juns.wechat.R;
 import com.juns.wechat.annotation.Content;
+import com.juns.wechat.annotation.Id;
 import com.juns.wechat.common.ToolbarActivity;
+import com.juns.wechat.util.LogUtil;
+
+import java.util.List;
 
 @Content(R.layout.activity_send_location)
-public class SendLocationActivity extends ToolbarActivity {
+public class SendLocationActivity extends ToolbarActivity implements OnGetGeoCoderResultListener{
     /**
      * MapView 是地图主控件
      */
@@ -34,17 +54,130 @@ public class SendLocationActivity extends ToolbarActivity {
     private static final int paddingBottom = 200;
     TextView mTextView;
 
+    private LocationClient mLocClient;
+    private MyLocationListener myListener = new MyLocationListener();
+    private boolean isFirstLoc = true;
+    private MarkerOptions markOps;
+    GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
+    private Point mCenterPoint;
+    @Id
+    private ImageView ivMarker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mMapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
-        mUiSettings = mBaiduMap.getUiSettings();
 
-        MapStatus ms = new MapStatus.Builder().build();
-        MapStatusUpdate u = MapStatusUpdateFactory.newMapStatus(ms);
-        mBaiduMap.animateMapStatus(u, 1000);
+        mUiSettings = mBaiduMap.getUiSettings();
+        mBaiduMap.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
+            @Override
+            public void onMapStatusChangeStart(MapStatus mapStatus) {
+
+            }
+
+            @Override
+            public void onMapStatusChange(MapStatus mapStatus) {
+
+            }
+
+            @Override
+            public void onMapStatusChangeFinish(MapStatus mapStatus) {
+                LogUtil.i("X");
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(mapStatus.target));
+            }
+        });
+       /* mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
+            @Override
+            public void onTouch(MotionEvent motionEvent) {
+                MapStatus mapstatus = mBaiduMap.getMapStatus();
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption().location(mBaiduMap.getProjection().fromScreenLocation(mCenterPoint)));
+*//*
+                LogUtil.i("loaction: " + mapstatus.target.latitude + "," + mapstatus.target.longitude);
+                LogUtil.i("screen: " + mapstatus.targetScreen.x + "," + mapstatus.targetScreen.y);*//*
+            }
+        });*/
+
+        // 初始化搜索模块，注册事件监听
+        mSearch = GeoCoder.newInstance();
+        mSearch.setOnGetGeoCodeResultListener(this);
+
+        initLocation();
+    }
+
+    private void initLocation(){
+        mBaiduMap.setMyLocationEnabled(true);
+        // 定位初始化
+        mLocClient = new LocationClient(this);
+        mLocClient.registerLocationListener(myListener);
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true); // 打开gps
+        option.setCoorType("bd09ll"); // 设置坐标类型
+        option.setScanSpan(1000);
+        mLocClient.setLocOption(option);
+        mLocClient.start();
+    }
+
+    @Override
+    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+    }
+
+    @Override
+    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+        String address = reverseGeoCodeResult.getAddress();
+        List<PoiInfo> poiInfos = reverseGeoCodeResult.getPoiList();
+        for(PoiInfo poiInfo : poiInfos){
+            LogUtil.i("arredss:" + poiInfo.address);
+        }
+        LogUtil.i("addres: " + address);
+    }
+
+    /**
+     * 定位SDK监听函数
+     */
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            // map view 销毁后不在处理新接收的位置
+            if (location == null || mMapView == null) {
+                return;
+            }
+          //  LogUtil.i("myLocation: " + location.getAddress().address);
+           MyLocationData locData = new MyLocationData.Builder()
+                    //.accuracy(location.getRadius())
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
+                    .direction(100).latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            mBaiduMap.setMyLocationData(locData);
+            if (isFirstLoc) {
+                isFirstLoc = false;
+                LatLng ll = new LatLng(location.getLatitude(),
+                        location.getLongitude());
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.target(ll).zoom(18.0f);
+
+                // 初始化当前MapView中心屏幕坐标，初始化当前地理坐标
+                mCenterPoint = mBaiduMap.getMapStatus().targetScreen;
+                mCenterPoint.y = (int) (mMapView.getY() + mMapView.getMeasuredHeight() / 2);
+                LogUtil.i("X: " + mCenterPoint.x + ", Y: " + mCenterPoint.y);
+                builder.targetScreen(mCenterPoint);
+                int w = ivMarker.getMeasuredWidth();
+                int h = ivMarker.getMeasuredHeight();
+                int x = (int) (mCenterPoint.x - w * 0.5);
+                int y = (int) ( mCenterPoint.y - h);
+                ivMarker.setLeft(x);
+                ivMarker.setTop(y);
+
+                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+
+            }
+        }
+
+        public void onReceivePoi(BDLocation poiLocation) {
+        }
     }
 
     /**
@@ -159,6 +292,10 @@ public class SendLocationActivity extends ToolbarActivity {
 
     @Override
     protected void onDestroy() {
+        // 退出时销毁定位
+        mLocClient.stop();
+        // 关闭定位图层
+        mBaiduMap.setMyLocationEnabled(false);
         // MapView的生命周期与Activity同步，当activity销毁时需调用MapView.destroy()
         mMapView.onDestroy();
         super.onDestroy();
