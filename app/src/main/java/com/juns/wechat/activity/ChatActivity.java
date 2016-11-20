@@ -50,6 +50,7 @@ import com.juns.wechat.util.LogUtil;
 import com.juns.wechat.util.PhotoUtil;
 import com.juns.wechat.util.ThreadPoolUtil;
 import com.juns.wechat.util.ToolBarUtil;
+import com.juns.wechat.xmpp.util.DialManager;
 import com.juns.wechat.xmpp.util.SendMessage;
 import com.wangzhe.photopicker.PhotoPicker;
 
@@ -175,6 +176,7 @@ public class ChatActivity extends ToolbarActivity{
 
         hideKeyboard(); //隐藏软键盘
 
+        DialManager.getInstance().startDial(contactName);
 	}
 
 	private void setUpView() {

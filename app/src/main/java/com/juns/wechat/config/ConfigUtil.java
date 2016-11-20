@@ -4,13 +4,7 @@ import com.juns.wechat.BuildConfig;
 
 /**
  * ****************************************************
- * Copyright (C) 2014-2015 Yunyun Network <yynetworks@yycube.com>
- * <p/>
- * This file is part of YY Cube project.
- * <p/>
- * It can not be copied and/or distributed without the express
- * permission of Yunyun Network
- * Created by wangshuai on 2015/5/13
+ * Created by 王者 on 2015/5/13
  * *****************************************************
  */
 public class ConfigUtil {
@@ -22,7 +16,7 @@ public class ConfigUtil {
 
 
     public static String REAL_XMPP_SERVER = "123.206.34.158";
-    private static String DEBUG_XMPP_SERVER = "123.206.34.158";
+    private static String DEBUG_XMPP_SERVER = "192.168.1.2";
 
     private final static String  DEBUG_XMPP_DOMAIN = "wangzhe";
     public final static String  REAL_XMPP_DOMAIN = "wangzhe";
